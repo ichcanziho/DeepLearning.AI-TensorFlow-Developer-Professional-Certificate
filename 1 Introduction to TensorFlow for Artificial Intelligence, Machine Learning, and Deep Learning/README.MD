@@ -1,15 +1,18 @@
-# Custom Models, Layers, and Loss Functions with TensorFlow
+# Introduction to TensorFlow for Artificial Intelligence, Machine Learning, and Deep Learning
 
 En este curso, aprenderás:
 
-- Comparar las APIs Funcional y Secuencial, descubrir nuevos modelos que puedes construir con la API Funcional y crear un modelo que produzca múltiples salidas, incluida una red Siamesa.
-- Construir funciones de pérdida personalizadas (incluida la función de pérdida contrastante utilizada en una red Siamesa) para medir qué tan bien está funcionando un modelo y ayudar a tu red neuronal a aprender de los datos de entrenamiento.
-- Crear capas personalizadas a partir de capas estándar existentes para tus modelos, personalizar una capa de red con una capa lambda, comprender las diferencias entre ellas, aprender qué compone una capa personalizada y explorar funciones de activación.
-- Ampliar modelos existentes para agregar funcionalidad personalizada, aprender a definir tu propia clase personalizada en lugar de usar las APIs Funcional o Secuencial, construir modelos que pueden heredarse de la clase Model de TensorFlow y crear una red residual (ResNet) mediante la definición de una clase de modelo personalizada.
+- Aprenda las mejores prácticas para utilizar TensorFlow, un popular marco de aprendizaje automático de código abierto
 
-**La Especialización en TensorFlow**: Técnicas Avanzadas de DeepLearning. AI introduce las características de TensorFlow que brindan a los aprendices más control sobre la arquitectura de sus modelos y herramientas que les ayudan a crear y entrenar modelos avanzados de aprendizaje automático.
+- Construir una red neuronal básica en TensorFlow
 
-Esta especialización está diseñada para ingenieros de software y aprendizaje automático en etapas tempranas y medias de su carrera, con un entendimiento fundamental de TensorFlow que buscan ampliar sus conocimientos y habilidades aprendiendo características avanzadas de TensorFlow para construir modelos potentes.
+- Entrenar una red neuronal para una aplicación de visión por ordenador
+
+- Entienda cómo utilizar las convoluciones para mejorar su red neuronal
+
+Si usted es un desarrollador de software que quiere construir algoritmos escalables impulsados por IA, necesita entender cómo utilizar las herramientas para construirlos. Este curso forma parte de la próxima Especialización en Aprendizaje Automático en Tensorflow y le enseñará las mejores prácticas para utilizar TensorFlow, un popular marco de trabajo de código abierto para el aprendizaje automático. 
+
+El curso de Aprendizaje Automático y la Especialización en Aprendizaje Profundo de Andrew Ng enseñan los principios más importantes y fundacionales del Aprendizaje Automático y el Aprendizaje Profundo. Esta nueva Especialización en TensorFlow de deeplearning.ai le enseña cómo utilizar TensorFlow para implementar esos principios, de forma que pueda empezar a construir y aplicar modelos escalables a problemas del mundo real. Para desarrollar una comprensión más profunda de cómo funcionan las redes neuronales, le recomendamos que realice la Especialización en Aprendizaje Profundo.
 
 ## INDEX 0
 
