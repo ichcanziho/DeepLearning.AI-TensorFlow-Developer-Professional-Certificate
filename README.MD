@@ -1,10 +1,10 @@
 # TensorFlow: Advanced Techniques Specialization
 
-## PROGRESO GENERAL: ![](https://geps.dev/progress/0)
+## PROGRESO GENERAL: ![](https://geps.dev/progress/6)
 
 ## INDICE:
 
-- ![](https://geps.dev/progress/0) [1 Custom models, layers, and loss functions with TensorFlow](1%20Custom%20models%2C%20layers%2C%20and%20loss%20functions%20with%20TensorFlow)
+- ![](https://geps.dev/progress/25) [1 Custom models, layers, and loss functions with TensorFlow](1%20Custom%20models%2C%20layers%2C%20and%20loss%20functions%20with%20TensorFlow)
 - ![](https://geps.dev/progress/0) [2 Custom and distributed training with TensorFlow](2%20Custom%20and%20distributed%20training%20with%20TensorFlow)
 - ![](https://geps.dev/progress/0) [3 Advanced computer vision with TensorFlow](3%20Advanced%20computer%20vision%20with%20TensorFlow)
 - ![](https://geps.dev/progress/0) [4 Generative deep learning with TensorFlow](4%20Generative%20deep%20learning%20with%20TensorFlow)
