@@ -930,6 +930,21 @@ AI pone estas diapositivas a su disposición con fines educativos. No puede util
 ### Implementing Callbacks in TensorFlow using the MNIST Dataset
 [<- Return to INDEX 5](#index-5)
 
+Ahora que ha trabajado en la creación de un escenario básico de visión por ordenador utilizando TensorFlow para reconocer la moda, está listo para realizar la tarea de esta semana, ¡que consiste en construir una red neuronal que reconozca los dígitos de la escritura a mano! Ha cubierto todo lo que necesita para tener éxito, ¡así que inténtelo!
+
+Para enviar su cuaderno Jupyter para su calificación, haga clic en el botón Submit Assignment mientras esté en el cuaderno. 
+
+> ### Nota:
+> El notebook resuelto de esta tarea es el siguiente: [C1W2_Assignment.ipynb](notebooks%2FW2%2FC1W2_Assignment.ipynb)
+
+IMPORTANTE PARA EL ÉXITO DE LA CALIFICACIÓN
+
+- ¡No olvide guardar su cuaderno antes de enviarlo!
+
+- No borre las celdas, ya que incluyen metadatos importantes para la calificación.
+
+- Rellene sus soluciones dentro de los espacios previstos. Puede añadir nuevas celdas pero éstas serán omitidas por el calificador.
+
 ## Enhancing Vision with Convolutional Neural Networks
 [<- Return to INDEX 0](#index-0)
 
