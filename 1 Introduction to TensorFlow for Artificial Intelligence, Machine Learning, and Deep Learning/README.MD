@@ -528,44 +528,397 @@ http://playground.tensorflow.org.
 ### A conversation with Andrew Ng
 [<- Return to INDEX 4](#index-4)
 
+![img.png](ims%2FW2%2Fimg.png)
+
+En la lección reciente, se exploraron los fundamentos del nuevo paradigma en programación que surge con el aprendizaje automático y el aprendizaje profundo. Se destacó cómo, en lugar de codificar reglas explícitas, es posible utilizar datos y conjuntos de datos etiquetados para adentrarse en campos como el reconocimiento de actividades. Añadiendo un toque de diversión, se inició la codificación de una red neuronal básica, diseñada para ajustar datos x e y en una línea. Este paso inicial, aunque sencillo, reveló una verdad asombrosa: la habilidad de ajustar relaciones entre x e y es la base para logros notables en el aprendizaje automático, como permitir que las computadoras reconozcan imágenes y realicen reconocimiento de actividades.
+
+Se profundizó en cómo la visión por computadora representa un reto significativo. Distinguir en una imagen si se muestra un vestido o unos zapatos es una tarea compleja para una máquina. Mientras que para los humanos reconocer objetos es una tarea sencilla, para una computadora implica analizar y comprender los valores de brillo de cada píxel. Resulta fascinante que, a través del aprendizaje automático y profundo, las computadoras estén avanzando notablemente en estas capacidades.
+
+El uso de la red neuronal básica desarrollada en la lección proporciona una plantilla para todo lo que se puede lograr con el aprendizaje profundo, diseñando redes neuronales en capas capaces de reconocer patrones complejos. Esto abre la posibilidad de aplicar estas técnicas, como se demostró, al reconocimiento de prendas de vestir. En el próximo video, se abordará cómo escribir código para aplicar este paradigma, ya introducido, en el reconocimiento de ropa a partir de datos etiquetados, invitando a continuar con el siguiente material del curso.
+
 ### An Introduction to computer vision
 [<- Return to INDEX 4](#index-4)
+
+![img_1.png](ims%2FW2%2Fimg_1.png)
+
+En la lección anterior, vimos aprendiste qué es el paradigma de aprendizaje automático y cómo usar datos y etiquetas y hacer que una computadora infiera las reglas por ti. Viste un ejemplo sencillo donde averiguaba las relaciones entre dos conjuntos de números. Llevemos esto al siguiente nivel resolviendo un problema real, visión por computadora. 
+
+![img_2.png](ims%2FW2%2Fimg_2.png)
+
+Visión por computadora es el campo en el que una computadora entiende y etiqueta lo que está presente en una imagen. Considera esta diapositiva. Cuando la ves, puedes interpretar que es una camisa o que es un zapato, ¿pero cómo lo programarías? Si un extraterrestre que nunca ha visto ropa entra en el cuarto contigo, ¿Como le explicarías los zapatos? Es realmente muy difícil, sino imposible hacerlo. Y es el mismo problema con la visión por computadora. 
+
+![img_3.png](ims%2FW2%2Fimg_3.png)
+
+Una forma de resolverlo es utilizar un montón de imágenes de ropa decirle al computador qué es esa imagen y luego dejar que la computadora averigüe los patrones que te dan la diferencia entre un zapato una camiseta, una cartera, y un abrigo. Aprenderás cómo hacerlo en esta sección. Afortunadamente, existe un conjunto de datos llamado Fashion MNIST que da 70 mil imágenes distribuidas en 10 diferentes artículos de ropa. Estas imágenes han sido reducidas a 28 por 28 píxeles.
+
+Usualmente, cuanto más pequeño, mejor porque la computadora debe hacer menos procesamiento. Pero por supuesto, debes retener suficiente información para estar seguro de que las características y el objeto se puedan distinguir. Si ves esta diapositiva puedes decir la diferencia entre camisetas, zapatos y carteras. Este tamaño parece ser ideal, y lo hace genial para entrenar una red neuronal. 
+
+![img_4.png](ims%2FW2%2Fimg_4.png)
+
+Las imágenes están también en escala gris, la cantidad de información también ha sido reducida. Cada píxel puede ser representado en valores desde cero hasta 255 y sólo es un byte por píxel. Con 28 por 28 píxeles por imagen, solo 784 bytes son necesarios para almacenar la imagen completa. A pesar de eso, podemos aún ver qué hay en la imagen y en este caso, es un botín.
 
 ### Exploring how to use data
 [<- Return to INDEX 4](#index-4)
 
+El aprendizaje automático depende de tener buenos datos con los que entrenar un sistema. En el vídeo anterior, se le propuso entrenar un sistema para reconocer imágenes de moda. Los datos proceden de un conjunto de datos llamado Fashion MNIST, y puede obtener más información sobre él en GitHub 
+[aquí](https://github.com/zalandoresearch/fashion-mnist)
+. En el siguiente vídeo, verá cómo cargar esos datos y prepararlos para el entrenamiento.
+
+------------
+
+Fashion-MNIST is a dataset of Zalando's article images—consisting of a training set of 60,000 examples and a test set of 10,000 examples. Each example is a 28x28 grayscale image, associated with a label from 10 classes. We intend Fashion-MNIST to serve as a direct drop-in replacement for the original MNIST dataset for benchmarking machine learning algorithms. It shares the same image size and structure of training and testing splits.
+
+![img_5.png](ims%2FW2%2Fimg_5.png)
+
+![embedding.gif](ims%2FW2%2Fembedding.gif)
+
+**Labels**
+Each training and test example is assigned to one of the following labels:
+
+| Label | Description    |
+|-------|----------------|
+| 0     | T-shirt/top    |
+| 1     | Trouser        |
+| 2     | Pullover       |
+| 3     | Dress          |
+| 4     | Coat           |
+| 5     | Sandal         |
+| 6     | Shirt          |
+| 7     | Sneaker        |
+| 8     | Bag            |
+| 9     | Ankle boot     |
+
 ### Writing code to load training data
 [<- Return to INDEX 4](#index-4)
+
+![img_6.png](ims%2FW2%2Fimg_6.png)
+
+¿Qué aspecto tendrá el manejo de esto en código? En la lección anterior, vimos aprendiste de TensorFlow y Keras, y cómo definir una red neuronal sencilla con ellos. En esta lección, las usarás para ir un poco más a fondo, pero el API en general debe parecerte familiar. La única gran diferencia, estará en los datos. La última vez tenías 6 pares de números, y podías codificarlo a mano. 
+
+Esta vez, debes cargar 70000 imágenes del disco, habrá un poco de código para manejar eso. Afortunadamente, aún es bastante sencillo porque Fashion-MNIST está disponible como un conjunto de datos con una llamada del API de TensorFlow.
+
+![img_7.png](ims%2FW2%2Fimg_7.png)
+
+Simplemente declaramos un objeto de tipo MNIST cargándolo de la base de datos Keras. En este objeto, si llamamos al método de carga de datos, nos devolverá 4 listas. Los datos de entrenamiento, las etiquetas de entrenamiento, los datos de prueba y las etiquetas de prueba. 
+
+![img_8.png](ims%2FW2%2Fimg_8.png)
+
+¿Cuáles son estas podrías preguntar? Cuando se construye una red neuronal como esta, es una buena estrategia usar algunos de tus datos para entrenar la red neuronal y datos similares que el modelo aún no ha visto para probar lo buena que es reconociendo imágenes. En el conjunto de datos Fashion MNIST, 60.000 de las 70.000 imágenes son usadas para entrenar la red, y entonces 10.000 imágenes, unas que no ha visto previamente pueden ser usadas para probar lo bien o mal que lo está realizando.
+
+![img_9.png](ims%2FW2%2Fimg_9.png)
+
+Este código te dará esos conjuntos. Cada conjunto tiene datos, las imágenes mismas y las etiquetas, y eso es lo que la imagen es en realidad. Entonces, por ejemplo, los datos de entrenamiento contendrán imágenes como esta, y una etiqueta que describe la imagen así. Esta imagen es un botín, la etiqueta que la describe es el número 9. 
+
+![img_10.png](ims%2FW2%2Fimg_10.png)
+
+¿Por qué crees que podría ser? Existen dos razones principales. Primero, por supuesto, es que las computadoras son mejores con 
+números que con textos. Segundo, muy importante, es que esto es algo que nos puede ayudar a reducir sesgos. 
+
+Si lo etiquetáramos como un botín, por supuesto, estaríamos sesgando hacia los anglo parlantes. Pero al ser una etiqueta 
+numérica, podemos referirnos a ello en nuestro propio lenguaje sea inglés, chino, japones o incluso gaélico irlandés.
 
 ### The structure of Fashion MNIST data
 [<- Return to INDEX 4](#index-4)
 
+Aquí vio cómo los datos pueden cargarse en estructuras de datos de Python que facilitan el entrenamiento de una red neuronal. Ha visto cómo la imagen se representa como una matriz de 28x28 de escalas de grises, y cómo su etiqueta es un número. Utilizar un número es un primer paso para evitar el sesgo, ¡en lugar de etiquetarla con palabras en un idioma específico y excluir a las personas que no hablan ese idioma! Puede obtener más información sobre el sesgo y las técnicas para evitarlo 
+[aquí](https://developers.google.com/machine-learning/fairness-overview/)
+.
+
+1. **Prácticas Generales Recomendadas para la IA:**
+
+   - **Diseño Centrado en el Humano:** Incluye la experiencia del usuario en la evaluación del impacto del sistema.
+   - **Identificación de Múltiples Métricas:** Utilizar diversas métricas para entender los compromisos entre diferentes tipos de errores y experiencias.
+   - **Examen Directo de Datos en Bruto:** Analizar cuidadosamente los datos de entrenamiento.
+   - **Comprensión de las Limitaciones de Conjuntos de Datos y Modelos:** Ser consciente de que los modelos reflejan los patrones de sus datos de entrenamiento.
+   - **Pruebas Rigurosas:** Asegurarse de que el sistema de IA funcione como se pretende.
+   - **Monitoreo y Actualización Continua Post-Despliegue:** Tener en cuenta el rendimiento en el mundo real y el feedback de los usuarios.
+
+2. **Ejemplos de Trabajo de Google:** Proyectos y modelos específicos que demuestran estas prácticas.
+
+3. **Justicia en la IA:**
+
+   - Trabajar hacia sistemas que sean justos e inclusivos para todos.
+   - Reconocer los desafíos, como los sesgos preexistentes en los datos y la dificultad de construir sistemas justos en todas las situaciones o culturas.
+   - No hay una definición estándar de justicia, lo que requiere un enfoque holístico y la colaboración continua en la investigación.
+
+4. Interpretabilidad:
+
+   - La importancia de la capacidad para cuestionar, comprender y confiar en un sistema de IA.
+   - Comparación entre la toma de decisiones humana y de IA en términos de explicación y comprensión.
+   - Prácticas recomendadas para mejorar la interpretabilidad, como la planificación de opciones para la interpretabilidad, el tratamiento de la interpretabilidad como parte central de la experiencia del usuario, y el diseño de modelos interpretables.
+
+Cada sección incluye prácticas recomendadas y ejemplos específicos para ilustrar cómo Google implementa estas ideas en su trabajo con la IA. La página también enfatiza la importancia de la continua investigación y el desarrollo en estas áreas para mejorar la responsabilidad en el uso de la IA.
+
 ### Coding a Computer Vision Neural Network
 [<- Return to INDEX 4](#index-4)
+
+![img_11.png](ims%2FW2%2Fimg_11.png)
+
+Ahora veremos el código para la definición de una red neuronal. Recuerda que la última vez teníamos sequential con una sola capa en ella.
+
+![img_12.png](ims%2FW2%2Fimg_12.png)
+
+Ahora tenemos 3 capas. Las cosas importantes a mirar son la primera y última capas. La última capa tiene 10 neuronas porque tenemos 10 clases de ropa en el conjunto de datos. Esto debe siempre coincidir. La primera capa es una capa flatten con la forma de entrada de 28 por 28. 
+
+Si recuerdas, nuestras imágenes son de 28 por 28, estamos especificando que esta es la forma en que debemos esperar los datos de entrada. Flatten toma este cuadrado de 28 por 28 y lo transforma en un vector lineal simple. Lo interesante pasa en la capa intermedia, muchas veces llamada también capa oculta.
+
+![img_13.png](ims%2FW2%2Fimg_13.png)
+
+Esta tiene 128 neuronas me gustaría que piensen en ellas como variables en una función. Quizás x1, x2, x3, etc. Existe una regla que incorpora todas estas que convierte los 784 valores de un botín en el valor nueve, y similarmente para todos los otros 70.000. Es una función muy compleja de ver mapeando las imágenes tú mismo, pero eso es lo que hace una red neuronal. 
+
+Por ejemplo si dices la función y es igual a w1 por x1, más w2 por x2, más w3 por x3, hasta w128 por x128. Hallando los valores de w, entonces y dará nueve, cuando tienes el valor de entrada del zapato.
+
+![img_14.png](ims%2FW2%2Fimg_14.png)
+
+Verás que está haciendo algo muy, muy similar a lo que hicimos anteriormente cuando hallamos y igual a 2x menos 1. En este caso el dos, era el peso de x. Estoy diciendo que y es igual a w1 por x1, etc. No te preocupes si esto no está muy claro en este momento. Con el tiempo lo dominarás, viendo que funciona, hay algunas herramientas que te permitirán mirar dentro para ver lo que está sucediendo. 
+
+Lo importante por ahora es que el código funcione, para que veas un escenario de clasificación por ti mismo. También puedes modificar la red neuronal añadiendo, eliminando y cambiando el tamaño de la capa para ver el impacto.
+
+![img_15.png](ims%2FW2%2Fimg_15.png)
+
+Lo harás en el siguiente ejercicio. Asimismo, si deseas ir más allá, revisa este tutorial de Andrew en Youtube, que aclarará cómo las capas densamente conectadas funcionan desde las perspectivas teórica y matemática. Pero por ahora, volvamos al código.
+
+https://www.youtube.com/watch?v=fXOsFF95ifk&ab_channel=DeepLearningAI
 
 ### See how it's done
 [<- Return to INDEX 4](#index-4)
 
+En el siguiente vídeo, Laurence le guiará a través de un cuaderno de trabajo en el que podrá ver cómo se entrena una red neuronal con imágenes de moda. ¡Después podrá probar el cuaderno de trabajo usted mismo!
+
 ### Walk through a Notebook for computer vision
 [<- Return to INDEX 4](#index-4)
+
+![img_16.png](ims%2FW2%2Fimg_16.png)
+
+Acabas de ver cómo crear una red neuronal que da capacidades de visión por computadora básicas para reconocer diferentes artículos de ropa. 
+Trabajemos ahora con un cuaderno que tiene todo el código para hacer eso. Luego verás el cuaderno tú mismo y si quieres puedes hacer algunos 
+ejercicios. Empecemos importando TensorFlow. 
+
+Voy a obtener los datos de Fashion MNIST usando tf.keras.datasets. Llamando al método load data, Obtengo los datos de entrenamiento y las etiquetas así como los datos de prueba y las etiquetas.
+
+```python
+# Load the Fashion MNIST dataset
+fmnist = tf.keras.datasets.fashion_mnist
+# Load the training and test split of the Fashion MNIST dataset
+(training_images, training_labels), (test_images, test_labels) = fmnist.load_data()
+```
+
+![img_17.png](ims%2FW2%2Fimg_17.png)
+
+Para más detalles sobre esto, vuelve a revisar el anterior vídeo. Los datos de una imagen en particular es una cuadrícula de valores desde cero hasta 255 con valores de los píxeles en escala de grises. Usando matplotlib, puedo dibujarlos como una imagen para facilitar la inspección. También puedo imprimir los valores en bruto para que podamos ver qué aspecto tienen. Puedes ver los valores en bruto de los números de píxel de cero a 255, y puedes observar la imagen real. 
+
+![img_18.png](ims%2FW2%2Fimg_18.png)
+
+Ahora diseñamos nuestro modelo. Como explicamos anteriormente, hay una capa de entrada con la forma de los datos y una capa de salida con la forma de las clases, y una capa oculta que trata de hallar las reglas entre ellas. Compilamos el modelo para encontrar la función de pérdida y el optimizador, y el objetivo de estos es como antes, hacer una conjetura de cuál es la relación entre los datos de entrada y los datos de salida, medir lo bien o lo mal que lo hacen mediante la función de pérdida, usa el optimizador para generar una nueva conjetura y repite.
+
+![img_19.png](ims%2FW2%2Fimg_19.png)
+
+Podemos tratar de ajustar las imágenes de entrenamiento a las etiquetas de entrenamiento. Lo haremos solo durante cinco epochs para ser breves. Pasamos unos 25 segundos entrenándolo durante cinco epochs y terminamos con una pérdida de cerca de 0.29. Eso significa que es bastante preciso en conjeturar la relación entre las imágenes y las etiquetas. No es tan genial, pero ten en cuenta que se ha hecho en solo 25 segundos con una red neuronal muy básica, lo que no está tampoco mal.
+
+![img_20.png](ims%2FW2%2Fimg_20.png)
+
+Pero una mejor medida del rendimiento se puede ver probando los datos de prueba. Estas son imágenes que la red aún no ha visto. Esperarías que el rendimiento fuera peor, pero si es aún peor, tienes un problema. Como puedes ver es alrededor de 0.345 de pérdida, lo que significa que es un poco menos preciso en el conjunto de prueba. No es tampoco genial, pero sabemos que estamos haciendo algo bien. 
+
+ Tu trabajo ahora consiste en mirar el cuaderno, intentar los ejercicios y ver si cambiando los parámetros en la red neuronal o cambiando las epochs, hay alguna forma de obtener unos 0.71 de pérdida de precisión en los datos de entrenamiento y 0.66 de precisión en los de prueba, pruébalo tú mismo.
 
 ### Get Hands-on with computer vision (Lab 1)
 [<- Return to INDEX 4](#index-4)
 
+Ahora que ya ha visto el cuaderno de ejercicios, es hora de que lo pruebe por sí mismo. Puede encontrarlo 
+aquí [C1_W2_Lab_1_beyond_hello_world.ipynb](notebooks%2FW2%2FC1_W2_Lab_1_beyond_hello_world.ipynb)
+. También hemos proporcionado una serie de ejercicios que puede probar en la parte inferior del libro de trabajo. Éstos le ayudarán a hurgar y experimentar con el código, y le ayudarán con el código que tendrá que escribir al final de la semana, ¡así que realmente merece la pena dedicarles algo de tiempo! Le recomiendo que dedique al menos 1 hora a jugar con este cuaderno de ejercicios. ¡Realmente valdrá la pena su tiempo!
+
+Cuando haya terminado con eso, lo siguiente es explorar las devoluciones de llamada. Una de las cosas que puede hacer con eso es entrenar una red neuronal hasta que alcance un umbral que usted desee, y entonces dejar de entrenar. Lo verá en el siguiente vídeo.
+
 ### Using Callbacks to control training
 [<- Return to INDEX 4](#index-4)
+
+![img_21.png](ims%2FW2%2Fimg_21.png)
+
+Una pregunta que me hacen a menudo en este punto los programadores en particular cuando experimentan con diferentes números de epochs es ¿Cómo puedo parar el entrenamiento cuando alcanzo el punto en el que deseo estar? ¿Por qué siempre debo programar directamente un cierto número de epochs?
+
+La buena nueva es que el bucle de entrenamiento soporta retrollamadas. En cada epoch, se puede retrollamar a una función de código, tras haber comprobado las métricas. Si son lo que quieres, entonces puedes cancelar el entrenamiento en ese punto. Echemos un vistazo. 
+
+![img_22.png](ims%2FW2%2Fimg_22.png)
+
+Este es nuestro código para entrenar la red neuronal para reconocer las imágenes de moda. En particular, mantén un ojo en la función model.fit que ejecuta el bucle de entrenamiento. Puedes ver eso aquí. Lo que haremos ahora es escribir una retrollamada en Python. 
+
+![img_23.png](ims%2FW2%2Fimg_23.png)
+
+Este es el código. Está implementada como una clase separada, pero puede estar en línea con el otro código. No necesita estar en un archivo separado. En ella, implementaremos la función on_epoch_end function, que es llamada por la retrollamada cada vez que un epoch termina. También envía un objeto de registro que contiene mucha información importante sobre el estado actual del entrenamiento. 
+
+Por ejemplo, la pérdida actual está disponible en los registros, podemos consultarlo hasta cierto valor. Por ejemplo, aquí estoy comprobando si la pérdida es menor que 0.4 para cancelar el propio entrenamiento.
+
+![img_24.png](ims%2FW2%2Fimg_24.png)
+
+Ahora que tenemos la retrollamada volvamos al resto del código, hay dos modificaciones que debemos hacer. Primero, instanciamos la clase que acabamos de crear, lo hacemos con este código. 
+
+![img_25.png](ims%2FW2%2Fimg_25.png)
+
+En model.fit, usé los parámetros de la retrollamada y paso esta instancia de la clase. Veamos esto en acción.
 
 ### See how to implement Callbacks (Lab 2)
 [<- Return to INDEX 4](#index-4)
 
+Experimente con el uso de devoluciones de llamada en este 
+cuaderno [C1_W2_Lab_2_callbacks.ipynb](notebooks%2FW2%2FC1_W2_Lab_2_callbacks.ipynb)
+ -- ¡trabaje a través de él para ver cómo funcionan! 
+
 ### Walk through a notebook with Callbacks
 [<- Return to INDEX 4](#index-4)
+
+Echemos un vistazo al código de las retrollamadas y veamos cómo funciona. Puedes ver el código aquí. Este es el cuaderno con el código ya escrito, y esta es la clase que definimos para el manejo de la retrollamada
+
+```python
+import tensorflow as tf
+
+# Instantiate the dataset API
+fmnist = tf.keras.datasets.fashion_mnist
+
+# Load the dataset
+(x_train, y_train),(x_test, y_test) = fmnist.load_data()
+
+# Normalize the pixel values
+x_train, x_test = x_train / 255.0, x_test / 255.0
+```
+
+y aquí es donde instanciamos la clase callback misma. 
+
+```python
+class myCallback(tf.keras.callbacks.Callback):
+  def on_epoch_end(self, epoch, logs={}):
+    '''
+    Halts the training when the loss falls below 0.4
+
+    Args:
+      epoch (integer) - index of epoch (required but unused in the function definition below)
+      logs (dict) - metric results from the training epoch
+    '''
+
+    # Check the loss
+    if(logs.get('loss') < 0.4):
+
+      # Stop if threshold is met
+      print("\nLoss is lower than 0.4 so cancelling training!")
+      self.model.stop_training = True
+
+# Instantiate class
+callbacks = myCallback()
+```
+
+Finalmente, aquí es donde configuramos la retrollamada como parte del bucle de entrenamiento. Cuando empezamos a entrenar, 
+note que hemos pedido entrenar durante 10 epochs.
+
+```python
+# Define the model
+model = tf.keras.models.Sequential([
+  tf.keras.layers.Flatten(input_shape=(28, 28)),
+  tf.keras.layers.Dense(512, activation=tf.nn.relu),
+  tf.keras.layers.Dense(10, activation=tf.nn.softmax)
+])
+
+# Compile the model
+model.compile(optimizer=tf.optimizers.Adam(),
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+# Train the model with a callback
+model.fit(x_train, y_train, epochs=10, callbacks=[callbacks])
+```
+
+Vigila las pérdidas que entrena. Deseamos que termine cuando sea más baja que 0.4 al final del primer epoch ya nos estamos acercando. Al iniciar el segundo epoch ya ha caído por debajo de 0.4, 
+pero la retrollamada no ha sido alcanzada aún. Esto se debe a que se ha configurado para que sea al final del epoch. 
+
+```commandline
+Epoch 1/10
+1875/1875 [==============================] - 9s 4ms/step - loss: 0.4734 - accuracy: 0.8315
+Epoch 2/10
+1867/1875 [============================>.] - ETA: 0s - loss: 0.3607 - accuracy: 0.8672
+Loss is lower than 0.4 so cancelling training!
+1875/1875 [==============================] - 7s 4ms/step - loss: 0.3609 - accuracy: 0.8671
+```
+
+Hacer esto es una buena práctica, porque con algunos datos y algunos algoritmos, la pérdida puede variar arriba y abajo durante el epoch, 
+porque todos los datos aún no han sido procesados. Prefiero esperar hasta el final para estar seguro. Ahora la época ha terminado, 
+la pérdida es 0.3563, podemos ver que el entrenamiento termina, a pesar que solo hemos hecho dos epochs. 
+
+Ten en cuenta que estamos seguros de que pedimos cinco epochs y que hemos terminado después de dos, porque la pérdida es menor que 0.4, 
+que es lo que comprobamos en la retrollamada. Está muy bien.
 
 ### Week 2 Quiz
 [<- Return to INDEX 4](#index-4)
 
+1. What is the resolution of the 70,000 images from the Fashion MNIST dataset?
+
+   - [ ] 100x100 Color
+   - [ ] 28x28 Color
+   - [ ] 82x82 Greyscale
+   - [X] 28x28 Greyscale
+
+   > Correct
+   > Spot on!
+
+2. Why are there 10 output neurons in the Neural Network used as an example for the Computer Vision Problem?
+
+   - [ ] Purely arbitrary
+   - [ ] To make it train 10x faster
+   - [X] There are 10 different labels
+   - [ ] To make it classify 10x faster
+
+   > Correct
+   > Exactly! There are 10 output neurons because we have 10 classes of clothing in the dataset. These should always match.
+
+3. What does Relu do?
+
+   - [ ] It only returns x if x is less than zero
+   - [ ] For a value x, it returns 1/x
+   - [ ] It returns the negative of x
+   - [X] It only returns x if x is greater than zero
+
+   > Correct
+   > Correct! The rectifier or ReLU (Rectified Linear Unit) activation function returns x if x is greater than zero.
+
+4. Why do you split data into training and test sets?
+
+   - [ ] To train a network with previously unseen data
+   - [ ] To make training quicker
+   - [X] To test a network with previously unseen data
+   - [ ] To make testing quicker
+
+   > Correct
+   > Nailed it! Splitting the data into training and test sets allows you to test the network with unseen data.
+
+5. True or False: The on_epoch_end function sends a logs object with lots of great information about the current state of training at the start of every epoch.
+
+   - [ ] True
+   - [X] False
+
+   > Correct
+   > Absolutely! The function activates at the end of every epoch.
+
+6. Why do you set the callbacks= parameter in your fit function?
+
+   - [ ] So that the training loops performs all epochs
+   - [ ] Because it accelerates the training
+   - [X] So, on every epoch you can call back to a code function
+
+   > Correct
+   > That’s right! You can have it check the metrics and stop the training.
+
 ### Lecture Notes Week 2
 [<- Return to INDEX 4](#index-4)
+
+Los apuntes de las conferencias están disponibles en nuestra plataforma comunitaria. Si ya es miembro, inicie sesión en su cuenta y acceda a los apuntes de las conferencias 
+aquí [C1_W2.pdf](notes%2FC1_W2.pdf)
+.
+
+#### Derechos de autor
+Estas diapositivas se distribuyen bajo licencia Creative Commons.
+
+[DeepLearning.](https://www.deeplearning.ai/)
+AI pone estas diapositivas a su disposición con fines educativos. No puede utilizar ni distribuir estas diapositivas con fines comerciales. Puede hacer copias de estas diapositivas y utilizarlas o distribuirlas con fines educativos siempre que cite a
+[DeepLearning](https://www.deeplearning.ai/)
+.AI como fuente de las mismas.
 
 ## Weekly Assignment - Implement a Deep Neural Network to recognize handwritten digits
 [<- Return to INDEX 0](#index-0)
