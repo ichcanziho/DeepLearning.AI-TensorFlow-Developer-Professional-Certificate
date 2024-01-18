@@ -1464,6 +1464,10 @@ aquí [C1_W3.pdf](notes%2FC1_W3.pdf)
 ### Improve MNIST with convolutions
 [<- Return to INDEX 7](#index-7)
 
+Bien, ha llegado el momento de la tarea de esta semana. En clase, aprendió a mejorar la red neuronal Fashion MNIST con convoluciones para hacerla más precisa. Ahora es el momento de revisar el conjunto de datos MNIST de escritura a mano de la semana pasada, y ver si puede mejorarlo con convoluciones.
+
+Respuesta: [C1W3_Assignment.ipynb](notebooks%2FW3%2FC1W3_Assignment.ipynb)
+
 ## Using Real-world Images
 [<- Return to INDEX 0](#index-0)
 
