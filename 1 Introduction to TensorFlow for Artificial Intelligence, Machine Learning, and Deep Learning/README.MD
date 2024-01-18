@@ -967,41 +967,492 @@ IMPORTANTE PARA EL ÉXITO DE LA CALIFICACIÓN
 ### A conversation with Andre Ng 3
 [<- Return to INDEX 6](#index-6)
 
+![img.png](ims%2FW3%2Fimg.png)
+
+En la lección reciente, se examinó el Fashion MNIST, un conjunto de datos creado por Han Xiao, Kashif Rasul, y Roland Vollgraf. Se destacó lo impresionante que es poder implementar una red neuronal para la tarea de clasificación de moda. La disponibilidad de grandes conjuntos de datos como Fashion MNIST para los estudiantes facilita enormemente el aprendizaje. Se mostró cómo, con unas pocas líneas de código, fue posible construir una Red Neuronal Profunda (DNN) que realizó esta clasificación de ropa, logrando una precisión razonable, aunque utilizando un enfoque algo ingenuo. Este enfoque consistió en examinar cada píxel individualmente en cada imagen, sugiriendo que podrían existir métodos más eficaces, como identificar características específicas que diferencian un zapato de una cartera, por ejemplo.
+
+Se introdujo la idea de que las Redes Neuronales Convolucionales (CNN) son más eficientes en este tipo de tareas. En lugar de analizar los píxeles individualmente y tratar de determinar si representan un zapato o una cartera, las CNN permiten interpretar la imagen en su conjunto, identificando características como cordones y suelas en los zapatos o asas en las carteras. Estas redes convolucionales, aunque pueden parecer complicadas, se explicaron como fundamentalmente sencillas: actúan como un filtro que se pasa sobre la imagen, similar a cuando se realzan los bordes en el procesamiento de imágenes, permitiendo detectar características específicas dentro de la imagen.
+
+Con el paradigma de etiquetar datos, una red neuronal puede aprender por sí misma a buscar estas características específicas, como cordones en zapatos o asas en carteras. Se planteó la cuestión de qué impacto tendría esta técnica sobre el conjunto de datos Fashion MNIST. En el próximo video, se profundizará en las redes neuronales convolucionales y cómo pueden utilizarse para construir un clasificador de moda mucho más efectivo.
+
 ### What are convolution and pooling
 [<- Return to INDEX 6](#index-6)
+
+![img_1.png](ims%2FW3%2Fimg_1.png)
+
+En el ejemplo anterior, viste cómo podías crear una red neuronal llamada red neuronal profunda para casar los patrones de un conjunto de imágenes de artículos de moda con etiquetas. En solo unos pocos minutos, fuiste capaz de entrenarla para clasificar con una precisión bastante elevada en el conjunto de entrenamiento, pero un poco menor en el conjunto de prueba. Una de las cosas que habrías visto cuando miraste las imágenes es que hay mucho espacio desperdiciado en cada imagen. 
+
+Aunque solamente hay 784 píxeles, sería interesante ver si habría alguna manera de condensar la imagen a sus características importantes que distinguen lo que hace que sea un zapato, o una cartera, o una camisa. Ahí es donde entran las convoluciones. ¿Qué es una convolución? Podrías preguntar. 
+
+![img_2.png](ims%2FW3%2Fimg_2.png)
+
+Si alguna vez has hecho algún tipo de procesamiento de imagen, usualmente implica tener un filtro y pasarlo sobre la imagen para cambiar la imagen subyacente. El proceso funciona un poco como esto. Para cada píxel, tomas su valor, y miras los valores de sus vecinos. Si nuestro filtro es tres por tres, podemos echar un vistazo al vecino inmediato, tienes la cuadrícula correspondiente de tres por tres. 
+
+Para obtener el nuevo valor para el píxel, simplemente multiplicamos cada vecino por el correspondiente valor en el filtro. Así, por ejemplo, en este caso nuestro píxel tiene el valor 192, y su vecino superior izquierdo tiene el valor cero. El valor superior izquierdo en el filtro es menos uno, multiplicamos cero por menos uno. Haríamos lo mismo para el vecino superior. Su valor es 64, el valor del filtro correspondiente era cero, los multiplicaríamos. Repite esto para cada vecino cada valor de filtro correspondiente, y luego tendrías el nuevo píxel con la suma de cada uno de los valores de los vecinos multiplicado por el correspondiente valor del filtro, eso es una convolución. 
+
+![img_3.png](ims%2FW3%2Fimg_3.png)
+
+Es tan sencillo como eso. La idea es que algunas convoluciones cambiarán la imagen de tal forma que ciertas características en la imagen se enfaticen. Por ejemplo si ves este filtro las líneas verticales en la imagen sobresaldrán. 
+
+![img_4.png](ims%2FW3%2Fimg_4.png)
+
+Con este filtro, sobresaldrán las líneas horizontales. Esto es una introducción muy básica a lo que hacen las convoluciones, y cuando se combinan con algo llamado pooling, pueden llegar a ser muy potentes. 
+
+![img_5.png](ims%2FW3%2Fimg_5.png)
+
+Simplemente, el pooling es una forma de comprimir una imagen. Una forma rápida y simple de hacerlo, es ir sobre la imagen cuatro píxeles a la vez, por ejemplo, el píxel actual y sus vecinos de abajo y de su derecha. De estos cuatro, selecciona el mayor valor y guarde precisamente ese. 
+
+Por ejemplo lo puedes ver aquí. Mis 16 píxeles de la izquierda se convierten en cuatro píxeles de la derecha, viéndolas en cuadrículas de dos por dos y seleccionando el mayor valor. Esto preservará las características que fueron resaltadas por la convolución, a la vez que divide simultáneamente por cuatro el tamaño de la imagen. Tenemos los ejes horizontales y verticales.
 
 ### Coding convolutions and pooling layers
 [<- Return to INDEX 6](#index-6)
 
+Los conceptos introducidos en este vídeo están disponibles como capas 
+[Conv2D](https://www.tensorflow.org/api_docs/python/tf/keras/layers/Conv2D)
+ y capas 
+[MaxPooling2D](https://www.tensorflow.org/api_docs/python/tf/keras/layers/MaxPool2D)
+ en TensorFlow. Aprenderá a implementarlos en código en el siguiente vídeo.
+
+**tf.keras.layers.Conv2D** es una capa de convolución 2D, que forma parte del módulo Keras en TensorFlow. Es comúnmente utilizada en modelos de redes neuronales convolucionales (CNNs) para procesamiento de imágenes, reconocimiento de patrones y tareas similares. Aquí están los aspectos más relevantes:
+
+1. **Función Principal:** Esta capa aplica un filtro de convolución a las imágenes de entrada, lo que permite a la red aprender características espaciales. Es fundamental en tareas como la clasificación y el análisis de imágenes.
+
+2. **Parámetros Clave:**
+
+   - **filters**: Número de filtros de convolución (profundidad del volumen de salida).
+   - **kernel_size**: Tamaño del filtro convolucional.
+   - **strides**: El desplazamiento del filtro en cada una de las dimensiones espaciales.
+   - **padding**: 'valid' (sin padding) o 'same' (con padding para mantener el tamaño).
+   - **activation**: Función de activación a utilizar, como 'relu' o 'sigmoid'.
+   - **input_shape**: Forma de los datos de entrada (solo necesario en la primera capa).
+
+3. **Uso en Modelos CNN:** Se usa para extraer características de nivel bajo (como bordes y texturas) en las primeras capas, y características de nivel alto (como partes de objetos) en capas más profundas.
+
+4. **Entrenamiento y Aprendizaje:** Durante el entrenamiento, la red ajusta los pesos de los filtros para minimizar la función de pérdida, aprendiendo así a detectar características relevantes para la tarea.
+
+5. **Aplicaciones Típicas:** Utilizada ampliamente en visión artificial para tareas como reconocimiento facial, detección de objetos, segmentación de imágenes, entre otras.
+
+6. **Ventajas:** Permite a los modelos aprender representaciones jerárquicas de los datos visuales, lo que es crucial para comprender imágenes y videos complejos.
+
+
+
+`tf.keras.layers.MaxPooling2D` es una capa que se utiliza en redes neuronales convolucionales (CNNs) para el procesamiento de imágenes y tareas relacionadas. Esta capa realiza una operación conocida como max pooling.
+
+1. Función Principal
+
+   - **Reducción de Dimensionalidad**: Reduce la dimensionalidad de las entradas (imágenes) reduciendo su altura y anchura, lo que ayuda a disminuir el cálculo y los parámetros del modelo.
+   - **Extracción de Características Importantes**: Ayuda a extraer características dominantes manteniendo la invariancia espacial.
+
+2. Parámetros Clave
+
+   - `pool_size`: El tamaño de la ventana sobre la cual se realiza el max pooling.
+   - `strides`: La cantidad de desplazamiento de la ventana pooling. Si es `None`, se considera igual a `pool_size`.
+   - `padding`: Puede ser 'valid' (sin padding) o 'same' (con padding).
+   - `input_shape`: Forma de los datos de entrada, necesario solo para la primera capa en un modelo.
+
+3. Uso en Modelos CNN
+
+   - Comúnmente usada después de capas convolucionales para reducir la complejidad y evitar el sobreajuste.
+   - Ayuda a hacer que la representación sea más abstracta y tolerante a pequeñas variaciones y distorsiones en la entrada.
+
+4. Aplicaciones Típicas
+
+   - Utilizada en tareas de visión por computadora como clasificación de imágenes, detección de objetos y reconocimiento facial.
+
+5. Ventajas
+
+   - Reduce eficazmente la cantidad de parámetros y cálculos en la red, disminuyendo el riesgo de sobreajuste.
+   - Mejora la eficiencia del modelo al reducir las dimensiones espaciales de las representaciones aprendidas.
+
+
 ### Implementing convolutional layers
 [<- Return to INDEX 6](#index-6)
+
+![img_6.png](ims%2FW3%2Fimg_6.png)
+
+Echemos un vistazo a las convoluciones y al pooling en el código. No tenemos que hacer todas las matemáticas para filtrar y comprimir, solo definimos las capas convolucionales y de pooling para que hagan el trabajo.
+
+Este es el código de nuestro ejemplo anterior, donde definimos una red neuronal con una capa de entrada con la forma de nuestros datos, una capa de salida con la forma del número de categorías que estamos intentando definir, y una capa oculta en el medio. Flatten() toma nuestra imagen cuadrada de 28 por 28 y la convierte en un vector de una dimensión.
+
+![img_7.png](ims%2FW3%2Fimg_7.png)
+
+Para añadir convoluciones a esto, se usa código como este. Verás que las últimas líneas son las mismas, la capa Flatten, la capa Dense oculta con 128 neuronas, y la capa de salida Dense con 10 neuronas. La diferencia es lo que se ha añadido encima de esto. Echemos un vistazo a esto, línea por línea.
+
+![img_8.png](ims%2FW3%2Fimg_8.png)
+
+Estamos especificando la primera convolución. Estamos pidiendo a Keras que nos genere 64 filtros. Estos filtros son 3 por 3, su activación es relu, es decir los valores negativos se descartarán, finalmente la forma de la entrada es como antes, 28 por 28. Ese 1 extra solo significa que estamos usando un solo byte para el color. Como vimos antes nuestra imagen es en escala de grises, y solo usamos un byte.
+
+Por supuesto, se preguntarán qué son esos 64 filtros. Está un poco fuera del alcance de esta clase definirlos, pero no son aleatorios. Empiezan con un conjunto de filtros bien conocidos en una forma similar al ajuste de patrones que viste anteriormente, los que trabajan a partir de ese conjunto, se aprenden con el tiempo.
+
+![img_9.png](ims%2FW3%2Fimg_9.png)
+
+Para más detalles sobre las convoluciones y cómo funcionan, hay un estupendo conjunto de recursos aquí.
+
 
 ### Learn more about convolutions
 [<- Return to INDEX 6](#index-6)
 
+Ya ha visto cómo añadir una capa convolucional 2D a la parte superior de su red neuronal en el vídeo anterior. Si quiere ver con más detalle cómo funcionan, consulte la lista de reproducción en 
+https://bit.ly/2UGa7uH.
+ Pero tenga en cuenta que no es obligatorio para completar este curso.
+
+Ahora echemos un vistazo a la adición de la puesta en común, y al acabado de las convoluciones para que pueda probarlas..
+
 ### Implementing pooling layers
 [<- Return to INDEX 6](#index-6)
+
+![img_10.png](ims%2FW3%2Fimg_10.png)
+
+La siguiente línea de código creará la capa de pooling. Es max-pooling porque vamos a tomar el valor máximo. Es un pooling 2 por 2 por cada cuatro píxeles, el mayor sobrevivirá como se mostró antes. 
+
+![img_11.png](ims%2FW3%2Fimg_11.png)
+
+Añadimos otra capa convolucional, y otra capa de max-pooling, para que la red pueda aprender otro conjunto de convoluciones sobre las existentes, y nuevamente hacemos pooling para reducir el tamaño. 
+
+![img_12.png](ims%2FW3%2Fimg_12.png)
+
+En el momento que la imagen llega a Flatten() para entrar a las capas densas, ya es mucho más pequeña. Ha sido dividida por cuatro, y nuevamente dividida por cuatro. Su contenido ha sido enormemente simplificado, el objetivo es que las convoluciones van a filtrar las características que determinan la salida
+
+![img_13.png](ims%2FW3%2Fimg_13.png)
+
+ Un método realmente muy útil en este modelo es el método model.summary. Esto te permite inspeccionar las capas del modelo, y ver el trayecto de la imagen a través de las convoluciones, esta es la salida. 
+
+![img_14.png](ims%2FW3%2Fimg_14.png)
+
+Es una buena tabla mostrándonos las capas, y algunos de sus detalles incluyendo la forma de la salida. Es importante prestar atención a la columna de la forma de la salida. Cuando lo ves por primera vez, puede ser un poco confuso y sentirlo como un error. 
+
+![img_15.png](ims%2FW3%2Fimg_15.png)
+
+Después de todo, no son los datos de 28 por 28, entonces por qué la salida es de 26 por 26. La clave para esto es recordar que el filtro es un filtro tres por tres. 
+
+![img_16.png](ims%2FW3%2Fimg_16.png)
+
+Considera lo que sucede cuando empiezas a barrer una imagen empezando por la parte superior izquierda. Por ejemplo en esta imagen el perro de la derecha, se puede ver en grande en los píxeles de su esquina superior izquierda. No puedes calcular el filtro para el píxel de la parte superior izquierda, porque no tiene ningún vecino ni encima, ni a su izquierda. De forma similar, el próximo pixel a su derecha no funcionará tampoco porque no tiene vecinos encima de él.
+
+![img_17.png](ims%2FW3%2Fimg_17.png)
+
+Lógicamente, el primer píxel con el que puedes hacer cálculos es este de aquí, por que este por supuesto tiene los 8 vecinos que un filtro tres por tres necesita. Esto, cuando lo piensas, significa que no puedes usar un margen de un píxel alrededor de toda la imagen, para que la salida de la convolución sea dos píxeles más pequeña en x, y dos píxeles más pequeña en y. 
+
+Si tu filtro fuera de cinco por cinco por razones similares tu salida será cuatro más pequeña en x y cuatro más pequeña en y. Esta es y con un filtro de tres por tres, nuestra salida partiendo de la imagen de 28 por 28, es ahora de 26 por 26, hemos quitado un píxel en x e y, y en cada uno de los bordes. 
+
+![img_18.png](ims%2FW3%2Fimg_18.png)
+
+Lo siguiente es la primera de las capas de max-pooling. Recuerda que especificamos que fuera de dos por dos, transformando así cuatro píxeles en uno, y teniendo nuestro x e y. Nuestra salida queda reducida de 26 por 26, a 13 por 13. 
+
+![img_19.png](ims%2FW3%2Fimg_19.png)
+
+Las convoluciones van a trabajar sobre eso, y por supuesto perdemos el píxel de margen como antes, llegamos a 11 por 11, añades otra max-pooling de 2 por 2 para tenerlo redondeado hacia abajo, y llegar a bajar a imágenes de cinco por cinco. 
+
+La red neuronal es la misma que antes, pero está alimentada con imágenes de cinco por cinco en vez de las de 28 por 28. Pero recuerda, no es solo una imagen comprimida de cinco por cinco en vez de la original de 28 por 28, hay un número de convoluciones por imagen que hemos especificado, en este caso 64. Hay 64 nuevas imágenes de cinco por cinco que han sido suministradas. 
+
+![img_20.png](ims%2FW3%2Fimg_20.png)
+
+Hacemos Flatten() en eso y tienes 25 píxeles por 64, que son 1600. Puedes ver que la capa después de Flatten() tiene 1.600 elementos, contra los 784 que tenía antes. Este número es afectado por los parámetros que configuraste cuando definiste las capas convolucionales 2D. 
+
+![img_21.png](ims%2FW3%2Fimg_21.png)
+
+Más tarde cuando experimentes, verás el impacto de configurar otros valores para el número de convoluciones , y particularmente podrás ver qué pasa cuando suministras menos de 748 píxeles. El entrenamiento debería ser más rápido, ¿pero existe algún punto donde es más preciso? Pasemos al cuaderno, para intentarlo nosotros mismos.
 
 ### Getting hands-on, your first ConvNet
 [<- Return to INDEX 6](#index-6)
 
+Ya ha visto cómo convertir su Red Neuronal Profunda en una Red Neuronal Convolucional añadiendo capas convolucionales en la parte superior, y haciendo que la red se entrene contra los resultados de las convoluciones en lugar de los píxeles en bruto. En el siguiente vídeo, recorrerá un libro de trabajo para ver cómo funciona esto..
+
 ### Improving the Fashion classifier with convolutions
 [<- Return to INDEX 6](#index-6)
+
+![img_22.png](ims%2FW3%2Fimg_22.png)
+
+En el video anterior, viste las convoluciones y vislumbraste cómo funcionan. Pasando filtros sobre una imagen para reducir la cantidad de información, permitía a la red neuronal extraer eficazmente las características que pueden distinguir una clase de imagen de otra. También viste cómo el pooling comprime la información para hacerla más manejable. Esta es una muy buena forma de mejorar el rendimiento de nuestro reconocimiento de imagen. Echémosle un vistazo en acción usando un cuaderno. 
+
+```python
+import tensorflow as tf
+
+# Load the Fashion MNIST dataset
+fmnist = tf.keras.datasets.fashion_mnist
+(training_images, training_labels), (test_images, test_labels) = fmnist.load_data()
+
+# Normalize the pixel values
+training_images = training_images / 255.0
+test_images = test_images / 255.0
+
+# Define the model
+model = tf.keras.models.Sequential([
+  tf.keras.layers.Flatten(),
+  tf.keras.layers.Dense(128, activation=tf.nn.relu),
+  tf.keras.layers.Dense(10, activation=tf.nn.softmax)
+])
+
+# Setup training parameters
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+# Train the model
+print(f'\nMODEL TRAINING:')
+model.fit(training_images, training_labels, epochs=5)
+
+# Evaluate on the test set
+print(f'\nMODEL EVALUATION:')
+test_loss = model.evaluate(test_images, test_labels)
+```
+
+sta es la misma red neuronal que usaste antes para cargar el conjunto de imágenes de ropa para luego clasificarlos. Al final del epoch cinco, puedes ver que la pérdida es de alrededor de 0.29, lo que significa, que la precisión es bastante buena con los datos de entrenamiento. 
+
+```commandline
+MODEL TRAINING:
+Epoch 1/5
+1875/1875 [==============================] - 14s 4ms/step - loss: 0.4952 - accuracy: 0.8256
+Epoch 2/5
+1875/1875 [==============================] - 5s 3ms/step - loss: 0.3743 - accuracy: 0.8655
+Epoch 3/5
+1875/1875 [==============================] - 6s 3ms/step - loss: 0.3369 - accuracy: 0.8768
+Epoch 4/5
+1875/1875 [==============================] - 5s 3ms/step - loss: 0.3148 - accuracy: 0.8842
+Epoch 5/5
+1875/1875 [==============================] - 5s 3ms/step - loss: 0.2958 - accuracy: 0.8902
+
+MODEL EVALUATION:
+313/313 [==============================] - 1s 2ms/step - loss: 0.3508 - accuracy: 0.8733
+```
+
+Solo llevó unos segundos el entrenamiento, no está mal. Con los datos de prueba como antes y como se esperaba, las pérdidas son un poco más altas y por lo tanto, la precisión es un poco más baja. 
+
+```python
+# Define the model
+model = tf.keras.models.Sequential([
+
+  # Add convolutions and max pooling
+  tf.keras.layers.Conv2D(32, (3,3), activation='relu', input_shape=(28, 28, 1)),
+  tf.keras.layers.MaxPooling2D(2, 2),
+  tf.keras.layers.Conv2D(32, (3,3), activation='relu'),
+  tf.keras.layers.MaxPooling2D(2,2),
+
+  # Add the same layers as before
+  tf.keras.layers.Flatten(),
+  tf.keras.layers.Dense(128, activation='relu'),
+  tf.keras.layers.Dense(10, activation='softmax')
+])
+
+# Print the model summary
+model.summary()
+
+# Use same settings
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+# Train the model
+print(f'\nMODEL TRAINING:')
+model.fit(training_images, training_labels, epochs=5)
+
+# Evaluate on the test set
+print(f'\nMODEL EVALUATION:')
+test_loss = model.evaluate(test_images, test_labels)
+```
+
+Puedes ver el código que añade convoluciones y poolings. Vamos a crear dos capas convolucionales cada una con 64 convoluciones, y cada una seguida de una capa de max-pooling. Puedes ver que hemos definido las convoluciones de tres por tres y el pooling de dos por dos. Vamos a entrenar. Lo primero que observarás es que el entrenamiento es mucho más lento. Por cada imagen, se tratan 64 convoluciones, y luego la imagen se comprime y luego otras 64 convoluciones, y se comprime nuevamente, y luego se pasa por la DNN, y son 60.000 imágenes que pasan en cada epoch. Podría tomar unos cuantos minutos en vez de unos segundos. 
+
+```commandline
+Model: "sequential_1"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ conv2d (Conv2D)             (None, 26, 26, 32)        320       
+                                                                 
+ max_pooling2d (MaxPooling2  (None, 13, 13, 32)        0         
+ D)                                                              
+                                                                 
+ conv2d_1 (Conv2D)           (None, 11, 11, 32)        9248      
+                                                                 
+ max_pooling2d_1 (MaxPoolin  (None, 5, 5, 32)          0         
+ g2D)                                                            
+                                                                 
+ flatten_1 (Flatten)         (None, 800)               0         
+                                                                 
+ dense_2 (Dense)             (None, 128)               102528    
+                                                                 
+ dense_3 (Dense)             (None, 10)                1290      
+                                                                 
+=================================================================
+Total params: 113386 (442.91 KB)
+Trainable params: 113386 (442.91 KB)
+Non-trainable params: 0 (0.00 Byte)
+_________________________________________________________________
+
+MODEL TRAINING:
+Epoch 1/5
+1875/1875 [==============================] - 9s 3ms/step - loss: 0.4788 - accuracy: 0.8262
+Epoch 2/5
+1875/1875 [==============================] - 7s 4ms/step - loss: 0.3228 - accuracy: 0.8830
+Epoch 3/5
+1875/1875 [==============================] - 6s 3ms/step - loss: 0.2761 - accuracy: 0.8986
+Epoch 4/5
+1875/1875 [==============================] - 8s 4ms/step - loss: 0.2450 - accuracy: 0.9099
+Epoch 5/5
+1875/1875 [==============================] - 6s 3ms/step - loss: 0.2229 - accuracy: 0.9178
+
+MODEL EVALUATION:
+313/313 [==============================] - 1s 3ms/step - loss: 0.2707 - accuracy: 0.9038
+```
+
+Una vez que ha terminado, puedes ver que la pérdida ha mejorado un poco. En este caso, la precisión ha aumentado un poco tanto para los datos de prueba como para los datos de entrenamiento. Eso es muy bueno. 
+
+```python
+print(test_labels[:100])
+```
+```commandline
+[9 2 1 1 6 1 4 6 5 7 4 5 7 3 4 1 2 4 8 0 2 5 7 9 1 4 6 0 9 3 8 8 3 3 8 0 7
+ 5 7 9 6 1 3 7 6 7 2 1 2 2 4 4 5 8 2 2 8 4 8 0 7 7 8 5 1 1 2 3 9 8 7 0 2 6
+ 2 3 1 2 8 4 1 8 5 9 5 0 3 2 0 6 5 3 6 7 1 8 0 1 4 2]
+```
+
+Echemos un vistazo al código al final del cuaderno. Esta es una visualización muy divertida del trayecto de la imagen a través de las convoluciones. Primero, imprimiré las primeras 100 etiquetas de prueba. El número 9 como vimos antes es un zapato o bota. 
+
+```python
+import matplotlib.pyplot as plt
+from tensorflow.keras import models
+
+f, axarr = plt.subplots(3,4)
+
+FIRST_IMAGE=0
+SECOND_IMAGE=23
+THIRD_IMAGE=28
+CONVOLUTION_NUMBER = 1
+
+layer_outputs = [layer.output for layer in model.layers]
+activation_model = tf.keras.models.Model(inputs = model.input, outputs = layer_outputs)
+
+for x in range(0,4):
+  f1 = activation_model.predict(test_images[FIRST_IMAGE].reshape(1, 28, 28, 1))[x]
+  axarr[0,x].imshow(f1[0, : , :, CONVOLUTION_NUMBER], cmap='inferno')
+  axarr[0,x].grid(False)
+
+  f2 = activation_model.predict(test_images[SECOND_IMAGE].reshape(1, 28, 28, 1))[x]
+  axarr[1,x].imshow(f2[0, : , :, CONVOLUTION_NUMBER], cmap='inferno')
+  axarr[1,x].grid(False)
+
+  f3 = activation_model.predict(test_images[THIRD_IMAGE].reshape(1, 28, 28, 1))[x]
+  axarr[2,x].imshow(f3[0, : , :, CONVOLUTION_NUMBER], cmap='inferno')
+  axarr[2,x].grid(False)
+```
+
+Escogí algunos ejemplos de esto, la etiqueta 0, la 23 y la 28 son todas 9. Echemos un vistazo al trayecto. El API de Keras nos da cada convolución y cada pooling y cada Dense, etc. como capas. Con el API de capas, puedo ver la salida de cada capa, crearé una lista de cada salida de las capas. Puedo tratar cada artículo de la capa como un modelo de activación individual si solo deseo ver los resultados de esa capa. Pasando a través de las capas, puedo mostrar el trayecto de la imagen a través de la primera convolución luego el primer pooling y luego la segunda convolución y luego el segundo pooling.
+
+![img_23.png](ims%2FW3%2Fimg_23.png)
+
+Observa cómo el tamaño de la imagen cambia mirando los ejes. Si configuro el número de convoluciones a uno, podemos ver que casi inmediatamente detecta el área de los cordones como una característica común entre los zapatos. 
+
+> Nota: el notebook siguiente ya contiene las respuestas a estas recomendaciones
+
+Cuando termines de jugar, trata de cambiar el código con estas recomendaciones, editando las convoluciones, quitando la convolución final, y añadiendo más, etc. Asimismo, en el ejemplo anterior, añadiste una retrollamada que terminaba el entrenamiento cuando la pérdida llegaba a cierto valor. Prueba a añadirla aquí. Cuando termines, pasaremos al siguiente escenario, que es tratar con imágenes más grandes y más complejas que estas. Para ver cómo las convoluciones pueden detectar características cuando no están siempre en el mismo lugar, como estarían en estas imágenes de 28 por 28 estrechamente controladas.
+
 
 ### Try it for yourself (Lab 1 week 3)
 [<- Return to INDEX 6](#index-6)
 
+Aquí está el cuaderno [C1_W3_Lab_1_improving_accuracy_using_convolutions.ipynb](notebooks%2FW3%2FC1_W3_Lab_1_improving_accuracy_using_convolutions.ipynb)
+ que Laurence estaba utilizando en ese screencast. Si está ejecutando esto en Colab, el tiempo de ejecución de la GPU ya ha sido preseleccionado por usted para hacer que el entrenamiento se ejecute más rápido.
+
+Trabaje a través de él, y pruebe algunos de los ejercicios en la parte inferior. Realmente merece la pena dedicar un poco de tiempo a estos porque, como antes, le ayudarán mucho viendo el impacto de pequeños cambios en varios parámetros del código. ¡Debería dedicar al menos 1 hora a esto hoy!
+
+Una vez que haya terminado, ¡pase al siguiente vídeo y eche un vistazo al código para construir una convolución usted mismo y visualizar cómo funciona!
+
 ### Walking through convolutions
 [<- Return to INDEX 6](#index-6)
+
+![img_24.png](ims%2FW3%2Fimg_24.png)
+
+En las lecciones previas, viste el impacto que las convoluciones y el pooling tienen sobre la eficiencia y el aprendizaje de tus redes, pero mucho de eso era teórico en naturaleza. Pensé que sería interesante hackear unos códigos juntos para demostrar cómo funciona una convolución en realidad. También crearemos un algoritmo de pooling, para que puedas visualizar su impacto. 
+
+![img_25.png](ims%2FW3%2Fimg_25.png)
+
+Hay un cuaderno con el que puedes jugar también, voy a ir paso a paso a través de ello. Este es el cuaderno para jugar con convoluciones. 
+Usa unas pocas librerías de Python con las que puedes no estar familiarizado como cv2. También tiene Matplotlib que usamos antes. 
+Si no las has usado, son realmente bastante intuitivas para esta tarea son muy fáciles de aprender. 
+Primero, configuraremos las entradas y en particular, importaremos la librería misc de SciPy. 
+
+Este es un buen atajo para nosotros porque misc.ascent devuelve una buena imagen con la que podemos jugar, y no tenemos que 
+preocuparnos de manejarla nosotros mismos. Matplotlib contiene el código para dibujar una imagen y mostrarla bien en el navegador 
+con Colab.
+
+![img_26.png](ims%2FW3%2Fimg_26.png)
+
+Aquí es donde crearemos la convolución. Iteramos sobre la imagen, dejando un píxel de margen. Verás que el bucle empieza en uno y no en cero, y termina en un tamaño x menos 1 y tamaño y menos 1. El bucle, calculará el valor de la convolución viendo el píxel y sus vecinos, y luego multiplicándolos por los valores determinados por el filtro, antes de finalmente sumarlo todo. Vamos a ejecutarlo. Solo lleva unos pocos segundos, cuando termina, vamos a dibujar los resultados. 
+
+![img_27.png](ims%2FW3%2Fimg_27.png)
+
+Podemos ver que solo algunas características pasan a través del filtro. He proporcionado un par más de filtros, vamos a probarlos. Este primero es realmente bueno detectando líneas verticales. Cuando lo ejecuto y dibujo los resultados, podemos ver que las líneas verticales de la imagen pasaron a su través. Es realmente genial porque no solo son de arriba a abajo, son verticales en perspectiva dentro de la perspectiva de la propia imagen. Similarmente, este filtro funciona muy bien para líneas horizontales.
+
+![img_28.png](ims%2FW3%2Fimg_28.png)
+
+Echemos un vistazo al pooling, y en este caso max-pooling, que toma píxeles en grupos de cuatro y solo pasa el de mayor valor. Ejecuto el código y luego dibujo la salida. Podemos ver que las características de la imagen se mantienen. pero mira los ejes de cerca, y podemos ver que el tamaño se ha reducido a la mitad de 500 a 250. Por diversión, podemos probar el otro filtro ejecutarlos y luego comparar la convolución con la versión con pooling. Nuevamente, podemos ver que las características no solo se han mantenido, sino que también se han enfatizado. Así es cómo funcionan las convoluciones. 
+
+![img_29.png](ims%2FW3%2Fimg_29.png)
+
+De forma no visible, TensorFlow prueba diferentes filtros en tu imagen y aprende cuáles funcionan mientras mira los datos de entrenamiento. Como resultado, cuando funciona, obtendrás una gran reducción de la información que pasa a través de la red, porque aísla e identifica las características, puedes también obtener un incremento de la precisión. Juega con los filtros en este cuaderno mira si puedes lograr algunos efectos interesantes por ti mismo.
 
 ### Experiment with filters and pools (Lab 2 week 3)
 [<- Return to INDEX 6](#index-6)
 
+Aquí tiene el cuaderno [Lab_2_exploring_convolutions.ipynb](notebooks%2FW3%2FLab_2_exploring_convolutions.ipynb)
+ para probar algunas convoluciones. Háganos saber si se le ocurre algún filtro interesante por su cuenta 
+
+Como antes, dedique un poco de tiempo a jugar con este cuaderno. Pruebe diferentes filtros e investigue sobre los distintos tipos de filtros. 
+[Aquí](https://lodev.org/cgtutor/filtering.html)
+ encontrará información divertida sobre ellos .
+
 ### Week 3 Quiz
 [<- Return to INDEX 6](#index-6)
 
+1. How do Convolutions improve image recognition?
+
+   - [X] They isolate features in images
+   - [ ] They make the image clearer
+   - [ ] They make the image smaller
+   - [ ] They make processing of images faster
+
+   > Correct
+   > Spot on! Additionally, a properly designed convolution layer can even make training faster.
+
+2. What does the Pooling technique do to the images?
+
+   - [X] Reduces information in them while maintaining some features
+   - [ ] Isolates features in them
+   - [ ] Makes them sharper
+   - [ ] Combines them
+
+   > Correct
+   > Good job! Pooling reduces information without removing all of the features.
+
+3. True or False. If you pass a 28x28 image through a 3x3 filter the output will be 26x26.
+
+   - [X] True
+   - [ ] False
+
+   > Correct
+   > Nailed it!
+
+4. After max pooling a 26x26 image with a 2x2 filter, the output will be 56x56.
+
+   - [X] False
+   - [ ] True
+
+   > Correct
+   > Yes! The output would actually be 13x13.
+
+5. How does using Convolutions in our Deep neural network impact training?
+
+   - [ ] It makes it faster
+   - [ ] It makes it slower
+   - [ ] It does not affect training
+   - [X] Its impact will depend on other factors.
+
+   > Correct
+   > Correct! Using convolutions might make your training faster or slower, and a poorly designed Convolutional layer may even be less efficient than a plain DNN!
+
 ### Lecture Notes Week 3
 [<- Return to INDEX 6](#index-6)
+
+Los apuntes de las conferencias están disponibles en nuestra plataforma comunitaria. Si ya es miembro, inicie sesión en su cuenta y acceda a los apuntes de las conferencias 
+aquí [C1_W3.pdf](notes%2FC1_W3.pdf)
+.
 
 ## Weekly Assignment - Improving DNN Performance using Convolutions
 [<- Return to INDEX 0](#index-0)
