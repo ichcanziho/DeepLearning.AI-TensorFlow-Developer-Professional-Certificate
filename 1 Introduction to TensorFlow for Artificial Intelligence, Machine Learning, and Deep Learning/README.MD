@@ -1,5 +1,9 @@
 # Introduction to TensorFlow for Artificial Intelligence, Machine Learning, and Deep Learning
 
+![cover.png](cover.png)
+
+[Curso](https://www.coursera.org/learn/introduction-tensorflow?)
+
 En este curso, aprenderás:
 
 - Aprenda las mejores prácticas para utilizar TensorFlow, un popular marco de aprendizaje automático de código abierto
@@ -11,6 +15,11 @@ En este curso, aprenderás:
 - Entienda cómo utilizar las convoluciones para mejorar su red neuronal
 
 Si usted es un desarrollador de software que quiere construir algoritmos escalables impulsados por IA, necesita entender cómo utilizar las herramientas para construirlos. Este curso forma parte de la próxima Especialización en Aprendizaje Automático en Tensorflow y le enseñará las mejores prácticas para utilizar TensorFlow, un popular marco de trabajo de código abierto para el aprendizaje automático. 
+
+![certificate.png](certificate.png)
+
+[Coursera N7SRGP5PNRQS.pdf](notes%2FCoursera%20N7SRGP5PNRQS.pdf)
+
 
 El curso de Aprendizaje Automático y la Especialización en Aprendizaje Profundo de Andrew Ng enseñan los principios más importantes y fundacionales del Aprendizaje Automático y el Aprendizaje Profundo. Esta nueva Especialización en TensorFlow de deeplearning.ai le enseña cómo utilizar TensorFlow para implementar esos principios, de forma que pueda empezar a construir y aplicar modelos escalables a problemas del mundo real. Para desarrollar una comprensión más profunda de cómo funcionan las redes neuronales, le recomendamos que realice la Especialización en Aprendizaje Profundo.
 
@@ -1495,56 +1504,919 @@ Respuesta: [C1W3_Assignment.ipynb](notebooks%2FW3%2FC1W3_Assignment.ipynb)
 ### A conversation with Andrew Ng Week 4
 [<- Return to INDEX 8](#index-8)
 
+![img.png](ims%2FW4%2Fimg.png)
+
+En la reciente lección, se discutió cómo el clasificador de moda construido mediante convoluciones se hizo más eficiente y preciso. Aunque el resultado fue impresionante, se reconoció que el clasificador aún tiene limitaciones, ya que todas las imágenes analizadas son de 28x28 píxeles y el objeto de interés está siempre centrado. A pesar de ser un excelente conjunto de datos para el aprendizaje, se destacó que para imágenes del mundo real y más complejas, posiblemente se requiera avanzar más allá.
+
+Se exploró la idea de que las redes neuronales convolucionales no solo pueden identificar objetos centrados en una imagen, sino también objetos en cualquier posición, incluso en imágenes más grandes de, por ejemplo, 1000x1000 píxeles. Además, se mencionó la transición de imágenes en escala de grises a imágenes en color para aplicaciones más variadas.
+
+Se mencionó un proyecto actual de trabajar con un conjunto de datos de caballos y humanos, con el objetivo de construir un clasificador binario. Lo interesante de este conjunto es que, aunque las imágenes son generadas por computadora, pueden utilizarse para clasificar fotos reales.
+
+Se destacó cómo los algoritmos aprendidos en el curso tienen aplicaciones prácticas en el mundo real, como en vehículos autónomos que usan redes neuronales convolucionales para detectar otros vehículos o peatones. Además, se habló de otros usos potenciales, como el análisis de imágenes de cultivos para detectar enfermedades.
+
+Finalmente, se anticipó que el siguiente video del curso abordará la aplicación de redes neuronales convolucionales a imágenes más grandes y complejas, animando a continuar con el material educativo proporcionado.
+
 ### Explore an impactful, real-world solution
 [<- Return to INDEX 8](#index-8)
+
+Como comentaron Andrew y Laurence, las técnicas que ya ha aprendido pueden aplicarse a imágenes complejas, y puede empezar a resolver escenarios reales con ellas. Hablaron de cómo podría utilizarse, por ejemplo, en la detección de enfermedades con la planta de la mandioca, y puede ver un vídeo que lo demuestra 
+[aquí](https://www.youtube.com/watch?v=NlpS-DhayQA)
+. Una vez que lo haya visto, ¡pase a la siguiente lección!
 
 ### Understanding ImageDataGenerator
 [<- Return to INDEX 8](#index-8)
 
+![img_1.png](ims%2FW4%2Fimg_1.png)
+
+Hasta este punto, has construido un clasificador de imagen que funcionaba usando una red neuronal profunda y viste cómo mejorar su rendimiento añadiendo convoluciones. 
+
+Una limitación, sin embargo, era que usaba un conjunto de datos de imágenes muy uniforme. Imágenes de ropa que fueron puestas y enmarcadas en 28 por 28. ¿Pero qué pasa si se usan imágenes más grandes donde las características pueden estar en diferentes posiciones?
+
+![img_2.png](ims%2FW4%2Fimg_2.png)
+
+¿Por ejemplo, en estas imágenes de caballos y humanos? Tienen diferentes tamaños y diferentes proporciones de aspecto. El sujeto puede estar en diferentes posiciones. En algunos casos, puede haber hasta múltiples sujetos. 
+
+![img_3.png](ims%2FW4%2Fimg_3.png)
+
+Además, los ejemplos anteriores con datos de moda usaban un conjunto de datos incorporado. Todos los datos estaban divididos fácilmente en conjuntos de entrenamiento y conjuntos de prueba y había etiquetas disponibles. En muchos escenarios ese no será el caso y tendrás que hacerlo tú mismo. En esta lección, echaremos un vistazo a algunos las API disponibles para hacértelo más fácil. En particular, el generador de imágenes de TensorFlow. 
+
+![img_4.png](ims%2FW4%2Fimg_4.png)
+
+Una característica del generador de imágenes es que puedes dirigirla a un directorio, luego sus subdirectorios generarán automáticamente las etiquetas para ti. Por ejemplo, considera esta estructura de directorios. Tienes un directorio de imágenes y en él, tienes subdirectorios para entrenamiento y validación. 
+
+Cuando pones subdirectorios en ellos para caballos y humanos y almacenas las imágenes requeridas ahí, el generador de imágenes puede crear un alimentador para esas imágenes y las etiqueta automáticamente para ti. 
+
+![img_5.png](ims%2FW4%2Fimg_5.png)
+
+Por ejemplo, si dirijo un generador de imágenes al directorio de entrenamiento, las etiquetas serán caballos y humanos y todas las imágenes en cada directorio serán cargadas y etiquetadas como corresponde. 
+
+![img_6.png](ims%2FW4%2Fimg_6.png)
+
+Similarmente, si dirijo uno al directorio de validación pasará lo mismo. Echemos un vistazo a esto en el código. 
+
+![img_7.png](ims%2FW4%2Fimg_7.png)
+
+La clase generador de imágenes está disponible en keras.preprocessing.image. 
+
+![img_8.png](ims%2FW4%2Fimg_8.png)
+
+Puedes entonces instanciar un generador de imágenes así. Pasamos rescale por él para normalizar los datos. 
+
+![img_9.png](ims%2FW4%2Fimg_9.png)
+
+Puedes luego llamar al método flow_from_directory para que cargue las imágenes de ese directorio y sus subdirectorios.
+
+![img_10.png](ims%2FW4%2Fimg_10.png)
+
+Es un error común que la gente dirija el generador al subdirectorio. Fallará si se hace así. Debes siempre apuntar al directorio que contiene los subdirectorios que contienen las imágenes. El nombre de los subdirectorios serán las etiquetas de las imágenes que están contenidas en ellos. Asegúrate de que el directorio al que te diriges es el correcto. 
+
+![img_11.png](ims%2FW4%2Fimg_11.png)
+
+Las imágenes podrán venir en todo tipo de formas y tamaños y desafortunadamente para entrenar una red neuronal, los datos de entrada tienen que ser todos del mismo tamaño, las imágenes deberán ser redimensionada para hacerlas consistentes. Lo bueno de este código es que las imágenes son redimensionadas por ti cuando son cargadas. No necesitas preprocesar miles de imágenes en tu sistema de archivos. 
+
+Pero podrías haberlo hecho si lo deseas. La ventaja de hacerlo en el momento de la ejecución, es que puedes experimentar con tamaños diferentes sin afectar los datos originales. Aunque el conjunto de datos de humanos y caballos ya es de 300 por 300, cuando uses otros conjuntos de datos pueden no estar siempre uniformemente dimensionados. Esto es realmente útil para ti. 
+
+![img_12.png](ims%2FW4%2Fimg_12.png)
+
+Las imágenes serán cargadas para el entrenamiento y validación en lotes lo que es más eficiente que hacerlo una por una. Hay toda una ciencia para calcular el tamaño del lote que va más allá del alcance de este curso, pero puedes experimentar con diferentes tamaños para ver el impacto en el rendimiento cambiando este parámetro. 
+
+![img_13.png](ims%2FW4%2Fimg_13.png)
+
+Finalmente, está class_mode. Este es un clasificador binario, por ejemplo. elige entre dos cosas distintas; caballos y humanos, lo especificamos aquí. Otras opciones en particular para más de dos cosas se explorarán más adelante en el curso. 
+
+![img_14.png](ims%2FW4%2Fimg_14.png)
+
+El generador de validación debe ser exactamente lo mismo excepto, por supuesto, que se dirige a un directorio diferente, el que contiene los subdirectorios que contienen las imágenes de prueba. 
+
+![img_15.png](ims%2FW4%2Fimg_15.png)
+
+Cuando veas los cuadernos dentro de poco, verás cómo descargar las imágenes como un zip, y luego organizarlos en subdirectorios de entrenamiento y prueba, y luego poner subdirectorios de caballos y humanos en cada uno. Eso es Python puro. No es TensorFlow ni cualquier otro asunto de aprendizaje profundo. Todo esto está explicado en el cuaderno.
+
 ### Designing the neural network
 [<- Return to INDEX 8](#index-8)
+
+Ahora que ha visto cómo un ImageDataGenerator puede hacer fluir imágenes desde un directorio y realizar operaciones como redimensionarlas sobre la marcha, lo siguiente que hay que hacer es diseñar la red neuronal para manejar estas imágenes más complejas. Lo verá en el siguiente vídeo.
 
 ### Defining a ConvNet to use complex images
 [<- Return to INDEX 8](#index-8)
 
+![img_16.png](ims%2FW4%2Fimg_16.png)
+
+Echemos un vistazo a la definición de red neuronal que usaremos para clasificar caballos versus humanos. Es bastante similar a lo que acabas de usar para los artículos de moda, pero hay unas pocas pequeñas diferencias basadas en estos datos, y el hecho de que estamos usando generadores. 
+
+![img_17.png](ims%2FW4%2Fimg_17.png)
+
+Este es el código. Como puedes ver está sequential como antes con convoluciones y poolings antes de llegar a las capas dense al final. 
+Pero destaquemos algunas de las diferencias. Primero que nada, observa que hay tres conjuntos de convolución y pooling arriba. 
+
+
+![img_18.png](ims%2FW4%2Fimg_18.png)
+
+Esto refleja la mayor complejidad y tamaño de las imágenes. Recuerda de antes, el 28 por 28, 5 á 13 y luego 5 antes de Flatten(), bien, ahora tenemos 300 por 300. Empezamos por 298 por 298 y luego la mitad, etc. hasta que al final estamos en una imagen de 35 por 35. Podemos incluso añadir otro par de capas si deseamos llegar al mismo tamaño de antes, pero lo mantendremos en 3 por ahora. 
+
+![img_19.png](ims%2FW4%2Fimg_19.png)
+
+Otra cosa a la que prestar atención es la forma de la entrada. Redimensionamos la imagen para que sea de 300 por 300 cuando sean cargadas, pero también son imágenes de color. Son tres bytes por píxel. Un byte para el rojo, un byte para el verde, y un byte para el canal azul, este es un patrón común de color de 24-bit.
+
+![img_20.png](ims%2FW4%2Fimg_20.png)
+
+Si estás prestando mucha atención, puedes ver que la capa de salida también ha cambiado. Recuerda que antes cuando creaste la capa 
+de salida, tenías una neurona por clase, pero ahora solo hay una neurona para dos clases. 
+
+Eso es porque estamos usando una función de activación diferente que es sigmoid que es genial para la clasificación binaria, cuando una clase tiende a cero, la otra clase tiende a uno. Podrías usar dos neuronas si lo deseas, y la misma función softmax como antes, pero para binary esto es un poco más eficiente.
+
+![img_21.png](ims%2FW4%2Fimg_21.png)
+
+Si lo deseas puedes experimentar con el cuaderno e intentarlo tú mismo. Si echamos un vistazo al resumen de nuestro modelo, podemos ver el trayecto de los datos de la imagen a través de las convoluciones. Los 300 por 300 se convierten en 298 por 298 después del filtro de tres por tres, se lleva a 149 por 149 que a su vez se reduce a 73 por 73 después del filtro que luego es llevada a 35 por 35, esto luego pasa por Flatten(), 64 convoluciones que son 35 al cuadrado y esa forma será alimentada a la DNN. 
+
+Si multiplicas 35 por 35 por 64, obtienes 78400 y esa es la forma de los datos una vez que sale de las convoluciones. Si solo hubiéramos suministrado imágenes sin tratar de 300 por 300 sin las convoluciones, eso sería más de 900000 valores. Ya lo hemos reducido bastante.
+
 ### Train the ConvNet with ImageDataGenerator
 [<- Return to INDEX 8](#index-8)
+
+Ahora que ha diseñado la red neuronal para clasificar Caballos o Humanos, el siguiente paso es entrenarla a partir de los datos que están en el sistema de archivos, que pueden ser leídos por los generadores. Verá cómo hacerlo en el siguiente vídeo.
 
 ### Training the ConvNet
 [<- Return to INDEX 8](#index-8)
 
+![img_22.png](ims%2FW4%2Fimg_22.png)
+
+Ahora compilaremos el modelo y como siempre tenemos una función de pérdida y un optimizador. Cuando clasificábamos diez artículos de 
+moda, recordarás que la función de pérdida era categorical_cross_entropy. Pero como estamos haciendo una elección binaria, 
+escogemos una binary_cross_entropy en cambio. Asimismo, antes usábamos un optimizador Adam. 
+
+Podrías hacer lo mismo nuevamente, pero creo que sería divertido usar RMSprop, donde puedes ajustar la tasa de aprendizaje 
+para experimentar con el rendimiento. 
+
+![img_23.png](ims%2FW4%2Fimg_23.png)
+
+Para entender la tasa de aprendizaje y cómo todo encaja, revisa este genial vídeo de deeplearning.ai que entra en más detalle.
+
+![img_24.png](ims%2FW4%2Fimg_24.png)
+
+Por ahora, no voy a entrar en los detalles en este curso. Lo siguiente es el entrenamiento, esto parece un poco diferente al de antes cuando llamábamos a model.fit. 
+
+![img_25.png](ims%2FW4%2Fimg_25.png)
+
+Porque ahora llamas a model.fit_generator, eso es porque estamos usando un generador en vez de un conjunto de datos. Recuerda el generador de imágenes anterior, veamos cada parámetro en detalle.
+
+
+![img_26.png](ims%2FW4%2Fimg_26.png)
+
+El primer parámetro es train_generator que configuraste anteriormente. Esto hace fluir las imágenes desde el directorio de entrenamiento. Recuerda el tamaño del lote que usaste cuando lo creaste, era 20, eso es importante en el siguiente paso.
+
+![img_27.png](ims%2FW4%2Fimg_27.png)
+
+Hay 1.024 imágenes en el directorio de entrenamiento, estamos cargándolas de 128 en 128 cada vez. Para cargarlas todas tenemos que hacerlo en 8 lotes. Configuramos step_per_epoch para lograrlo.
+
+
+![img_28.png](ims%2FW4%2Fimg_28.png)
+
+Aquí configuramos el número de epochs para entrenar. Esto es un poco más complejo, digamos, 15 epochs en este caso. 
+
+![img_29.png](ims%2FW4%2Fimg_29.png)
+
+Ahora especificamos el conjunto de validación que viene del validation_generator que creamos anteriormente. 
+
+![img_30.png](ims%2FW4%2Fimg_30.png)
+
+Tenía 256 imágenes y queríamos tratarlas en lotes de 32, haremos 8 pasos.
+
+![img_31.png](ims%2FW4%2Fimg_31.png)
+
+El parámetro verbose especifica cuánto se muestra en el entrenamiento está teniendo lugar. Con verbose puesto a 2, obtenemos menos animación ocultando el progreso del epoch. Una vez que el modelo esté entrenado, querrás, por supuesto, hacer alguna predicción con el modelo. Este es el código para ello, veámoslo por partes.
+
+![img_32.png](ims%2FW4%2Fimg_32.png)
+
+Estas partes son específicas para Colab, que son las que te facilitan el botón que puedes presionar para seleccionar una o más imágenes para cargar. La ruta de la imagen se carga en esta lista llamada uploaded. El bucle itera a través de todas las imágenes de esta colección.
+
+![img_33.png](ims%2FW4%2Fimg_33.png)
+
+Puedes cargar una imagen y prepararla para meterla en el modelo con este código. Toma nota para asegurar que las dimensiones coinciden con las dimensiones de la entrada que especificaste cuando diseñaste el modelo. Puedes llamar a model.predict, y pasarle los detalles, devolverá un vector de clases. 
+
+![img_34.png](ims%2FW4%2Fimg_34.png)
+
+En el caso de clasificación binaria, este solo contendrá un artículo con un valor cercano a 0 para una clase y cercano a 1 para la otra.
+Más tarde en este curso verás la clasificación multi clase con softmax. Donde obtendrás una lista de valores con un valor de probabilidad de cada clase, todas las probabilidades suman 1.
+
 ### Exploring the solution
 [<- Return to INDEX 8](#index-8)
+
+Ahora ya ha repasado el código para definir la red neuronal, entrenarla con imágenes en disco y, a continuación, predecir valores para nuevas imágenes. Veamos esto en acción en un libro de trabajo. En el siguiente vídeo, Laurence le guiará a través del código y, después, podrá probarlo usted mismo.
 
 ### Walking through developing a ConvNet
 [<- Return to INDEX 8](#index-8)
 
+![img_35.png](ims%2FW4%2Fimg_35.png)
+
+Acabas de ver cómo empezar a crear una red neuronal con Keras que usa el generador de imágenes para cargar y etiquetar automáticamente los archivos basado en los subdirectorios. Veamos cómo podemos usarlo para construir un clasificador de caballos o humanos con una red neuronal convolucional.
+
+```python
+!wget https://storage.googleapis.com/tensorflow-1-public/course2/week3/horse-or-human.zip
+
+import zipfile
+
+# Unzip the dataset
+local_zip = './horse-or-human.zip'
+zip_ref = zipfile.ZipFile(local_zip, 'r')
+zip_ref.extractall('./horse-or-human')
+zip_ref.close()
+
+import os
+
+# Directory with our training horse pictures
+train_horse_dir = os.path.join('./horse-or-human/horses')
+
+# Directory with our training human pictures
+train_human_dir = os.path.join('./horse-or-human/humans')
+
+
+train_horse_names = os.listdir(train_horse_dir)
+print(train_horse_names[:10])
+
+train_human_names = os.listdir(train_human_dir)
+print(train_human_names[:10])
+```
+
+Este es el primer cuaderno que puedes intentar. Para empezar, descargarás el archivo zip que contiene los datos de caballos y humanos. Una vez que eso está hecho, puedes descomprimirlo en un directorio temporal en esta máquina virtual. El archivo zip contiene dos carpetas; uno llamado caballos filtrados, y otro llamado humanos filtrados.
+
+
+
+```commandline
+['horse34-3.png', 'horse27-0.png', 'horse49-4.png', 'horse25-0.png', 'horse31-9.png', 'horse43-4.png', 'horse10-7.png', 'horse45-4.png', 'horse09-8.png', 'horse02-5.png']
+['human15-04.png', 'human14-18.png', 'human02-29.png', 'human06-23.png', 'human17-21.png', 'human16-26.png', 'human11-13.png', 'human02-10.png', 'human03-28.png', 'human06-05.png']
+```
+
+Cuando se descomprime, se crearon por ti. Vamos a dirigir un par de variables a ellos, y luego podemos explorar los archivos imprimiendo algunos nombres de archivos. Esto se puede usar para generar etiquetas, pero no vamos a necesitarlo si usamos el generador de Keras. Si deseas usar estos datos sin él, los nombres de los archivos serán sus etiquetas, sin embargo. Imprimiremos las imágenes con las que tenemos que trabajar, y hay un poco más de 1000, ahora podemos mostrar algunas imágenes aleatoriamente del conjunto de datos. 
+
+```python
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
+# Parameters for our graph; we'll output images in a 4x4 configuration
+nrows = 4
+ncols = 4
+
+# Index for iterating over images
+pic_index = 0
+
+# Set up matplotlib fig, and size it to fit 4x4 pics
+fig = plt.gcf()
+fig.set_size_inches(ncols * 4, nrows * 4)
+
+pic_index += 8
+next_horse_pix = [os.path.join(train_horse_dir, fname)
+                for fname in train_horse_names[pic_index-8:pic_index]]
+next_human_pix = [os.path.join(train_human_dir, fname)
+                for fname in train_human_names[pic_index-8:pic_index]]
+
+for i, img_path in enumerate(next_horse_pix+next_human_pix):
+  # Set up subplot; subplot indices start at 1
+  sp = plt.subplot(nrows, ncols, i + 1)
+  sp.axis('Off') # Don't show axes (or gridlines)
+
+  img = mpimg.imread(img_path)
+  plt.imshow(img)
+
+plt.show()
+```
+
+![img_36.png](ims%2FW4%2Fimg_36.png)
+
+Podemos ver ocho caballos y ocho humanos. Un aspecto interesante de este conjunto de datos es que todas las imágenes son generadas por computadora. Las he reproducido para que sean lo más parecidas posible a una foto, se van a usar de hecho para clasificar fotos reales de caballos y personas, aquí hay unas cuantas imágenes más solo para mostrar algo de su diversidad.
+
+```python
+import tensorflow as tf
+
+model = tf.keras.models.Sequential([
+    # Note the input shape is the desired size of the image 300x300 with 3 bytes color
+    # This is the first convolution
+    tf.keras.layers.Conv2D(16, (3,3), activation='relu', input_shape=(300, 300, 3)),
+    tf.keras.layers.MaxPooling2D(2, 2),
+    # The second convolution
+    tf.keras.layers.Conv2D(32, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2,2),
+    # The third convolution
+    tf.keras.layers.Conv2D(64, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2,2),
+    # The fourth convolution
+    tf.keras.layers.Conv2D(64, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2,2),
+    # The fifth convolution
+    tf.keras.layers.Conv2D(64, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2,2),
+    # Flatten the results to feed into a DNN
+    tf.keras.layers.Flatten(),
+    # 512 neuron hidden layer
+    tf.keras.layers.Dense(512, activation='relu'),
+    # Only 1 output neuron. It will contain a value from 0-1 where 0 for 1 class ('horses') and 1 for the other ('humans')
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+model.summary()
+```
+
+Empecemos a construir el modelo. Primero, importaremos TensorFlow, ahora construiremos las capas. Tenemos bastantes convoluciones aquí porque nuestra fuente de imágenes es bastante grande, son de 300 por 300. Más tarde podemos explorar el impacto de reducir su tamaño y necesitar menos convoluciones. 
+
+```commandline
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ conv2d (Conv2D)             (None, 298, 298, 16)      448       
+                                                                 
+ max_pooling2d (MaxPooling2  (None, 149, 149, 16)      0         
+ D)                                                              
+                                                                 
+ conv2d_1 (Conv2D)           (None, 147, 147, 32)      4640      
+                                                                 
+ max_pooling2d_1 (MaxPoolin  (None, 73, 73, 32)        0         
+ g2D)                                                            
+                                                                 
+ conv2d_2 (Conv2D)           (None, 71, 71, 64)        18496     
+                                                                 
+ max_pooling2d_2 (MaxPoolin  (None, 35, 35, 64)        0         
+ g2D)                                                            
+                                                                 
+ conv2d_3 (Conv2D)           (None, 33, 33, 64)        36928     
+                                                                 
+ max_pooling2d_3 (MaxPoolin  (None, 16, 16, 64)        0         
+ g2D)                                                            
+                                                                 
+ conv2d_4 (Conv2D)           (None, 14, 14, 64)        36928     
+                                                                 
+ max_pooling2d_4 (MaxPoolin  (None, 7, 7, 64)          0         
+ g2D)                                                            
+                                                                 
+ flatten (Flatten)           (None, 3136)              0         
+                                                                 
+ dense (Dense)               (None, 512)               1606144   
+                                                                 
+ dense_1 (Dense)             (None, 1)                 513       
+                                                                 
+=================================================================
+Total params: 1704097 (6.50 MB)
+Trainable params: 1704097 (6.50 MB)
+Non-trainable params: 0 (0.00 Byte)
+_________________________________________________________________
+```
+
+Podemos imprimir el resumen de las capas, y aquí podemos ver el momento que alcanzamos la red densa, las convoluciones bajan hasta siete por siete.
+
+```python
+from tensorflow.keras.optimizers import RMSprop
+
+model.compile(loss='binary_crossentropy',
+              optimizer=RMSprop(learning_rate=0.001),
+              metrics=['accuracy'])
+```
+
+Seguidamente compilaremos la red. Usa binary_crossentropy como pérdida, binaria porque usamos solamente dos clases, y el optimizador es RMSprop que nos permite cambiar la tasa de aprendizaje. No te preocupes si no entiendes esto completamente ahora, existen enlaces a los contenidos sobre esto donde puedes aprender más.
+
 ### Training the neural network
 [<- Return to INDEX 8](#index-8)
+
+Ahora que ha aprendido a descargar y procesar el conjunto de datos de caballos y humanos, está listo para entrenar. Cuando definió el modelo, vio que estaba utilizando una nueva función de pérdida llamada '
+[Binary Crossentropy](https://gombru.github.io/2018/05/23/cross_entropy_loss/)
+', y un nuevo 
+[optimizador](http://www.cs.toronto.edu/~tijmen/csc321/slides/lecture_slides_lec6.pdf)
+ llamado 
+[RMSProp](https://www.tensorflow.org/api_docs/python/tf/keras/optimizers/RMSprop)
+. Si quiere aprender más sobre el tipo de clasificación binaria que estamos haciendo aquí, ¡eche un vistazo a 
+[este](https://www.youtube.com/watch?v=eqEc66RFY0I&t=6s)
+ magnífico vídeo de Andrew!
 
 ### Walking through training the ConvNet
 [<- Return to INDEX 8](#index-8)
 
+Lo siguiente es usar ImageDataGenerator. Lo instanciamos y escalamos las imágenes con 1 / 255, que normaliza los valores. Lo dirigimos al directorio principal donde vemos los archivos descomprimidos.
+
+````python
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+# All images will be rescaled by 1./255
+train_datagen = ImageDataGenerator(rescale=1/255)
+
+# Flow training images in batches of 128 using train_datagen generator
+train_generator = train_datagen.flow_from_directory(
+        './horse-or-human/',  # This is the source directory for training images
+        target_size=(300, 300),  # All images will be resized to 300x300
+        batch_size=128,
+        # Since we use binary_crossentropy loss, we need binary labels
+        class_mode='binary')
+
+````
+
+Podemos ver que encuentra todas las imágenes, que ha asignado a dos clases, porque fueron asignadas a dos subdirectorios. Entrenamos la red neuronal durante 15 epochs, lo que llevará unos dos minutos.
+
+```python
+history = model.fit(
+      train_generator,
+      steps_per_epoch=8,
+      epochs=15,
+      verbose=1)
+```
+
+Cada epoch carga los datos, calculando las convoluciones y luego tratando de hacer coincidir las convoluciones con las etiquetas. Como puedes ver, la exactitud crece casi siempre, pero alguna vez no, muestra el descenso de gradiente del aprendizaje en acción.
+
+Siempre es buena idea vigilar las fluctuaciones en esta figura. Si son muy fuertes, puedes ajustar la tasa de aprendizaje.
+
+Recuerda el parámetro RMSprop cuando compilaste el modelo, allí es donde lo modificarías. También va bastante rápido porque, estoy entrenando en una máquina GPU.
+
+Cuando llegamos a la epoch 15, podemos ver que la exactitud es de 0.9981, lo que realmente es muy bueno. Pero recuerda, esto solamente se basa en los datos que la red ya ha visto durante el entrenamiento, que son solo unas 1000 imágenes. No te dejes llevar por una falsa sensación de seguridad.
+
+
+```commandline
+Epoch 1/15
+8/8 [==============================] - 18s 591ms/step - loss: 0.7022 - accuracy: 0.5184
+Epoch 2/15
+8/8 [==============================] - 7s 803ms/step - loss: 0.6782 - accuracy: 0.5729
+Epoch 3/15
+8/8 [==============================] - 8s 876ms/step - loss: 0.6708 - accuracy: 0.5762
+Epoch 4/15
+8/8 [==============================] - 7s 894ms/step - loss: 0.5879 - accuracy: 0.8098
+Epoch 5/15
+8/8 [==============================] - 7s 799ms/step - loss: 0.4938 - accuracy: 0.8543
+Epoch 6/15
+8/8 [==============================] - 7s 790ms/step - loss: 0.3700 - accuracy: 0.8643
+Epoch 7/15
+8/8 [==============================] - 7s 859ms/step - loss: 0.5491 - accuracy: 0.8142
+Epoch 8/15
+8/8 [==============================] - 7s 877ms/step - loss: 0.2220 - accuracy: 0.9344
+Epoch 9/15
+8/8 [==============================] - 7s 872ms/step - loss: 0.2992 - accuracy: 0.8765
+Epoch 10/15
+8/8 [==============================] - 7s 795ms/step - loss: 0.1483 - accuracy: 0.9377
+Epoch 11/15
+8/8 [==============================] - 7s 897ms/step - loss: 0.2681 - accuracy: 0.9210
+Epoch 12/15
+8/8 [==============================] - 7s 858ms/step - loss: 0.1125 - accuracy: 0.9511
+Epoch 13/15
+8/8 [==============================] - 7s 807ms/step - loss: 0.0998 - accuracy: 0.9622
+Epoch 14/15
+8/8 [==============================] - 7s 887ms/step - loss: 0.0775 - accuracy: 0.9733
+Epoch 15/15
+8/8 [==============================] - 7s 865ms/step - loss: 0.0979 - accuracy: 0.9677
+```
+
+Divirtámonos ahora un poco con el modelo, veamos si podemos predecir la clase de nuevas imágenes que no se han visto previamente.
+
+```python
+from tensorflow.keras.utils import load_img, img_to_array
+# predicting images
+path = '/content/' + fn
+img = load_img(path, target_size=(300, 300))
+x = img_to_array(img)
+x /= 255
+x = np.expand_dims(x, axis=0)
+
+images = np.vstack([x])
+classes = model.predict(images, batch_size=10)
+print(classes[0])
+
+if classes[0]>0.5:
+ print(fn + " is a human")
+else:
+ print(fn + " is a horse")
+```
+
+
 ### Experiment with the horse or human classifier (Lab 1)
 [<- Return to INDEX 8](#index-8)
+
+Ahora es su turno. Puede encontrar el cuaderno 
+aquí [C1_W4_Lab_1_image_generator_no_validation.ipynb](notebooks%2FW4%2FC1_W4_Lab_1_image_generator_no_validation.ipynb)
+. Trabaje en él y hágase una idea de cómo el ImageGenerator extrae las imágenes del sistema de archivos y las introduce en la red neuronal para su entrenamiento. ¡Diviértase un poco con el código de visualización en la parte inferior!
+
+En cuadernos anteriores, usted ajustó parámetros como las épocas, o el número de capas ocultas y neuronas en ellas. Pruébelo usted mismo y vea cuál es el impacto. Dedique algo de tiempo a esto.
+
+Una vez que haya terminado, pase al siguiente vídeo, ¡donde podrá validar su entrenamiento con un montón de imágenes!
 
 ### Adding automatic validation to test accuracy
 [<- Return to INDEX 8](#index-8)
 
+![img_37.png](ims%2FW4%2Fimg_37.png)
+
+En el video anterior, viste cómo construir una red neuronal convolucional que clasificaba caballos contra humanos. Cuando terminaste, hiciste luego unas cuantas pruebas usando imágenes que descargaste de la web. En este vídeo, verás cómo puedes construir validación en el bucle de entrenamiento especificando un conjunto de imágenes de validación, para dejar que TensorFlow haga el trabajo pesado de medir la efectividad con ese conjunto. 
+
+Como antes, descargamos el conjunto de datos, pero ahora también descargaremos el conjunto de datos de validación por separado. Lo descomprimiremos en dos carpetas separadas, una para entrenamiento, otra para validación. Crearemos unas variables que apunten a nuestros subdirectorios de entrenamiento y validación, y podemos comprobar los nombres de los archivos. 
+```python
+!wget https://storage.googleapis.com/tensorflow-1-public/course2/week3/validation-horse-or-human.zip
+
+import zipfile
+
+# Unzip training set
+local_zip = './horse-or-human.zip'
+zip_ref = zipfile.ZipFile(local_zip, 'r')
+zip_ref.extractall('./horse-or-human')
+
+# Unzip validation set
+local_zip = './validation-horse-or-human.zip'
+zip_ref = zipfile.ZipFile(local_zip, 'r')
+zip_ref.extractall('./validation-horse-or-human')
+
+zip_ref.close()
+
+import os
+
+# Directory with training horse pictures
+train_horse_dir = os.path.join('./horse-or-human/horses')
+
+# Directory with training human pictures
+train_human_dir = os.path.join('./horse-or-human/humans')
+
+# Directory with validation horse pictures
+validation_horse_dir = os.path.join('./validation-horse-or-human/horses')
+
+# Directory with validation human pictures
+validation_human_dir = os.path.join('./validation-horse-or-human/humans')
+
+train_horse_names = os.listdir(train_horse_dir)
+print(f'TRAIN SET HORSES: {train_horse_names[:10]}')
+
+train_human_names = os.listdir(train_human_dir)
+print(f'TRAIN SET HUMANS: {train_human_names[:10]}')
+
+validation_horse_names = os.listdir(validation_horse_dir)
+print(f'VAL SET HORSES: {validation_horse_names[:10]}')
+
+validation_human_names = os.listdir(validation_human_dir)
+print(f'VAL SET HUMANS: {validation_human_names[:10]}')
+
+print(f'total training horse images: {len(os.listdir(train_horse_dir))}')
+print(f'total training human images: {len(os.listdir(train_human_dir))}')
+print(f'total validation horse images: {len(os.listdir(validation_horse_dir))}')
+print(f'total validation human images: {len(os.listdir(validation_human_dir))}')
+```
+Recuerda que los nombres de los archivos pueden no ser siempre fiables para etiquetas. Por ejemplo, aquí las etiquetas de validación de caballos no están nombradas como tal, mientras que las de humanos sí. Podemos también hacer una comprobación rápida de si tenemos todos los datos, parece que sí, luego podemos proceder. 
+
+```commandline
+TRAIN SET HORSES: ['horse34-3.png', 'horse27-0.png', 'horse49-4.png', 'horse25-0.png', 'horse31-9.png', 'horse43-4.png', 'horse10-7.png', 'horse45-4.png', 'horse09-8.png', 'horse02-5.png']
+TRAIN SET HUMANS: ['human15-04.png', 'human14-18.png', 'human02-29.png', 'human06-23.png', 'human17-21.png', 'human16-26.png', 'human11-13.png', 'human02-10.png', 'human03-28.png', 'human06-05.png']
+VAL SET HORSES: ['horse5-018.png', 'horse3-070.png', 'horse1-264.png', 'horse3-484.png', 'horse1-105.png', 'horse3-469.png', 'horse5-032.png', 'horse5-275.png', 'horse3-498.png', 'horse5-550.png']
+VAL SET HUMANS: ['valhuman02-17.png', 'valhuman05-08.png', 'valhuman04-14.png', 'valhuman01-19.png', 'valhuman04-09.png', 'valhuman04-03.png', 'valhuman02-07.png', 'valhuman03-09.png', 'valhuman04-23.png', 'valhuman05-26.png']
+
+total training horse images: 500
+total training human images: 527
+total validation horse images: 128
+total validation human images: 128
+```
+Aquí podemos importar TensorFlow, y aquí definimos las capas del modelo. Es exactamente lo mismo que la última vez. Imprimiremos el resumen del modelo, puedes ver que no ha cambiado tampoco. Luego compilamos el modelo con los mismos parámetros que antes. 
+```python
+import tensorflow as tf
+
+model = tf.keras.models.Sequential([
+    # Note the input shape is the desired size of the image 300x300 with 3 bytes color
+    # This is the first convolution
+    tf.keras.layers.Conv2D(16, (3,3), activation='relu', input_shape=(300, 300, 3)),
+    tf.keras.layers.MaxPooling2D(2, 2),
+    # The second convolution
+    tf.keras.layers.Conv2D(32, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2,2),
+    # The third convolution
+    tf.keras.layers.Conv2D(64, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2,2),
+    # The fourth convolution
+    tf.keras.layers.Conv2D(64, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2,2),
+    # The fifth convolution
+    tf.keras.layers.Conv2D(64, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2,2),
+    # Flatten the results to feed into a DNN
+    tf.keras.layers.Flatten(),
+    # 512 neuron hidden layer
+    tf.keras.layers.Dense(512, activation='relu'),
+    # Only 1 output neuron. It will contain a value from 0-1 where 0 for 1 class ('horses') and 1 for the other ('humans')
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+from tensorflow.keras.optimizers import RMSprop
+
+model.compile(loss='binary_crossentropy',
+              optimizer=RMSprop(learning_rate=0.001),
+              metrics=['accuracy'])
+
+model.summary()
+```
+
+Ahora, es cuando podemos hacer algunos cambios. Como el generador de imágenes para los datos de entrenamiento, creamos ahora un segundo para los datos de validación. Es casi el mismo flujo. Creamos un generador de validación como una instancia de un generador de imágenes, hacemos rescale para normalizar, y luego lo dirigimos al directorio de validación. Cuando lo ejecutamos, vemos que toma las imágenes y las clases de ese directorio. 
+
+```python
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+# All images will be rescaled by 1./255
+train_datagen = ImageDataGenerator(rescale=1/255)
+validation_datagen = ImageDataGenerator(rescale=1/255)
+
+# Flow training images in batches of 128 using train_datagen generator
+train_generator = train_datagen.flow_from_directory(
+        './horse-or-human/',  # This is the source directory for training images
+        target_size=(300, 300),  # All images will be resized to 300x300
+        batch_size=128,
+        # Since you use binary_crossentropy loss, you need binary labels
+        class_mode='binary')
+
+# Flow validation images in batches of 128 using validation_datagen generator
+validation_generator = validation_datagen.flow_from_directory(
+        './validation-horse-or-human/',  # This is the source directory for validation images
+        target_size=(300, 300),  # All images will be resized to 300x300
+        batch_size=32,
+        # Since you use binary_crossentropy loss, you need binary labels
+        class_mode='binary')
+
+history = model.fit(
+      train_generator,
+      steps_per_epoch=8,
+      epochs=15,
+      verbose=1,
+      validation_data = validation_generator,
+      validation_steps=8)
+```
+Ahora vamos a entrenar la red. Observa los parámetros extras para dejarle saber sobre los datos de validación. Al final de cada epoch a la vez que informa de la pérdida y exactitud en el entrenamiento, también comprueba el conjunto de validación para darnos la pérdida y exactitud aquí. A medida que progresan las epochs deberías ver cómo aumenta constantemente la exactitud de validación siendo ligeramente menor que la de entrenamiento.
+
+```commandline
+Found 1027 images belonging to 2 classes.
+Found 256 images belonging to 2 classes.
+
+Epoch 1/15
+8/8 [==============================] - 20s 1s/step - loss: 0.8167 - accuracy: 0.5117 - val_loss: 0.6905 - val_accuracy: 0.5000
+Epoch 2/15
+8/8 [==============================] - 9s 1s/step - loss: 0.9233 - accuracy: 0.6040 - val_loss: 0.6669 - val_accuracy: 0.8359
+Epoch 3/15
+8/8 [==============================] - 9s 1s/step - loss: 0.6531 - accuracy: 0.6807 - val_loss: 0.6864 - val_accuracy: 0.5000
+Epoch 4/15
+8/8 [==============================] - 10s 1s/step - loss: 0.6642 - accuracy: 0.6585 - val_loss: 0.6798 - val_accuracy: 0.5742
+Epoch 5/15
+8/8 [==============================] - 8s 977ms/step - loss: 0.4760 - accuracy: 0.7875 - val_loss: 1.0897 - val_accuracy: 0.5312
+Epoch 6/15
+8/8 [==============================] - 11s 1s/step - loss: 0.4340 - accuracy: 0.7998 - val_loss: 0.5130 - val_accuracy: 0.8164
+Epoch 7/15
+8/8 [==============================] - 9s 1s/step - loss: 0.3027 - accuracy: 0.8943 - val_loss: 1.5763 - val_accuracy: 0.7812
+Epoch 8/15
+8/8 [==============================] - 9s 1s/step - loss: 0.1586 - accuracy: 0.9410 - val_loss: 1.0013 - val_accuracy: 0.8320
+Epoch 9/15
+8/8 [==============================] - 8s 997ms/step - loss: 0.1574 - accuracy: 0.9410 - val_loss: 1.6383 - val_accuracy: 0.7969
+Epoch 10/15
+8/8 [==============================] - 9s 1s/step - loss: 0.1192 - accuracy: 0.9544 - val_loss: 3.2238 - val_accuracy: 0.6602
+Epoch 11/15
+8/8 [==============================] - 8s 1s/step - loss: 0.2115 - accuracy: 0.9288 - val_loss: 1.8714 - val_accuracy: 0.8047
+Epoch 12/15
+8/8 [==============================] - 8s 984ms/step - loss: 0.1143 - accuracy: 0.9544 - val_loss: 2.8753 - val_accuracy: 0.7812
+Epoch 13/15
+8/8 [==============================] - 9s 1s/step - loss: 0.2297 - accuracy: 0.9297 - val_loss: 1.5597 - val_accuracy: 0.8125
+Epoch 14/15
+8/8 [==============================] - 9s 1s/step - loss: 0.0422 - accuracy: 0.9855 - val_loss: 0.9320 - val_accuracy: 0.8828
+Epoch 15/15
+8/8 [==============================] - 8s 990ms/step - loss: 0.0753 - accuracy: 0.9666 - val_loss: 1.9124 - val_accuracy: 0.8125
+```
+
+Solo debería llevar otros dos minutos. Ahora que hemos llegado al epoch 15, podemos ver que nuestra exactitud es cercana al 97 por ciento en los datos de entrenamiento, y cerca del 85 por ciento en el conjunto de validación, esto es lo que se esperaba. El conjunto de validación consiste en datos que la red neuronal no ha visto previamente, así que es de esperar que rinda un poco peor en él.
+
+
 ### Get hands-on and use validation (Lab 2)
 [<- Return to INDEX 8](#index-8)
+
+Ahora puede probarlo usted mismo. 
+Aquí tiene el cuaderno [C1_W4_Lab_2_image_generator_with_validation.ipynb](notebooks%2FW4%2FC1_W4_Lab_2_image_generator_with_validation.ipynb)
+ que Laurence revisó en el vídeo. Juegue con él para ver cómo se entrena, ¡y pruebe usted mismo algunas imágenes! Una vez que haya terminado, pase al siguiente vídeo en el que compactará sus datos para ver el impacto en el entrenamiento.
 
 ### Exploring the impact of compressing images
 [<- Return to INDEX 8](#index-8)
 
+![img_38.png](ims%2FW4%2Fimg_38.png)
+
+Las imágenes en los conjuntos de caballos y de humanos son todas de 300 por 300 píxeles. Pusimos unas cuantas capas convolucionales para reducir las imágenes a características condensadas. Esto, por supuesto, puede retardar el entrenamiento. Echemos un vistazo a lo que sucedería si cambiamos a 150 por 150 para las imágenes para tener una cuarta parte de los datos totales y ver cuál sería su impacto.
+
+Primero, importamos TensorFlow y definimos las capas del modelo. Observa que hemos cambiado la forma de entrada para que sea 150 por 150, y hemos quitado la cuarta y quinta combinación de convolución y max-pooling. El resumen del modelo muestra ahora la capa empezando con 148 por 148, ese fue el resultado de la convolución de 150 por 150.
+
+```python
+import tensorflow as tf
+
+model = tf.keras.models.Sequential([
+    # Note the input shape is the desired size of the image 150x150 with 3 bytes color
+    # This is the first convolution
+    tf.keras.layers.Conv2D(16, (3,3), activation='relu', input_shape=(150, 150, 3)),
+    tf.keras.layers.MaxPooling2D(2, 2),
+    # The second convolution
+    tf.keras.layers.Conv2D(32, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2,2),
+    # The third convolution
+    tf.keras.layers.Conv2D(64, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2,2),
+#     # The fourth convolution (You can uncomment the 4th and 5th conv layers later to see the effect)
+#     tf.keras.layers.Conv2D(64, (3,3), activation='relu'),
+#     tf.keras.layers.MaxPooling2D(2,2),
+#     # The fifth convolution
+#     tf.keras.layers.Conv2D(64, (3,3), activation='relu'),
+#     tf.keras.layers.MaxPooling2D(2,2),
+    # Flatten the results to feed into a DNN
+    tf.keras.layers.Flatten(),
+    # 512 neuron hidden layer
+    tf.keras.layers.Dense(512, activation='relu'),
+    # Only 1 output neuron. It will contain a value from 0-1 where 0 for 1 class ('horses') and 1 for the other ('humans')
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+model.summary()
+```
+Vamos a ver al final, terminamos con 17 por 17 cuando hemos hecho todas las convoluciones y poolings. Compilaremos el modelo como antes, y crearemos los generadores como antes, pero ten en cuenta que el tamaño objetivo ha cambiado ahora a 150 por 150.
+```commandline
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ conv2d (Conv2D)             (None, 148, 148, 16)      448       
+                                                                 
+ max_pooling2d (MaxPooling2  (None, 74, 74, 16)        0         
+ D)                                                              
+                                                                 
+ conv2d_1 (Conv2D)           (None, 72, 72, 32)        4640      
+                                                                 
+ max_pooling2d_1 (MaxPoolin  (None, 36, 36, 32)        0         
+ g2D)                                                            
+                                                                 
+ conv2d_2 (Conv2D)           (None, 34, 34, 64)        18496     
+                                                                 
+ max_pooling2d_2 (MaxPoolin  (None, 17, 17, 64)        0         
+ g2D)                                                            
+                                                                 
+ flatten (Flatten)           (None, 18496)             0         
+                                                                 
+ dense (Dense)               (None, 512)               9470464   
+                                                                 
+ dense_1 (Dense)             (None, 1)                 513       
+                                                                 
+=================================================================
+Total params: 9494561 (36.22 MB)
+Trainable params: 9494561 (36.22 MB)
+Non-trainable params: 0 (0.00 Byte)
+_________________________________________________________________
+
+```
+
+```python
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+# All images will be rescaled by 1./255
+train_datagen = ImageDataGenerator(rescale=1/255)
+validation_datagen = ImageDataGenerator(rescale=1/255)
+
+# Flow training images in batches of 128 using train_datagen generator
+train_generator = train_datagen.flow_from_directory(
+        './horse-or-human/',  # This is the source directory for training images
+        target_size=(150, 150),  # All images will be resized to 150x150
+        batch_size=128,
+        # Since you used binary_crossentropy loss, you need binary labels
+        class_mode='binary')
+
+# Flow training images in batches of 128 using train_datagen generator
+validation_generator = validation_datagen.flow_from_directory(
+        './validation-horse-or-human/',  # This is the source directory for training images
+        target_size=(150, 150),  # All images will be resized to 150x150
+        batch_size=32,
+        # Since you used binary_crossentropy loss, you need binary labels
+        class_mode='binary')
+```
+
+Ahora podemos comenzar el entrenamiento, y podemos ver que después del primer epoch que el entrenamiento es rápido, y que la exactitud y la validación no son malos tampoco. El entrenamiento continúa y ambos valores de exactitud suben.
+
+```python
+from tensorflow.keras.optimizers import RMSprop
+
+model.compile(loss='binary_crossentropy',
+              optimizer=RMSprop(learning_rate=0.001),
+              metrics=['accuracy'])
+
+history = model.fit(
+      train_generator,
+      steps_per_epoch=8,
+      epochs=15,
+      verbose=1,
+      validation_data = validation_generator,
+      validation_steps=8)
+```
+
+A menudo, verás valores de exactitud que son realmente altos como 1.000, lo que es probablemente una señal de que estás sobre ajustando. Llegamos al final, tengo realmente una exactitud grande en los datos de prueba, cerca de 0,99, que es demasiado alto. El conjunto de validación es de 0.84
+
+```commandline
+Epoch 1/15
+8/8 [==============================] - 18s 628ms/step - loss: 1.3331 - accuracy: 0.4961 - val_loss: 0.6594 - val_accuracy: 0.6680
+Epoch 2/15
+8/8 [==============================] - 6s 741ms/step - loss: 0.6411 - accuracy: 0.7497 - val_loss: 0.5504 - val_accuracy: 0.7734
+Epoch 3/15
+8/8 [==============================] - 7s 967ms/step - loss: 0.4328 - accuracy: 0.7998 - val_loss: 1.0341 - val_accuracy: 0.6719
+Epoch 4/15
+8/8 [==============================] - 6s 739ms/step - loss: 0.5783 - accuracy: 0.6952 - val_loss: 0.4642 - val_accuracy: 0.7969
+Epoch 5/15
+8/8 [==============================] - 7s 843ms/step - loss: 0.2175 - accuracy: 0.9444 - val_loss: 0.8950 - val_accuracy: 0.7812
+Epoch 6/15
+8/8 [==============================] - 6s 795ms/step - loss: 0.1565 - accuracy: 0.9365 - val_loss: 0.8214 - val_accuracy: 0.8164
+Epoch 7/15
+8/8 [==============================] - 7s 837ms/step - loss: 0.0932 - accuracy: 0.9711 - val_loss: 1.1170 - val_accuracy: 0.8086
+Epoch 8/15
+8/8 [==============================] - 7s 865ms/step - loss: 0.2590 - accuracy: 0.9121 - val_loss: 0.5306 - val_accuracy: 0.8633
+Epoch 9/15
+8/8 [==============================] - 6s 734ms/step - loss: 0.0688 - accuracy: 0.9811 - val_loss: 1.2152 - val_accuracy: 0.8398
+Epoch 10/15
+8/8 [==============================] - 7s 877ms/step - loss: 0.8183 - accuracy: 0.8776 - val_loss: 0.9354 - val_accuracy: 0.6992
+Epoch 11/15
+8/8 [==============================] - 6s 737ms/step - loss: 0.1469 - accuracy: 0.9499 - val_loss: 0.9759 - val_accuracy: 0.8164
+Epoch 12/15
+8/8 [==============================] - 7s 927ms/step - loss: 0.0524 - accuracy: 0.9855 - val_loss: 1.3051 - val_accuracy: 0.8320
+Epoch 13/15
+8/8 [==============================] - 6s 738ms/step - loss: 0.0755 - accuracy: 0.9722 - val_loss: 1.0199 - val_accuracy: 0.8398
+Epoch 14/15
+8/8 [==============================] - 7s 880ms/step - loss: 0.0511 - accuracy: 0.9811 - val_loss: 0.8400 - val_accuracy: 0.8555
+Epoch 15/15
+8/8 [==============================] - 6s 731ms/step - loss: 0.0241 - accuracy: 0.9944 - val_loss: 1.2506 - val_accuracy: 0.8555
+```
+
+> Nota: El problema aquí es que tenemos muchisimo acc en train pero no tanto en validation esto es un claro ejemplo de overfitting.
+
 ### Get Hands-on with compacted images (Lab 3)
 [<- Return to INDEX 8](#index-8)
+
+Pruebe esta [C1_W4_Lab_3_compacted_images.ipynb](notebooks%2FW4%2FC1_W4_Lab_3_compacted_images.ipynb)
+ versión del cuaderno en la que Laurence compactó las imágenes. Puede ver que los tiempos de entrenamiento mejoran, ¡pero que algunas clasificaciones pueden ser erróneas! Experimente con distintos tamaños: ¡no tiene por qué utilizar 150x150, por ejemplo!
 
 ### Week 4 Quiz
 [<- Return to INDEX 8](#index-8)
 
+1. Using Image Generator, how do you label images?
+
+   - [X] It’s based on the directory the image is contained in
+   - [ ] It’s based on the file name
+   - [ ] You have to manually do it
+   - [ ] TensorFlow figures it out from the contents
+
+   > Correct
+   > That’s right! The directory of the image is the label.
+
+2. What method on the Image Generator is used to normalize the image?
+
+   - [ ] Rescale_image
+   - [ ] normalize
+   - [X] rescale
+   - [ ] normalize_image
+
+   > Correct
+   > You‘ve got it! This is the correct method for normalizing images.
+
+3. How did we specify the training size for the images?
+
+   - [ ] The training_size parameter on the training generator
+   - [ ] The target_size parameter on the validation generator
+   - [X] The target_size parameter on the training generator
+   - [ ] The training_size parameter on the validation generator
+
+   > Correct
+   > Exactly! target_size specifies the image training size.
+
+4. When we specify the input_shape to be (300, 300, 3), what does that mean?
+
+   - [X] Every Image will be 300x300 pixels, with 3 bytes to define color
+   - [ ] There will be 300 images, each size 300, loaded in batches of 3
+   - [ ] Every Image will be 300x300 pixels, and there should be 3 Convolutional Layers
+   - [ ] There will be 300 horses and 300 humans, loaded in batches of 3
+
+   > Correct
+   > Nailed it! input_shape specifies image resolution.
+
+5. If your training data is close to 1.000 accuracy, but your validation data isn’t, what’s the risk here?
+
+   - [ ] You’re overfitting on your validation data
+   - [ ] You’re underfitting on your validation data
+   - [X] You’re overfitting on your training data
+   - [ ] No risk, that’s a great result
+
+   > Correct
+   > Great job! The analysis corresponds too closely to the training data, and may therefore fail to fit additional data.
+
+6. Convolutional Neural Networks are better for classifying images like horses and humans because:
+
+   - [X] There’s a wide variety of horses
+   - [X] There’s a wide variety of humans
+   - [X] In these images, the features may be in different parts of the frame
+
+   > Correct for all responses
+   > Way to go! CNNs are better in this case as they are independent from prior knowledge and human intervention in feature extraction. The receptive fields of different neurons partially overlap such that they cover the entire visual field.
+
+7. After reducing the size of the images, the training results were different. Why?
+
+   - [ ] There was more condensed information in the images
+   - [ ] There was less information in the images
+   - [ ] The training was faster
+   - [X] We removed some convolutions to handle the smaller images
+
+   > Correct
+   > Yes! Removing some convolutions modifies the training results.
+
 ### Lecture Notes Week 4
 [<- Return to INDEX 8](#index-8)
+
+Los apuntes de las conferencias están disponibles en nuestra plataforma comunitaria. Si ya es miembro, inicie sesión en su cuenta y acceda a los apuntes de las conferencias 
+aquí [C1_W4.pdf](notes%2FC1_W4.pdf)
+.
 
 ## Weekly Assignment - Handling Complex Images
 [<- Return to INDEX 0](#index-0)
@@ -1560,14 +2432,116 @@ Respuesta: [C1W3_Assignment.ipynb](notebooks%2FW3%2FC1W3_Assignment.ipynb)
 ### Reminder about the end of access to Lab Notebooks
 [<- Return to INDEX 9](#index-9)
 
+¡Hola alumno! 
+
+El(los) siguiente(s) tema(s) es(son) el(los) último(s) tema(s) calificado(s) de este curso. Si lo/los aprueba y también ha aprobado todos los ítems calificados anteriores, podrá obtener el certificado del curso. ¡Enhorabuena!
+
+Tenga en cuenta que, de acuerdo con 
+la Política de Pagos y Reembolsos de Coursera
+, su acceso a los ítems calificados (así como a los Laboratorios No Calificados alojados en Coursera) finalizará una vez que expire su suscripción. Si desea conservar sus cuadernos de laboratorio como referencia, le recomendamos encarecidamente que 
+los descargue
+ antes de finalizar el curso o la Specializations.
+
+Puede dirigirse al 
+Centro de Ayuda al Aprendiz de Coursera
+ si tiene preguntas sobre esta política, o si se queda bloqueado mientras tiene una suscripción activa. 
+
+Gracias y ¡siga aprendiendo!
+Equipo de control de calidad de DeepLearning.AI
+
 ### Handling complex images
 [<- Return to INDEX 9](#index-9)
+
+Ahora es el momento de crear su propio clasificador de imágenes para imágenes complejas. Vea si puede crear un clasificador para un conjunto de imágenes felices o tristes. 
+
+Para enviar su cuaderno Jupyter para su calificación, haga clic en el botón Submit Assignment mientras esté en el cuaderno.  
+
+[C1W4_Assignment.ipynb](notebooks%2FW4%2FC1W4_Assignment.ipynb)
+
+IMPORTANTE PARA UNA BUENA CALIFICACIÓN:
+
+- ¡No olvide guardar su cuaderno antes de enviarlo!
+
+- No borre las celdas, ya que incluyen metadatos importantes para la calificación.
+
+- Rellene sus soluciones dentro de los espacios previstos. Puede añadir nuevas celdas pero éstas serán omitidas por el calificador.
 
 ### Wrap up
 [<- Return to INDEX 9](#index-9)
 
+¡Enhorabuena! ¡Ha llegado al final del Curso 1! Ha recorrido un largo camino desde la observación de las redes neuronales más básicas hasta la construcción de una red neuronal básica de visión por ordenador que clasificaba ropa. Ha llevado esto un poco más lejos utilizando convoluciones que detectan características en una imagen, y luego clasifican y aprenden basándose en esas características. En el Curso 2, profundizará un poco más en las convoluciones entrenando redes con imágenes del mundo real. También podrá ver muchas de las técnicas utilizadas en desafíos como los que organiza Kaggle
+
 ### A conversation with Andrew Final
 [<- Return to INDEX 9](#index-9)
 
+![img_39.png](ims%2FW4%2Fimg_39.png)
+
+Al concluir este curso, se ha logrado un progreso notable. Iniciando con los conceptos básicos de TensorFlow, los estudiantes, como tú, han aprendido a realizar tareas desde ajustar una línea recta hasta reconocer artículos de moda, una hazaña impresionante lograda con tan solo tres líneas de código. Esta simplificación demuestra la eficiencia y el poder de la visión por computadora.
+
+El curso avanzó mejorando estas habilidades al introducir convoluciones, incrementando ligeramente la complejidad del código a cuatro líneas para definir dos capas de convolución y dos capas de max-pooling. A pesar de este añadido, TensorFlow maneja gran parte del trabajo pesado, lo que facilita enormemente el proceso.
+
+Se abordó también cómo adaptar este aprendizaje a imágenes más grandes y a color, sin necesidad de añadir líneas adicionales de código, sino simplemente ajustando la forma de los datos de entrada. Esta flexibilidad subraya la potencialidad de un marco de programación como TensorFlow, que permite escribir programas complejos con unas pocas líneas de código, ahorrando tiempo significativo.
+
+Sin embargo, el aprendizaje no termina aquí. Se exploraron conceptos avanzados como el sobreajuste en conjuntos de datos pequeños y técnicas para evitarlo, además del aprendizaje por transferencia, que permite aplicar modelos de TensorFlow desarrollados por otros a nuevos problemas, incluso si estos modelos fueron entrenados con conjuntos de datos diferentes.
+
+Finalmente, se mencionó la oportunidad de aplicar estas habilidades en competencias en línea como las ofrecidas en Kaggle, donde se pueden enfrentar desafíos reales y desarrollar aún más las habilidades adquiridas.
+
+En resumen, el curso ha sido una introducción completa a TensorFlow, preparando a los estudiantes para continuar avanzando en el aprendizaje y la aplicación de esta poderosa herramienta en problemas de inteligencia artificial más complejos. Con estas habilidades, se invita a los estudiantes a embarcarse en el siguiente curso para continuar su viaje de aprendizaje en el mundo de TensorFlow y la IA.
+
 ### Acknowledgments
 [<- Return to INDEX 9](#index-9)
+
+Además de los desarrolladores originales del plan de estudios, las siguientes personas hicieron contribuciones significativas a la actualización del Curso 1:
+
+**Revisiones de los cuestionarios**
+
+- Diego Peluffo
+
+**Apoyo de ingeniería**
+
+- Andrés Zarta
+
+**Pruebas alfa y tutoría**
+
+- Giovanni Lignarolo
+
+- Deepthi Locanindi
+
+- Chris Favila
+
+**Probadores alfa**
+
+- Nilosree Sengupta
+
+- Paul Wilson Kolluri
+
+- Moustafa Shomer
+
+- Daewook Kim
+
+**Marketing**
+
+- Ishita Chaudary
+
+**Producción de vídeo**
+
+- Diego Peluffo
+
+**Apoyo administrativo y de contenidos adicional**
+
+- Ryan Keenan
+
+- Lara Pheatt-Pitzer
+
+- Inhae Koo
+
+- Muhammad Mubashar
+
+- Christopher Moroney
+
+- Dani Zysman
+
+- Emma Afflerbach
+
+
+Por último, ¡nuestro más sincero agradecimiento a USTED, por inscribirse en esta Specializations y formar parte de nuestra comunidad global de estudiantes!
