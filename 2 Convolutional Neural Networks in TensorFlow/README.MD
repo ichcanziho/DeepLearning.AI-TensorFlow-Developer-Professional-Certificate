@@ -864,47 +864,313 @@ Hasta este punto, habrá oído muchas veces el término sobreadaptación. La sob
 ### A conversation with Andrew Ng 2
 [<- Return to INDEX 2](#index-2)
 
+![img.png](ims%2FW2%2Fimg.png)
+
+
+En esta semana, se abordará el tema del aumento de imágenes y datos en el contexto del aprendizaje profundo. Esta técnica se utiliza ampliamente para ampliar los conjuntos de datos y mejorar el rendimiento de las redes neuronales. Se aprenderá a emplear las herramientas accesibles de TensorFlow para llevar a cabo este proceso de aumento de datos.
+
+Como ejemplo, en la semana anterior se analizaron 25,000 imágenes de gatos y perros como un conjunto de datos de entrenamiento. Sin embargo, a veces, este tamaño de conjunto de datos no es suficiente para obtener resultados óptimos. Aumentar imágenes implica la creación de nuevos datos mediante transformaciones como rotaciones, distorsiones y otras técnicas. Esto permite abordar casos que quizás no estaban representados en el conjunto original, como gatos acostados en lugar de gatos siempre erguidos con orejas en una posición específica.
+
+![img_1.png](ims%2FW2%2Fimg_1.png)
+
+En TensorFlow, se enfatiza la importancia de no sobrecargar la memoria al aplicar aumentos. El proceso se realiza en la memoria a medida que las imágenes se cargan en la red neuronal para el entrenamiento. Esto significa que no se alteran los datos originales en el disco, sino que se generan temporalmente en la memoria.
+
+La ventaja de este enfoque es que no se afectan los datos originales, lo que es esencial si se necesita experimentar con diferentes aumentos en el futuro. Además, es rápido y no aumenta significativamente los requisitos de memoria. En lugar de guardar todas las imágenes aumentadas, se procesan en la memoria y se transmiten a la red neuronal para su entrenamiento.
+
+El aumento de datos e imágenes es una técnica fundamental en el aprendizaje profundo, y aunque la literatura académica sobre el tema puede ser limitada, es esencial para entrenar redes neuronales de manera efectiva. Por lo tanto, se recomienda consultar los materiales de esta semana para obtener más información sobre esta técnica importante.
+
 ### Image Augmentation
 [<- Return to INDEX 2](#index-2)
+
+Esta semana vamos a hablar mucho del Aumento de la imagen. 
+
+El aumento de la imagen es una herramienta muy sencilla, pero muy poderosa, que le ayudará a evitar el sobreajuste de sus datos. El concepto es muy sencillo: si tiene datos limitados, las posibilidades de que disponga de datos que coincidan con posibles predicciones futuras también son limitadas y, lógicamente, cuantos menos datos tenga, menos posibilidades tendrá de obtener predicciones precisas para datos que su modelo aún no haya visto. En pocas palabras, si está entrenando un modelo para detectar gatos, y su modelo nunca ha visto el aspecto de un gato cuando está tumbado, es posible que no lo reconozca en el futuro.
+
+El aumento simplemente modifica sus imágenes sobre la marcha mientras se entrena utilizando transformaciones como la rotación. Así, podría "simular" una imagen de un gato tumbado girando 90 grados un gato "de pie". De este modo, obtiene una forma barata de ampliar su conjunto de datos más allá de lo que ya tiene. 
+
+![img_2.png](ims%2FW2%2Fimg_2.png)
+
+Para saber más sobre la ampliación y las transformaciones disponibles, consulte 
+https://keras.io/api/layers/preprocessing_layers/
+ -- y tenga en cuenta que se denomina preprocesamientopor una razón muy poderosa: que no requiere que edite sus imágenes en bruto, ni las modifica por usted en el disco. Lo hace en memoria mientras está realizando el entrenamiento, lo que le permite experimentar sin afectar a su conjunto de datos. 
 
 ### Introducing augmentation
 [<- Return to INDEX 2](#index-2)
 
+![img_3.png](ims%2FW2%2Fimg_3.png)
+
+Hasta este punto, hemos estado creando redes neuronales convolucionales que se entrenan para reconocer imágenes en clases binarias. Caballos o humanos, gatos o perros. Han funcionado bastante bien a pesar de tener cantidades relativamente pequeñas de datos con los que entrenar.
+
+Sin embargo, corremos el riesgo de caer en la trampa del exceso de confianza provocado por el sobreajuste. Es decir, cuando el conjunto de datos es pequeño, tenemos relativamente pocos ejemplos y, como resultado, podemos tener algunos errores en nuestra clasificación. Probablemente nos hayas escuchado usar mucho el término sobreajuste y es importante entender qué es eso. 
+
+![img_4.png](ims%2FW2%2Fimg_4.png)
+
+Piensa que es muy bueno para detectar algo de un conjunto de datos limitado, pero te confundes cuando ves algo que no coincide con tus expectativas. Así, por ejemplo, imagina que estos son los únicos zapatos que has visto en tu vida. Luego, aprendes que estos son zapatos y este es el aspecto que tienen los zapatos. 
+
+![img_5.png](ims%2FW2%2Fimg_5.png)
+
+ Así que si te los mostrara, los reconocerías como zapatos, incluso si son de tamaños diferentes a los que cabría esperar. 
+
+![img_6.png](ims%2FW2%2Fimg_6.png)
+
+Pero si te mostrara esto, aunque es un zapato, probablemente no lo reconocerías como tal. En ese escenario, tienes un sobreajuste en tu comprensión de cómo es un zapato. 
+
+![img_7.png](ims%2FW2%2Fimg_7.png)
+
+No eras lo suficientemente flexible como para ver este tacón alto como un zapato porque todo tu entrenamiento y toda tu experiencia en el aspecto de los zapatos son estas botas de montaña.
+
+Ahora bien, este es un problema habitual en los clasificadores de entrenamiento, sobre todo cuando se dispone de datos limitados. Si lo piensas bien, necesitarías un conjunto de datos infinito para crear un clasificador perfecto, pero podría llevar demasiado tiempo entrenarlo.
+
+Por eso, en esta lección, quiero analizar algunas herramientas que tienes a tu disposición para hacer que tus conjuntos de datos más pequeños sean más efectivos. Empezaremos con un concepto simple, el aumento. 
+
+![img_8.png](ims%2FW2%2Fimg_8.png)
+
+Al usar redes neuronales convolucionales, pasamos convoluciones sobre una imagen para aprender características particulares. 
+Tal vez sean las orejas puntiagudas de un gato, dos patas en vez de cuatro para un humano, ese tipo de cosas. Las convoluciones 
+han sido muy buenas para detectarlas si son claras y diferenciadas en la imagen. 
+
+![img_9.png](ims%2FW2%2Fimg_9.png)
+
+Pero si pudiéramos ir más allá, ¿qué pasaría si, por ejemplo, pudiéramos transformar la imagen del gato para que coincidiera con otras imágenes de gatos en las que las orejas están orientadas de manera diferente? Así pues, si la red nunca ha sido entrenada para ver una imagen de un gato recostado de esta forma, es posible que no la reconozca. 
+
+Si no tienes los datos de un gato reclinado, podrías acabar en una situación de sobreajuste. Sin embargo, si incorporas las imágenes al entrenamiento con medidas de aumento, como una rotación, es posible que se detecte la característica. Incluso si no tienes un gato reclinado, tu gato erguido, al girar, podría acabar teniendo el mismo aspecto.
+
 ### Start Coding...
 [<- Return to INDEX 2](#index-2)
+
+Bien, ahora que hemos visto la implementación del Aumento de Imagen en Keras, profundicemos en el código.
+
+![img_10.png](ims%2FW2%2Fimg_10.png)
+
+Puede ver más sobre las diferentes APIs en el sitio de Keras aquí: 
+https://keras.io/preprocessing/image/
 
 ### Coding augmentation with ImageDataGenerator
 [<- Return to INDEX 2](#index-2)
 
+![img_11.png](ims%2FW2%2Fimg_11.png)
+
+Entonces, si recuerdas la clase generadora de imágenes que usamos anteriormente, en realidad tiene la capacidad de hacerlo por ti. De hecho, ya has aumentado un poco la imagen con ella cuando cambias la escala al cargarla. Eso te ahorró tener que convertir todas tus imágenes en el sistema de archivos y luego cargarlas. Simplemente cambiaste la escala sobre la marcha.
+
+Así que echemos un vistazo a algunas de las otras opciones. A continuación te explicamos cómo puedes usar un montón de opciones de aumento de imagen, añadiendo el generador de imágenes a la posibilidad de cambiar la escala.
+
+![img_12.png](ims%2FW2%2Fimg_12.png)
+
+El rango de rotación es un rango de 0-180 grados con el que se pueden rotar imágenes de forma aleatoria. Por lo tanto, en este caso, la imagen rotará aleatoriamente entre 0 y 40 grados. 
+
+Al desplazarse, la imagen se mueve dentro de su marco. Muchas imágenes tienen el sujeto centrado. Así que si entrenamos basándonos en ese tipo de imágenes, podríamos sobreadaptarnos a ese escenario. Estos parámetros especifican, como proporción del tamaño de la imagen, cuánto debemos mover aleatoriamente al sujeto. Así que, en este caso, podríamos compensarlo en un 20 por ciento vertical u horizontalmente.
+
+La cizalladura también es bastante poderosa. Así, por ejemplo, consideremos la imagen de la derecha. Sabemos que es una persona. Pero en nuestro set de entrenamiento, no tenemos ninguna imagen de una persona con esa orientación. Sin embargo, tenemos una imagen como esta, en la que la persona tiene una orientación similar. Así que si cortamos a esa persona inclinándola a lo largo del eje x, terminaremos en una postura similar. Eso es lo que nos da el parámetro shear_range. Cortará la imagen en cantidades aleatorias hasta alcanzar la parte especificada de la imagen. 
+ Por lo tanto, en este caso, cortará hasta un 20 por ciento de la imagen. 
+
+![img_13.png](ims%2FW2%2Fimg_13.png)
+
+El zoom también puede ser muy eficaz. Por ejemplo, considere la imagen de la derecha. Obviamente es una mujer que mira hacia la derecha. Nuestra imagen de la izquierda es del set de entrenamiento de humanos o 
+caballos. Es muy similar, pero se ha reducido para ver a la persona completa. Si ampliamos la imagen de entrenamiento, podríamos 
+terminar con una imagen muy similar a la de la derecha. 
+
+Por lo tanto, si ampliamos la imagen mientras entrenamos, podríamos ver ejemplos más generalizados como este. Así que ampliamos con un código como este. El 0.2 es una parte relativa de la imagen en la que ampliarás. Por lo tanto, en este caso, los acercamientos serán aleatorios de hasta un 20 por ciento del tamaño de la imagen. 
+
+![img_15.png](ims%2FW2%2Fimg_15.png)
+
+Otra herramienta útil es el volteo horizontal. Por ejemplo, si consideras la imagen de la derecha, es posible que no podamos clasificarla correctamente, ya que nuestros datos de entrenamiento no contienen la imagen de una mujer con la mano izquierda levantada, sino la imagen de la izquierda, donde el brazo derecho del sujeto está levantado. 
+
+ Por lo tanto, si la imagen se volteara horizontalmente, se asemejaría más estructuralmente a la imagen de la derecha y no podríamos ajustarla demasiado a los elevadores del brazo derecho. Para activar el volteo horizontal aleatorio, solo tienes que decir que horizontal_flip es igual a true y las imágenes se voltearán de forma aleatoria.
+
+![img_16.png](ims%2FW2%2Fimg_16.png)
+
+Por último, solo especificamos el modo de relleno. Esto rellena cualquier píxel que se haya podido perder a causa de las operaciones. Me quedaré con el más cercano, que usa los vecinos de ese píxel para tratar de mantener la uniformidad. Consulte la documentación de los cursores para ver otras opciones. Así que ese es el concepto de aumento de imágenes. Analicemos ahora el contraste entre gatos y perros entrenados con y sin aumento, para que podamos ver el impacto que esto tiene.
+
 ### Looking at the notebook (Lab 1)
 [<- Return to INDEX 2](#index-2)
+
+Ahora que ha aprendido algunos de los fundamentos del aumento de datos, veámoslo en acción en el clasificador Gatos contra Perros.
+
+En primer lugar, ejecutaremos Gatos contra Perros sin aumento, y exploraremos lo rápido que sobreajusta.
+
+Si desea ejecutar el cuaderno usted mismo, puede encontrarlo 
+aquí [C2_W2_Lab_1_cats_v_dogs_augmentation.ipynb](notebooks%2FW2%2FC2_W2_Lab_1_cats_v_dogs_augmentation.ipynb)
+.
 
 ### Demonstrating overfitting in cats vs dogs
 [<- Return to INDEX 2](#index-2)
 
+![img_17.png](ims%2FW2%2Fimg_17.png)
+
+Echemos un vistazo a la formación de gatos frente a perros con un conjunto de datos más pequeño durante un ciclo más largo. Voy a empezar el entrenamiento y veremos que recogió las 2.000 imágenes de entrenamiento, pero ten en cuenta que estamos entrenando para 100 épocas. 
+
+![img_19.png](ims%2FW2%2Fimg_19.png)
+
+Después de la primera época, podemos ver que nuestra precisión es 0.5345 y una precisión de validación es 0.5290. Vigila esas cifras. Veámoslos por algunas épocas más. Observaremos las cifras de precisión y validación. Después de ocho épocas, la precisión se acerca a 0.8, pero la precisión de validación ha ralentizado su crecimiento. Así que ahora saltemos adelante hasta el final.
+
+![img_18.png](ims%2FW2%2Fimg_18.png)
+
+Voy a trazar la precisión y la pérdida total de 100 épocas. Podemos ver en esta cifra que el entrenamiento alcanza casi un 100 por ciento de precisión en poco más de 20 épocas. Mientras tanto, la validación superó en alrededor del 70 por ciento, y eso es sobreajuste claramente se demostró. En otras palabras, la red neuronal fue excelente al encontrar una correlación entre las imágenes y las etiquetas de los gatos frente a los perros para las 2.000 imágenes en las que fue entrenado, pero una vez que trató de predecir las imágenes que antes no había visto, era aproximadamente un 70 por ciento de precisión.
+
+Es un poco como el ejemplo de los zapatos de los que hablamos antes. Así que en el siguiente video, vamos a echar un vistazo al impacto de agregar aumento a esto.
+
 ### The impact of augmentation on Cats vs. Dogs
 [<- Return to INDEX 2](#index-2)
+
+Ahora que hemos visto cómo sobreajusta, veamos a continuación cómo, con una simple modificación de código, podemos añadir aumento de datos a la misma Red Neuronal Convolucional para ver cómo nos proporciona mejores datos de entrenamiento que sobreajustan menos. El cuaderno utilizado en el siguiente vídeo seguirá siendo el que 
+acaba de utilizar en el screencast anterior [C2_W2_Lab_1_cats_v_dogs_augmentation.ipynb](notebooks%2FW2%2FC2_W2_Lab_1_cats_v_dogs_augmentation.ipynb)
+. Por favor, vuelva a abrirlo si quiere seguir el vídeo.
 
 ### Adding augmentation to cats vs dogs
 [<- Return to INDEX 2](#index-2)
 
+![img_20.png](ims%2FW2%2Fimg_20.png)
+
+En el video anterior, analizamos el entrenamiento de un pequeño conjunto de datos de gatos frente a perros, y vimos cómo el sobreajuste se produjo relativamente temprano en el entrenamiento, lo que nos lleva a una falsa sensación de seguridad acerca de lo bien que la red neuronal podría funcionar. Echemos ahora un vistazo al impacto de agregar aumento de imagen a la formación. 
+
+![img_21.png](ims%2FW2%2Fimg_21.png)
+
+Aquí tenemos exactamente el mismo código, excepto que le hemos agregado el código de aumento de la imagen. Empezaré el entrenamiento, y veremos que tenemos 2.000 imágenes de entrenamiento en dos clases.
+
+![img_22.png](ims%2FW2%2Fimg_22.png)
+
+ Al comenzar el entrenamiento, veremos inicialmente que la precisión es menor que con la versión no aumentada que hicimos anteriormente. Esto se debe a los efectos aleatorios del procesamiento de imágenes diferente que se está haciendo. A medida que se ejecuta durante algunas épocas más, verá la precisión subiendo lentamente. 
+
+![img_23.png](ims%2FW2%2Fimg_23.png)
+
+Saltaré hacia adelante para ver las últimas épocas, y para cuando lleguemos a la última, nuestro modelo tiene un 86 por ciento de precisión en los datos de entrenamiento, y un 81 por ciento en los datos de prueba. Así que vamos a trazar esto. 
+
+![img_24.png](ims%2FW2%2Fimg_24.png)
+
+Podemos ver que la precisión de entrenamiento y validación, y la pérdida están en realidad en el paso entre sí. Esta es una clara señal de que hemos resuelto el sobreajuste que teníamos antes. 
+
+Si bien nuestra precisión es un poco menor, también está tendencia hacia arriba, así que quizás más épocas nos acerquen al 100 por ciento. ¿ Por qué no lo intentas?
+
 ### Image Augmentation with Horses vs Humans! (Lab 2)
 [<- Return to INDEX 2](#index-2)
+
+Habiendo visto claramente el impacto que el aumento da a Gatos contra Perros, volvamos ahora al conjunto de datos Caballos contra Humanos del curso 1, y echemos un vistazo para ver si los algoritmos de aumento ayudan en este caso. Aquí tiene el 
+cuaderno [C2_W2_Lab_2_horses_v_humans_augmentation.ipynb](notebooks%2FW2%2FC2_W2_Lab_2_horses_v_humans_augmentation.ipynb)
+ por si quiere seguir el siguiente vídeo.
 
 ### Exploring augmentation with horses vs humans
 [<- Return to INDEX 2](#index-2)
 
+![img_25.png](ims%2FW2%2Fimg_25.png)
+
+Por supuesto, el aumento de imágenes no es la bala mágica para curar el sobreajuste. Realmente ayuda tener una gran diversidad de imágenes. Así, por ejemplo, si miramos el conjunto de datos de caballos o humanos y lo entrenamos para las mismas épocas, entonces podemos echar un vistazo a su comportamiento. 
+
+![img_26.png](ims%2FW2%2Fimg_26.png)
+
+ Así que voy a empezar a entrenar y mostrar las 100 épocas. Lo aceleré un poco para ahorrar tiempo. Mientras observas, verás que la precisión de la prueba sube constantemente. Al principio, la precisión de validación parece estar en paso, pero luego la verá variando salvajemente. Lo que sucede aquí es que, a pesar del aumento de la imagen, la diversidad de imágenes sigue siendo demasiado escasa y el conjunto de validación también puede estar mal diseñado, es decir, que el tipo de imagen que contiene está demasiado cerca de las imágenes del conjunto de entrenamiento
+
+![img_27.png](ims%2FW2%2Fimg_27.png)
+
+Si esperas los datos para ti mismo, verás que ese es el caso. Por ejemplo, los humanos casi siempre están de pie y en el centro de la imagen, tanto en los conjuntos de entrenamiento como de validación, por lo que aumentar la imagen cambiará para que parezca algo que no se parezca a lo que hay en el conjunto de validación. Así que para cuando el entrenamiento se haya completado, podemos ver el mismo patrón. La precisión del entrenamiento tiende hacia el 100%, pero la validación está fluctuando en los años 60 y 70.
+
+![img_28.png](ims%2FW2%2Fimg_28.png)
+
+Vamos a trazar esto, podemos ver que la precisión del entrenamiento sube constantemente de la manera que quisiéramos, pero la validación fluctuó como una locura. Entonces, lo que podemos aprender de esto es que el aumento de la imagen introduce un elemento aleatorio a las imágenes de entrenamiento, pero si el conjunto de validación no tiene la misma aleatoriedad, entonces sus resultados pueden fluctuar así.
+
+Así que ten en cuenta que no solo necesitas un amplio conjunto de imágenes para entrenar, sino que también las necesitas para probar o el aumento de imágenes no te ayudará mucho.
+
 ### What have we seen so far? 2
 [<- Return to INDEX 2](#index-2)
+
+Esta semana, ha examinado la herramienta realmente útil que le ofrece TensorFlow con el aumento de imágenes. Con ella, puede simular eficazmente un conjunto de datos más grande a partir de uno más pequeño con herramientas para mover las imágenes alrededor del marco, sesgarlas, rotarlas y mucho más. Esta puede ser una herramienta eficaz para corregir el sobreajuste.
 
 ### Week 2 Quiz
 [<- Return to INDEX 2](#index-2)
 
+1. How do you use Image Augmentation in TensorFlow?
+
+   - [X] Using parameters to the ImageDataGenerator
+   - [ ] You have to write a plugin to extend tf.layers
+   - [ ] With the keras.augment API
+   - [ ] With the tf.augment API
+   
+   > Correct
+   > TensorFlow's ImageDataGenerator allows you to specify augmentation techniques directly as parameters, making it easier to augment images on-the-fly during training.
+
+2. If my training data only has people facing left, but I want to classify people facing right, how would I avoid overfitting?
+
+   - [ ] Use the ‘flip_vertical’ parameter around the Y axis
+   - [X] Use the ‘horizontal_flip’ parameter
+   - [ ] Use the ‘flip’ parameter and set ‘horizontal’
+   - [ ] Use the ‘flip’ parameter
+
+   > Correct
+   > The 'horizontal_flip' parameter in the ImageDataGenerator generates images with either horizontal orientation, thereby increasing the diversity of the training data and helping prevent overfitting.
+
+3. After adding data augmentation and using the same batch size and steps per epoch, you noticed that each training epoch became a little slower than when you trained without it. Why?
+
+   - [ ] Because there is more data to train on
+   - [X] Because the image preprocessing takes cycles
+   - [ ] Because the training is making more mistakes
+   - [ ] Because the augmented data is bigger
+
+   > Correct
+   > Image augmentation requires additional computational resources for image preprocessing, which can make each epoch take longer to complete.
+
+4. What does the fill_mode parameter do?
+
+   - [ ] There is no fill_mode parameter
+   - [ ] It creates random noise in the image
+   - [X] It attempts to recreate lost information after a transformation like a shear
+   - [ ] It masks the background of an image
+
+   > Correct
+   > The fill_mode parameter specifies how to fill in newly created pixels which can appear after a rotation or a width/height shift.
+
+5. When using Image Augmentation with the ImageDataGenerator, what happens to your raw image data on-disk?
+
+   - [ ] It gets overwritten, so be sure to make a backup
+   - [ ] A copy is made and the augmentation is done on the copy
+   - [X] Nothing, all augmentation is done in-memory
+   - [ ] It gets deleted
+
+   > Correct
+   > ImageDataGenerator performs augmentations in-memory without altering the original images on disk, ensuring your data remains unchanged.
+
+6. How does Image Augmentation help solve overfitting?
+
+   - [ ] It slows down the training process
+   - [X] It manipulates the training set to generate more scenarios for features in the images
+   - [ ] It manipulates the validation set to generate more scenarios for features in the images
+   - [ ] It automatically fits features to images by finding them through image processing techniques
+
+   > Correct
+   > By artificially creating variations of the training images, image augmentation exposes the model to a broader range of scenarios, which can help the model generalize better, thereby reducing overfitting.
+
+7. When using Image Augmentation my training gets...
+
+   - [X] Slower
+   - [ ] Faster
+   - [ ] Stays the Same
+   - [ ] Much Faster
+
+   > Correct
+   > Although beneficial, image augmentation introduces additional computations for altering images during training, which can slow down the overall training process.
+
+8. Using Image Augmentation effectively simulates having a larger data set for training.
+
+   - [ ] False
+   - [X] True
+
+   > Correct
+   > Image augmentation artificially inflates the dataset by generating many plausible variations of each image, providing the benefits of a larger dataset without the need for more actual data.
+
 ### Week 2 Wrap up
 [<- Return to INDEX 2](#index-2)
 
+![img_29.png](ims%2FW2%2Fimg_29.png)
+
+Así que, felicidades por terminar la segunda semana. Espero que hayáis disfrutado esta semana tanto como yo, porque el aumento de imágenes es, francamente, una de mis cosas favoritas para jugar en TensorFlow.
+
+Me gusta mucho el hecho de que cuando tienes un conjunto de datos pequeño, como este con caballos contra humanos, puedas manipular ese conjunto de datos sin cambiar las imágenes subyacentes para abrir escenarios completamente nuevos para el entrenamiento y poder entrenar como vimos, como un hombre acostado o una mujer mirando a la izquierda, y poder entrenar para eso incluso si no tienes esas imágenes en tu set de entrenamiento. Pero la semana que viene, vamos a hacer algo realmente emocionante y se llama aprendizaje por transferencia. Así que estad atentos.
+
 ### Lecture Notes Week 2
 [<- Return to INDEX 2](#index-2)
+
+Los apuntes de las conferencias están disponibles en nuestra plataforma comunitaria. Si ya es miembro, inicie sesión en su cuenta y acceda a los apuntes de las conferencias 
+aquí [C2_W2.pdf](notes%2FC2_W2.pdf)
+.
+
 
 ## Weekly Assignment - Full cats vs dogs using augmentation
 [<- Return to INDEX 0](#index-0)
