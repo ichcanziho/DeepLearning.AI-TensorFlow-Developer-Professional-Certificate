@@ -1512,6 +1512,33 @@ aquí [C2_W3.pdf](notes%2FC2_W3.pdf)
 
 ### Transfer Learning - Horses vs Humans
 
+Esta semana su ejercicio consistirá en aplicar lo que ha aprendido sobre el Aprendizaje por Transferencia para ver si puede aumentar la precisión del entrenamiento para Caballos contra Humanos. Para evitar un sobreajuste loco, la precisión de su conjunto de validación debería rondar el 95% si lo hace bien
+
+Su entrenamiento debería detenerse automáticamente una vez que alcance esta precisión deseada.
+
+Utilicemos ahora el aprendizaje por transferencia para aumentar la precisión del entrenamiento de Caballos contra humanos
+
+Complete las tareas del cuaderno de 
+asignaciones [C2W3_Assignment.ipynb](notebooks%2FW3%2FC2W3_Assignment.ipynb)
+ y suba aquí los archivos pertinentes para su calificación.
+
+Este cuaderno está alojado en github por lo que para guardar cualquier cambio necesita crear una copia del mismo dentro de su Drive. Puede hacerlo haciendo clic en la pestaña `Archivo` y luego en la opción `Guardar una copia en Drive`.
+
+Deberá cargar un archivo:
+
+El cuaderno (un archivo con extensión .ipynb ) que se utilizará para probar las siguientes funciones:
+
+- train_val_generators
+
+- crear_modelo_pre_entrenado
+
+- salida_de_la_última_capa
+
+- create_final_model
+
+
+IMPORTANTE PARA UNA CALIFICACIÓN CORRECTA:- No borre las celdas ya que incluyen metadatos importantes para la calificación- Rellene sus soluciones dentro de los espacios proporcionados. Puede añadir nuevas celdas pero éstas serán omitidas por el calificador.
+
 ## Muliclass Classifications
 [<- Return to INDEX 0](#index-0)
 
