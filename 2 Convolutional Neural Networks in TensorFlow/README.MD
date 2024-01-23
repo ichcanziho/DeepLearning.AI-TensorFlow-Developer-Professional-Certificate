@@ -829,8 +829,6 @@ Deberá cargar dos archivos:
 
 > IMPORTANTE PARA UNA CALIFICACIÓN CORRECTA:- No borre las celdas ya que incluyen metadatos importantes para la calificación- Rellene sus soluciones dentro de los espacios proporcionados. Puede añadir nuevas celdas pero éstas serán omitidas por el calificador.
 
-
-
 ## Augmentation
 [<- Return to INDEX 0](#index-0)
 
@@ -1171,7 +1169,6 @@ Los apuntes de las conferencias están disponibles en nuestra plataforma comunit
 aquí [C2_W2.pdf](notes%2FC2_W2.pdf)
 .
 
-
 ## Weekly Assignment - Full cats vs dogs using augmentation
 [<- Return to INDEX 0](#index-0)
 
@@ -1209,41 +1206,306 @@ Construir modelos para usted mismo está muy bien y puede ser muy potente. Pero,
 ### A conversation with Andrew Ng 3
 [<- Return to INDEX 3](#index-3)
 
+![img.png](ims%2FW3%2Fimg.png)
+
+En la clase, se discutió el concepto de aprendizaje por transferencia en el contexto del aprendizaje profundo y cómo TensorFlow facilita su implementación con unas pocas líneas de código. En lugar de entrenar una red neuronal desde cero, se explicó cómo se pueden descargar modelos de código abierto previamente entrenados en grandes conjuntos de datos y utilizarlos como punto de partida para tareas específicas. Este proceso se conoce como aprendizaje por transferencia.
+
+![img_1.png](ims%2FW3%2Fimg_1.png)
+
+Se mencionó que al descargar modelos entrenados previamente, se aprovecha el conocimiento adquirido de una amplia variedad de imágenes y características que pueden no estar disponibles en el conjunto de datos propio. Esto permite acelerar el proceso de entrenamiento y mejorar la eficiencia de las redes neuronales convolucionales. Además, se destacó la importancia de la comunidad de IA y cómo la compartición de conocimientos y código abierto ha impulsado el avance rápido de la inteligencia artificial.
+
+![img_2.png](ims%2FW3%2Fimg_2.png)
+
+El proceso de implementación del aprendizaje por transferencia en TensorFlow se describió como relativamente sencillo, donde se pueden descargar modelos, configurarlos y ajustarlos según las necesidades específicas. También se mencionó que los estudiantes aprenderán a agregar una red neuronal profunda a modelos preentrenados y a entrenarlos para lograr una mayor eficiencia y precisión en la clasificación de imágenes. En resumen, el aprendizaje por transferencia se presentó como una técnica valiosa para acelerar y mejorar el rendimiento de los modelos de aprendizaje profundo.
+
 ### Understanding transfer learning: the concepts
 [<- Return to INDEX 3](#index-3)
+
+![img_3.png](ims%2FW3%2Fimg_3.png)
+
+En las lecciones anteriores, analizaste la creación de un clasificador binario que predijera gatos contra perros o caballos contra humanos. También viste cómo puede ocurrir un sobreajuste y exploraste algunas prácticas para evitarlo. El problema con ellas, por supuesto, es que los datos de entrenamiento eran muy pequeños y hay un número limitado de funciones comunes que se pueden extraer, incluso si utilizamos algunos trucos, como el aumento de imágenes.
+
+Pero en ambos casos, construiste el modelo desde cero. ¿Y si pudieras tomar un modelo existente que se basa en muchos más datos y utilizar las funciones que ese modelo ha aprendido? Ese es el concepto de aprendizaje por transferencia, y lo exploraremos en esta lección.
+
+![img_4.png](ims%2FW3%2Fimg_4.png)
+
+ Así, por ejemplo, si visualizas tu modelo de esta manera con una serie de capas convolucionales antes de que la capa densa ocupe el lugar de salida, 
+
+![img_5.png](ims%2FW3%2Fimg_5.png)
+
+introduzcas tus datos en la capa superior, la red aprenderá las circunvoluciones que identifican las entidades de tus datos y todo eso. 
+
+![img_6.png](ims%2FW3%2Fimg_6.png)
+
+Pero consideremos el modelo de otra persona, quizás uno mucho más sofisticado que el suyo, basado en muchos más datos. Tienen capas convolucionales y aquí están intactas con características que ya se han aprendido.
+
+![img_7.png](ims%2FW3%2Fimg_7.png)
+
+
+De este modo, puede bloquearlas en lugar de volver a capacitarlas en sus datos, y hacer que simplemente extraigan las características de sus datos utilizando las convoluciones que ya han aprendido.
+
+![img_8.png](ims%2FW3%2Fimg_8.png)
+
+A continuación, puede tomar un modelo que se haya entrenado con conjuntos de datos muy grandes y utilizar las convoluciones que aprendió al clasificar sus datos. Si recuerda cómo se crean las convoluciones y cómo se utilizan para identificar entidades concretas, así
+
+como el recorrido de una entidad por la red, tiene sentido utilizarlas y, a continuación, volver a entrenar las capas densas de ese modelo con sus datos. Por supuesto, bueno, lo habitual es bloquear todas las circunvoluciones. No tienes que hacerlo.
+
+
+También puedes optar por volver a entrenar algunas de las inferiores, ya que pueden estar demasiado especializadas para las imágenes que tienes a mano. Se necesita un poco de ensayo y error para descubrir la combinación correcta.
+
+![img_9.png](ims%2FW3%2Fimg_9.png)
+
+Tomemos, pues, un modelo de última generación bien entrenado. Hay uno llamado Inception, del que puedes obtener más información en su sitio. 
+
+![img_10.png](ims%2FW3%2Fimg_10.png)
+
+Esto ha sido entrenado previamente con un conjunto de datos de ImageNet, que contiene 1,4 millones de imágenes en 1000 clases diferentes.
 
 ### Coding transfer learning from the inception model
 [<- Return to INDEX 3](#index-3)
 
+![img_11.png](ims%2FW3%2Fimg_11.png)
+
+Así que echemos un vistazo a cómo lograríamos esto en el código. Empezaremos con las entradas. En concreto, utilizaremos la API de capas de keras para seleccionar las capas y entender cuáles queremos usar y cuáles queremos volver a entrenar
+
+![img_12.png](ims%2FW3%2Fimg_12.png)
+
+En esta URL se guarda una copia de los pesos previamente entrenados para la red neuronal inicial. Piense en ello como una instantánea del modelo después de haberlo entrenado.
+Son los parámetros los que luego se pueden cargar en el esqueleto del modelo para convertirlo de nuevo en un modelo entrenado. 
+
+![img_13.png](ims%2FW3%2Fimg_13.png)
+
+Ahora, si queremos usar Inception, es una suerte que keras tenga la definición del modelo integrada. Así que crea una instancia con la forma de entrada que desee para sus datos y especifica que no quiere utilizar los pesos incorporados, sino la instantánea que acaba de descargar.
+
+ El inception V3 tiene una capa totalmente conectada en la parte superior. Por lo tanto, al establecer include_top en false, estás especificando que quieres ignorarlo y pasar directamente a las convoluciones.
+
+![img_14.png](ims%2FW3%2Fimg_14.png)
+
+Ahora que he creado una instancia de mi modelo previamente entrenado, puedo recorrer en iteración sus capas y bloquearlas, diciendo que no se podrán entrenar con este código. 
+
+![img_15.png](ims%2FW3%2Fimg_15.png)
+
+Luego puedes imprimir un resumen de tu modelo previamente entrenado con este código, pero prepárate, es enorme. 
+
+![img_16.png](ims%2FW3%2Fimg_16.png)
+
+No hay forma de que pueda caber todo en una diapositiva, incluso si utilizo una fuente de dos puntos como esta. Esto es probablemente menos del 10 por ciento del resumen del modelo. Pruébelo usted mismo en el cuaderno.
+
 ### Adding your DNN
 [<- Return to INDEX 3](#index-3)
+
+En el vídeo anterior vio cómo tomar las capas de un modelo existente, y hacerlas de modo que no se reentrenen -- es decir, congela (o bloquea) las convoluciones ya aprendidas en su modelo. Ahora, tendrá que añadir su propia DNN en la parte inferior de éstas, que podrá reentrenar a sus datos. En el siguiente vídeo, verá cómo hacerlo...
 
 ### Coding your own model with transferred features
 [<- Return to INDEX 3](#index-3)
 
+![img_17.png](ims%2FW3%2Fimg_17.png)
+
+Todas las capas tienen nombres, por lo que puede buscar el nombre de la última capa que desea utilizar. Si inspecciona el resumen, verá que las capas inferiores se han convertido en 3 por 3. Pero quiero usar algo con un poco más de información. Así que moví la descripción del modelo para encontrar mixed7,
+que es la salida de una gran cantidad de convolución que son 7 por 7. No tienes que usar esta capa y es divertido experimentar con otros. Pero con este código, voy a agarrar esa capa desde el inicio y llevarla a la salida.
+
+![img_18.png](ims%2FW3%2Fimg_18.png)
+
+Así que ahora vamos a definir nuestro nuevo modelo, tomando la salida de la capa mixed7 del modelo inicial, que habíamos llamado last_ouput. Esto debería parecerse exactamente a los modelos densos que creaste al comienzo de este curso. 
+
+El código es un poco diferente, pero esta es solo una forma diferente de usar la API de capas. Comienza aplanando la entrada, que simplemente resulta ser la salida desde el inicio. Y, a continuación, agregue una capa oculta densa. Y luego su capa de salida que tiene sólo una neurona activada por un sigmoide para clasificar entre dos elementos.
+
+A continuación, puede crear un modelo utilizando la clase abstracta Model. Y pasando en la entrada y la definición de capas que acaba de crear. Y luego lo compila como antes con un optimizador y una función de pérdida y las métricas que desea recopilar.
+
+![img_19.png](ims%2FW3%2Fimg_19.png)
+
+Como antes vas a aumentar las imágenes con el generador de imágenes. 
+
+![img_20.png](ims%2FW3%2Fimg_20.png)
+
+Entonces, como antes, podemos obtener nuestros datos de 
+entrenamiento del generador fluyendo desde el directorio especificado y pasando por todas las ampliaciones
+
+![img_21.png](ims%2FW3%2Fimg_21.png)
+
+Y ahora podemos entrenar como antes con model.fit_generator. Voy a correr por 100 épocas.
+
+![img_22.png](ims%2FW3%2Fimg_22.png)
+
+Lo que es interesante si haces esto, es que terminas con otra pero una situación de sobreajuste diferente. Aquí está el gráfico de la precisión de la formación frente a la validación. Como puede ver, aunque comenzó bien, la validación está desviando de la formación de una manera muy mala. Entonces, ¿cómo arreglamos esto? Echaremos un vistazo a eso en la próxima lección.
+
 ### Using dropout
 [<- Return to INDEX 3](#index-3)
+
+Otra herramienta útil para explorar en este punto es el Dropout. 
+
+La idea detrás de ella es eliminar un número aleatorio de neuronas en su red neuronal. Esto funciona muy bien por dos razones: La primera es que las neuronas vecinas a menudo terminan con pesos similares, lo que puede llevar a un sobreajuste, por lo que eliminar algunas al azar puede eliminar esto. La segunda es que a menudo una neurona puede sobreponderar la entrada de una neurona en la capa anterior, y puede sobreespecializarse como resultado. Por lo tanto, ¡eliminarlas puede liberar a la red neuronal de este posible mal hábito! 
+
+Vea el magnífico vídeo de Andrew explicando los abandonos aquí: 
+https://www.youtube.com/watch?v=ARq74QuavAo
 
 ### Exploring dropouts
 [<- Return to INDEX 3](#index-3)
 
+![img_23.png](ims%2FW3%2Fimg_23.png)
+
+En la lección anterior, vimos cómo transferir el aprendizaje. Pero cuando rediseñamos las características del clasificador inicial para gatos y perros, acabamos sobreajustando de nuevo. También teníamos un aumento, pero a pesar de eso, todavía sufríamos de sobreajuste. Así que analicemos algunas formas en las que podemos evitarlo en esta lección. 
+
+![img_24.png](ims%2FW3%2Fimg_24.png)
+
+Esta es la precisión de nuestro conjunto de entrenamiento en comparación con nuestro conjunto de validación en 100 épocas. No es muy saludable.
+
+![img_25.png](ims%2FW3%2Fimg_25.png)
+
+Hay otra capa en Keras llamada dropout. Y la idea detrás de la dropout es que las capas de una red neuronal a veces pueden terminar teniendo pesos similares y, posiblemente, impactarse entre sí y provocar un sobreajuste. Con un modelo tan grande y complejo como este, eso es un riesgo. Así que, si te puedes imaginar, las capas densas pueden parecerse un poco a esto.
+
+![img_26.png](ims%2FW3%2Fimg_26.png)
+
+Al eliminar algunas, hacemos que se vea así. Y eso tiene el efecto de que los vecinos no se afecten demasiado entre sí y, potencialmente, eliminen el sobreacondicionamiento.
+
+![img_27.png](ims%2FW3%2Fimg_27.png)
+
+Entonces, ¿cómo logramos esto en código? Bueno, aquí está la definición de nuestro modelo de antes. Y aquí es donde añadimos la deserción. El parámetro está entre 0 y 1 y es la fracción de unidades a eliminar.
+En este caso, estamos eliminando el 20% de nuestras neuronas.
+
+![img_24.png](ims%2FW3%2Fimg_24.png)
+
+A modo de comparación, este es el gráfico del entrenamiento comparado con la precisión de antes de que se añadiera el dropout. 
+Si observas que la validación se aleja de la formación de esta forma con el tiempo, la verdad es que es una buena opción probar con una persona que ha abandonado los estudios.
+
+![img_28.png](ims%2FW3%2Fimg_28.png)
+
+Y este es el impacto de la deserción. Puede ver que es muy significativo.
+
 ### Applying Transfer Learning to Cats v Dogs (Lab 1)
 [<- Return to INDEX 3](#index-3)
+
+Ahora que hemos explorado el aprendizaje por transferencia y hemos echado un vistazo a la regularización mediante el abandono, pasemos al escenario de Gatos contra Perros en este 
+cuaderno [C2_W3_Lab_1_transfer_learning.ipynb](notebooks%2FW3%2FC2_W3_Lab_1_transfer_learning.ipynb)
+ a continuación.
+
+Para más información sobre cómo congelar/bloquear capas, puede explorar la 
+[documentación aquí.](https://www.tensorflow.org/tutorials/images/transfer_learning)
 
 ### Exploring Transfer Learning with Inception
 [<- Return to INDEX 3](#index-3)
 
+![img_29.png](ims%2FW3%2Fimg_29.png)
+
+Aquí está el libro de aprendizaje de transferencia de esta lección. Vamos a pasarlo, y cuando terminemos, puedes probarlo tú mismo. La primera celda descarga los pesos de una red de inicio preentrenada y, a continuación, crea una instancia nueva de la misma utilizando esos pesos. Extraeremos una de las capas convolucionales como nuestra capa de entrada, y luego tomaremos su salida. Llamamos a esta última salida. 
+
+![img_30.png](ims%2FW3%2Fimg_30.png)
+
+Ahora, configuraremos nuestro modelo tomando la última salida como entrada a él. Eso se aplanará, y luego habrá una capa densa, una deserción y una capa de salida. 
+
+![img_31.png](ims%2FW3%2Fimg_31.png)
+
+El entrenamiento utilizará el aumento como hemos explorado antes. Entonces podemos ver que las imágenes están siendo cargadas y segregadas en clases correctamente, 2.000 para entrenamiento, 1.000 para validación
+
+![img_32.png](ims%2FW3%2Fimg_32.png)
+
+Ahora empezaremos el entrenamiento. Sólo voy a hacer 20 épocas. Mantenga un ojo en las métricas de precisión de validación y precisión. Estoy acelerando el video para ahorrar un poco de tiempo. Pero como puede ver, la precisión del entrenamiento está aumentando constantemente, y la precisión de validación se está asentando aproximadamente a mediados de los 90. Para el momento en que terminamos, la precisión del entrenamiento es de alrededor del 90 por ciento, y la validación está cerca del 97 por ciento. 
+
+![img_33.png](ims%2FW3%2Fimg_33.png)
+
 ### What have we seen so far? 3
 [<- Return to INDEX 3](#index-3)
+
+Esta semana ha aprendido un montón de grandes conceptos nuevos
+
+Usted vio el Aprendizaje por Transferencia, y cómo se puede tomar un modelo existente, congelar muchas de sus capas para evitar que se vuelvan a entrenar, y efectivamente "recordar" las convoluciones con las que fue entrenado para adaptarse a las imágenes. 
+
+A continuación, añadió su propia DNN debajo de esto para poder volver a entrenar en sus imágenes utilizando las convoluciones del otro modelo. 
+
+Aprendió acerca de la regularización utilizando la deserción para hacer que su red fuera más eficiente a la hora de evitar la sobreespecialización y, por tanto, el sobreajuste.
+
+Antes de pasar al ejercicio de esta semana, ¡hagamos una prueba rápida! 
 
 ### Week 3 Quiz
 [<- Return to INDEX 3](#index-3)
 
+1. If I put a dropout parameter of 0.2, how many nodes will I lose?
+
+   - [X] 20% of them
+   - [ ] 2% of them
+   - [ ] 20% of the untrained ones
+   - [ ] 2% of the untrained ones
+
+   > Correct
+   > Spot on!
+
+2. Why is transfer learning useful?
+
+   - [ ] Because I can use all of the data from the original training set
+   - [ ] Because I can use all of the data from the original validation set
+   - [X] Because I can use the features that were learned from large datasets that I may not have access to
+   - [ ] Because I can use the validation metadata from large datasets that I may not have access to
+
+   > Correct
+   > Exactly!
+
+3. How did you lock or freeze a layer from retraining?
+
+   - [ ] tf.freeze(layer)
+   - [ ] tf.layer.frozen = true
+   - [ ] tf.layer.locked = true
+   - [X] layer.trainable = false
+
+   > Correct
+   > Well done!
+
+4. How do you change the number of classes the model can classify when using transfer learning? (i.e. the original model handled 1000 classes, but yours handles just 2)
+
+   - [ ] Ignore all the classes above yours (i.e. Numbers 2 onwards if I'm just classing 2)
+   - [ ] Use all classes but set their weights to 0
+   - [X] When you add your DNN at the bottom of the network, you specify your output layer with the number of classes you want
+   - [ ] Use dropouts to eliminate the unwanted classes
+
+   > Correct
+   > Good job!
+
+5. Can you use Image Augmentation with Transfer Learning Models?
+
+   - [ ] No, because you are using pre-set features
+   - [X] Yes, because you are adding new layers at the bottom of the network, and you can use image augmentation when training these
+
+   > Correct
+   > Correct!
+
+6. Why do dropouts help avoid overfitting?
+
+   - [X] Because neighbor neurons can have similar weights, and thus can skew the final training 
+   - [ ] Having less neurons speeds up training
+
+   > Correct
+   > That's right!
+
+7. What would the symptom of a Dropout rate being set too high?
+
+   - [X] The network would lose specialization to the effect that it would be inefficient or ineffective at learning, driving accuracy down
+   - [ ] Training time would increase due to the extra calculations being required for higher dropout
+
+   > Correct
+   > Indeed!
+
+8. Which is the correct line of code for adding Dropout of 20% of neurons using TensorFlow?
+
+   - [ ] tf.keras.layers.Dropout(20)
+   - [ ] tf.keras.layers.DropoutNeurons(20),
+   - [X] tf.keras.layers.Dropout(0.2),
+   - [ ] tf.keras.layers.DropoutNeurons(0.2),
+
+   > Correct
+   > You've got it!
+
 ### Week 3 Wrap up
 [<- Return to INDEX 3](#index-3)
 
+![img_34.png](ims%2FW3%2Fimg_34.png)
+
+Enhorabuena, has llegado al final de la tercera semana. Esta semana, espero que estés tan entusiasmado como yo con algunas de las cosas que has aprendido. Cuando analizaste el aprendizaje por transferencia, te diste cuenta de que algunas de las cosas que estaban ahí, que estaban disponibles para ti, que podías tomar el modelo de otra persona, un modelo enorme que llevaba mucho tiempo y con muchos datos a partir de los cuales entrenarte, pero que pudiste aprovechar para hacer que tus modelos fueran aún mejores. Personalmente, me parece algo que es realmente inspirador y que realmente me emociona. Pero la semana que viene cambiaremos un poco de tema y estudiaremos cómo pasar de la clasificación binaria a la clasificación multiclase para completar vuestra caja de herramientas. Nos vemos allí.
+
 ### Lecture Notes Week 3
 [<- Return to INDEX 3](#index-3)
+
+Los apuntes de las conferencias están disponibles en nuestra plataforma comunitaria. Si ya es miembro, inicie sesión en su cuenta y acceda a los apuntes de las conferencias 
+aquí [C2_W3.pdf](notes%2FC2_W3.pdf)
+.
 
 ## Weekly Assignment - Transfer Learning Horses vs Humans
 [<- Return to INDEX 0](#index-0)
