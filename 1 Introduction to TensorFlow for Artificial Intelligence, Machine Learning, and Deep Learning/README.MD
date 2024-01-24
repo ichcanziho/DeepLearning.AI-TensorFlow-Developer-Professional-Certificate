@@ -16,16 +16,8 @@ En este curso, aprenderás:
 
 Si usted es un desarrollador de software que quiere construir algoritmos escalables impulsados por IA, necesita entender cómo utilizar las herramientas para construirlos. Este curso forma parte de la próxima Especialización en Aprendizaje Automático en Tensorflow y le enseñará las mejores prácticas para utilizar TensorFlow, un popular marco de trabajo de código abierto para el aprendizaje automático. 
 
-<details>
-    <summary>Mostrar certificado</summary><p>
 
-      [<img src="certificate.png" />](https://www.coursera.org/account/accomplishments/verify/N7SRGP5PNRQS)
-
-</p></details>
-
-![certificate.png](certificate.png)
-
-[Coursera N7SRGP5PNRQS.pdf](notes%2FCoursera%20N7SRGP5PNRQS.pdf)
+[<img src="certificate.png" />](https://www.coursera.org/account/accomplishments/verify/N7SRGP5PNRQS)
 
 
 El curso de Aprendizaje Automático y la Especialización en Aprendizaje Profundo de Andrew Ng enseñan los principios más importantes y fundacionales del Aprendizaje Automático y el Aprendizaje Profundo. Esta nueva Especialización en TensorFlow de deeplearning.ai le enseña cómo utilizar TensorFlow para implementar esos principios, de forma que pueda empezar a construir y aplicar modelos escalables a problemas del mundo real. Para desarrollar una comprensión más profunda de cómo funcionan las redes neuronales, le recomendamos que realice la Especialización en Aprendizaje Profundo.
