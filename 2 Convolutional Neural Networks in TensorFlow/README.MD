@@ -1572,50 +1572,591 @@ Ha recorrido un largo camino, ¡enhorabuena! Queda una cosa por hacer antes de p
 ### A conversation with Andrew Ng 4
 [<- Return to INDEX 4](#index-4)
 
+![img.png](ims%2FW4%2Fimg.png)
+
+En esta semana de la clase, se abordó el tema de la clasificación multiclase en el contexto del aprendizaje profundo. Se explicó que, aunque en muchas aplicaciones se puede resolver el problema de clasificación con solo dos resultados, como en la clasificación de caballos contra humanos o gatos contra perros, en ocasiones es necesario trabajar con más de dos clases, como en el juego de piedra, papel o tijera, que tiene tres clases posibles.
+
+![img_1.png](ims%2FW4%2Fimg_1.png)
+
+Se mencionó que los estudiantes aprenderán los detalles de cómo implementar clasificadores multiclase y cómo etiquetar automáticamente las imágenes en función de los directorios en los que se encuentran. Se destacó la importancia de comprender la diferencia de programación al trabajar con clasificadores multiclase en comparación con clasificadores binarios.
+
+![img_2.png](ims%2FW4%2Fimg_2.png)
+
+Además, se mencionó que los estudiantes explorarán un conjunto de datos generado por ordenador para piedra, papel o tijera, que incluye una variedad de manos de diferentes razas, géneros, tamaños y estilos de uñas. Se explicó que la generación de datos por ordenador puede ser una solución eficaz para obtener conjuntos de datos diversificados sin la necesidad de contratar modelos reales.
+
+Se resaltó la importancia de utilizar gráficos por ordenador para generar datos, ya que la tecnología ha avanzado lo suficiente como para que sea una opción viable. Se mencionó que las empresas también están explorando estas ideas para crear conjuntos de datos en diversos entornos.
+
+![img_3.png](ims%2FW4%2Fimg_3.png)
+
+En resumen, esta semana los estudiantes tendrán la oportunidad de trabajar con un conjunto de datos generado por ordenador y aprenderán a implementar clasificadores multiclase en TensorFlow. El objetivo es proporcionar más datos para alimentar algoritmos de aprendizaje profundo y mejorar su capacidad de clasificación en múltiples categorías.
+
 ### Moving from binary to multi-class classification
 [<- Return to INDEX 4](#index-4)
+
+![img_4.png](ims%2FW4%2Fimg_4.png)
+
+En las últimas lecciones, has estado creando un clasificador binario. Uno que detecta dos tipos diferentes de objetos, caballo o humano, gato o perro, ese tipo de cosas. 
+
+![img_5.png](ims%2FW4%2Fimg_5.png)
+
+En esta lección, veremos cómo podemos extender eso a varias clases. Recuerda que cuando clasificábamos caballos o humanos, teníamos una estructura de archivos como esta. Había subdirectorios para cada clase, donde en este caso solo teníamos dos. Lo primero que tendrás que hacer es replicar esto para varias clases como esta. 
+
+![img_6.png](ims%2FW4%2Fimg_6.png)
+
+Es muy similar y aquí puedes ver que tanto el entrenamiento como la validación tienen tres subdirectorios. Uno para piedra, otro para papel y otro para tijeras. En estos, podemos poner imágenes de entrenamiento y validación para piedra, papel y tijera.
 
 ### Introducing the Rock-Paper-Scissors dataset
 [<- Return to INDEX 4](#index-4)
 
+Piedra-Papel-Tijeras es un conjunto de datos que contiene 2.892 imágenes de diversas manos en poses de Piedra/Papel/Tijeras. Tiene licencia
+[CC By 2.](https://creativecommons.org/licenses/by/2.0/)
+0 y está disponible para todos los fines, pero su intención es principalmente el aprendizaje y la investigación.
+
+Piedra, Papel o Tijeras contiene imágenes de diversas manos, de diferentes razas, edades y géneros, en poses de Piedra, Papel o Tijeras y etiquetadas como tales. Puede descargar el
+[conjunto de entrenamiento aquí](https://storage.googleapis.com/tensorflow-1-public/course2/week4/rps.zip)
+, y el
+[conjunto de prueba aquí](https://storage.googleapis.com/tensorflow-1-public/course2/week4/rps-test-set.zip)
+. Todas estas imágenes se han generado utilizando técnicas CGI como experimento para determinar si un conjunto de datos basado en CGI puede utilizarse para la clasificación frente a imágenes reales. También he generado algunas imágenes que puede utilizar para realizar predicciones. Puede encontrarlas
+[aquí](https://storage.googleapis.com/tensorflow-1-public/course2/week4/rps-validation.zip)
+.
+
+Tenga en cuenta que todos estos datos están posados sobre un fondo blanco.
+
+Cada imagen es de 300×300 píxeles en color de 24 bits
+
+
+Verá cómo se puede utilizar este conjunto de datos para construir un clasificador multiclase en el siguiente vídeo.
+
 ### Explore multi-class with Rock Paper Scissors dataset
 [<- Return to INDEX 4](#index-4)
+
+![img_7.png](ims%2FW4%2Fimg_7.png)
+
+Ahora, este es un nuevo conjunto de datos que creé para oportunidades de aprendizaje. Está disponible gratuitamente y consta de unas 3.000 imágenes. Todas han sido generadas mediante CGI con una amplia gama de modelos, hombres y mujeres, y muchos tonos de piel diferentes. He aquí algunos ejemplos. 
+
+![img_8.png](ims%2FW4%2Fimg_8.png)
+
+Si quieres descargar los conjuntos de datos, puedes encontrarlos en esta URL. Contendrá un conjunto de entrenamiento, un conjunto de validación y algunas imágenes adicionales que podrás descargar para probar la red por ti mismo.
+
+![img_9.png](ims%2FW4%2Fimg_9.png)
+
+Una vez que tu directorio esté configurado, tendrás que configurar tu generador de imágenes. Este es el código que usaste anteriormente, pero ten en cuenta que el modo de clase estaba configurado en binario. 
+
+![img_10.png](ims%2FW4%2Fimg_10.png)
+
+Para varias clases, tendrás que cambiarlo a un formato categórico como este. 
+
+> Nota importante, también se podría usar "sparse" en lugar de "categorical"
+
+1. **Categorical:**
+   
+   - En este caso, `class_mode='categorical'` significa que las etiquetas serán convertidas a forma categórica, es decir, one-hot encoded. Si tienes `n` clases, cada etiqueta será un vector de `n` elementos en donde todos los elementos son `0` excepto en la posición que representa la clase a la que pertenece la imagen, que será `1`.
+   - Por ejemplo, si tienes tres clases y una imagen pertenece a la clase 2, su etiqueta sería `[0, 1, 0]`.
+   - Este modo es el que debes usar si tu capa de salida en el modelo de red neuronal es una capa `softmax` y estás utilizando una función de pérdida como `categorical_crossentropy`.
+
+2. **Sparse:**
+   
+   - Usando `class_mode='sparse'`, las etiquetas se proporcionan como enteros. En lugar de convertir la etiqueta de la clase a un vector one-hot, la etiqueta es simplemente el índice entero de la clase.
+   - Por ejemplo, si la imagen pertenece a la clase 2, la etiqueta sería simplemente `2`.
+   - Este formato es útil cuando tienes muchas clases, lo cual podría hacer que la representación one-hot sea muy grande y poco eficiente. También es la representación que debes elegir si la capa de salida de tu red es un nodo singular con activación `softmax` y utilizas la función de pérdida `sparse_categorical_crossentropy`.
+   
+Ambos modos `categorical` y `sparse` son usados en problemas de clasificación multiclase, y la elección entre uno y otro a menudo depende del tamaño del conjunto de datos, el número de clases y también de la estructura de tu red neuronal (en particular la capa de salida y la función de pérdida).
+
+![img_11.png](ims%2FW4%2Fimg_11.png)
+
+El siguiente cambio se produce en la definición de tu modelo , donde tendrás que cambiar la capa de salida. Para un clasificador binario, era más eficiente tener solo una neurona y usar una función sigmoidea para activarla. Esto significaba que arrojaría un resultado cercano a cero para una clase y cercano a uno para la otra.
+
+![img_12.png](ims%2FW4%2Fimg_12.png)
+
+Ahora bien, eso no es adecuado para varias clases, así que tenemos que cambiarlo, pero es bastante simple. Ahora tenemos una capa de salida que tiene tres neuronas, una para cada una de las clases piedra, papel y tijera, y la activa softmax, que convierte todos los valores en probabilidades que sumarán una. 
+
+![img_13.png](ims%2FW4%2Fimg_13.png)
+
+Entonces, ¿qué significa eso realmente? Considera una mano como esta. Lo más probable es que sea un papel , pero
+como tiene los dos primeros dedos abiertos y los demás unidos, también podría confundirse con unas tijeras. El resultado de una red neuronal con tres neuronas y un softmax reflejaría eso, y tal vez se vería así con una probabilidad muy baja de piedra, una muy alta para el papel y otra decente para las tijeras. Las tres probabilidades seguirían sumando una. 
+
+![img_14.png](ims%2FW4%2Fimg_14.png)
+
+El cambio final se produce entonces cuando se compila la red. Si recuerda los ejemplos anteriores, su función de pérdida era la entropía cruzada binaria. 
+
+![img_15.png](ims%2FW4%2Fimg_15.png)
+
+hora cambiarás si es una entropía cruzada categórica como esta. Hay otras funciones de pérdida categórica, incluida la entropía cruzada, categórica dispersa, que utilizaste en el ejemplo de moda y, por supuesto, también puedes usarlas.
+
+![img_16.png](ims%2FW4%2Fimg_16.png)
+
+En torno a esto durante 100 épocas, y tengo este gráfico, muestra que el entrenamiento alcanza un máximo en unas 25 épocas. Así que te recomendaría no usar muchos, y eso es todo lo que tienes que hacer. Así que echémosle un vistazo en el cuaderno de ejercicios.
 
 ### Check out the code! (Lab 1)
 [<- Return to INDEX 4](#index-4)
 
+Ahora que ya ha explorado los datos y ha visto cómo se puede modificar el código para pasar de un clasificador de clase binario a uno multiclase, ¡echemos un vistazo al 
+cuaderno [C2_W4_Lab_1_multi_class_classifier.ipynb](notebooks%2FW4%2FC2_W4_Lab_1_multi_class_classifier.ipynb)
+ que lo implementa por nosotros!
+
 ### Train a classifier with Rock Paper Scissors
 [<- Return to INDEX 4](#index-4)
+
+![img_17.png](ims%2FW4%2Fimg_17.png)
+
+En la lección anterior, analizamos cómo pasaría de los clasificadores binarios que habíamos estado viendo a lo largo del curso, para actualizarlo desde el clasificador multiclase. En este vídeo, veremos el libro de trabajo de las tijeras de papel de roca y exploraremos cómo se realiza la clasificación multiclase. 
+
+
+El primer paso es obtener los datos. Hay dos archivos zip, uno para los datos de entrenamiento y otro para el conjunto de pruebas. Una vez que tengamos los datos, los descomprimiremos en el directorio temporal, y los datos de entrenamiento se encuentran en barra inclinada temp rps. 
+
+```python
+# Download the train set
+!wget https://storage.googleapis.com/tensorflow-1-public/course2/week4/rps.zip
+
+# Download the test set
+!wget https://storage.googleapis.com/tensorflow-1-public/course2/week4/rps-test-set.zip
+
+import zipfile
+
+# Extract the archive
+local_zip = './rps.zip'
+zip_ref = zipfile.ZipFile(local_zip, 'r')
+zip_ref.extractall('tmp/rps-train')
+zip_ref.close()
+
+local_zip = './rps-test-set.zip'
+zip_ref = zipfile.ZipFile(local_zip, 'r')
+zip_ref.extractall('tmp/rps-test')
+zip_ref.close()
+
+```
+Puede ver los subdirectorios aquí. Ahora echemos un vistazo a algunos de los archivos dentro de eso. 
+```python
+import os
+
+base_dir = 'tmp/rps-train/rps'
+
+rock_dir = os.path.join(base_dir, 'rock')
+paper_dir = os.path.join(base_dir, 'paper')
+scissors_dir = os.path.join(base_dir, 'scissors')
+
+print('total training rock images:', len(os.listdir(rock_dir)))
+print('total training paper images:', len(os.listdir(paper_dir)))
+print('total training scissors images:', len(os.listdir(scissors_dir)))
+
+rock_files = os.listdir(rock_dir)
+print(rock_files[:10])
+
+paper_files = os.listdir(paper_dir)
+print(paper_files[:10])
+
+scissors_files = os.listdir(scissors_dir)
+print(scissors_files[:10])
+```
+Puede ver que hay 840 de cada clase y algunos nombres de archivo. Vamos a trazar algunos de los archivos para que podamos ver cómo se ven los datos.
+```commandline
+total training rock images: 840
+total training paper images: 840
+total training scissors images: 840
+['rock06ck02-074.png', 'rock02-012.png', 'rock01-097.png', 'rock03-105.png', 'rock05ck01-058.png', 'rock02-038.png', 'rock05ck01-065.png', 'rock05ck01-047.png', 'rock01-026.png', 'rock02-044.png']
+['paper07-001.png', 'paper03-046.png', 'paper05-110.png', 'paper07-056.png', 'paper03-087.png', 'paper03-015.png', 'paper03-019.png', 'paper07-115.png', 'paper01-000.png', 'paper01-058.png']
+['scissors01-052.png', 'testscissors02-089.png', 'testscissors01-069.png', 'testscissors03-011.png', 'scissors01-023.png', 'scissors04-070.png', 'testscissors02-104.png', 'scissors02-019.png', 'testscissors03-103.png', 'testscissors02-034.png']
+```
+
+```python
+%matplotlib inline
+
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
+pic_index = 2
+
+next_rock = [os.path.join(rock_dir, fname)
+                for fname in rock_files[pic_index-2:pic_index]]
+next_paper = [os.path.join(paper_dir, fname)
+                for fname in paper_files[pic_index-2:pic_index]]
+next_scissors = [os.path.join(scissors_dir, fname)
+                for fname in scissors_files[pic_index-2:pic_index]]
+
+for i, img_path in enumerate(next_rock+next_paper+next_scissors):
+  img = mpimg.imread(img_path)
+  plt.imshow(img)
+  plt.axis('Off')
+  plt.show()
+```
+
+
+![img_18.png](ims%2FW4%2Fimg_18.png)
+
+Como podemos ver, tenemos algunas manos diferentes con diferentes colores de piel, y manos masculinas y femeninas. 
+
+
+Ahora vamos a construir el modelo. Tenga en cuenta que aunque las imágenes son de 300 por 300, estamos configurando los generadores de imágenes para darnos una varianza de 150 por 150. Los redimensionará sobre la marcha y aumentará los que están en el directorio de entrenamiento.
+
+```python
+import tensorflow as tf
+
+model = tf.keras.models.Sequential([
+    # Note the input shape is the desired size of the image 150x150 with 3 bytes color
+    # This is the first convolution
+    tf.keras.layers.Conv2D(64, (3,3), activation='relu', input_shape=(150, 150, 3)),
+    tf.keras.layers.MaxPooling2D(2, 2),
+    # The second convolution
+    tf.keras.layers.Conv2D(64, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2,2),
+    # The third convolution
+    tf.keras.layers.Conv2D(128, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2,2),
+    # The fourth convolution
+    tf.keras.layers.Conv2D(128, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2,2),
+    # Flatten the results to feed into a DNN
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dropout(0.5),
+    # 512 neuron hidden layer
+    tf.keras.layers.Dense(512, activation='relu'),
+    tf.keras.layers.Dense(3, activation='softmax')
+])
+```
+
+Ahora, comienza el entrenamiento. Voy a acelerar el video para que puedas ver el progreso. Mantenga un ojo en la precisión y la precisión de validación
+
+```python
+# Set the training parameters
+model.compile(loss = 'categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+TRAINING_DIR = "tmp/rps-train/rps"
+training_datagen = ImageDataGenerator(
+      rescale = 1./255,
+        rotation_range=40,
+      width_shift_range=0.2,
+      height_shift_range=0.2,
+      shear_range=0.2,
+      zoom_range=0.2,
+      horizontal_flip=True,
+      fill_mode='nearest')
+
+VALIDATION_DIR = "tmp/rps-test/rps-test-set"
+validation_datagen = ImageDataGenerator(rescale = 1./255)
+
+train_generator = training_datagen.flow_from_directory(
+    TRAINING_DIR,
+    target_size=(150,150),
+    class_mode='categorical',
+  batch_size=126
+)
+
+validation_generator = validation_datagen.flow_from_directory(
+    VALIDATION_DIR,
+    target_size=(150,150),
+    class_mode='categorical',
+  batch_size=126
+)
+
+# Train the model
+history = model.fit(train_generator, epochs=25, steps_per_epoch=20, validation_data = validation_generator, verbose = 1, validation_steps=3)
+```
+
+ólo estoy entrenando durante 25 épocas, basado en el gráfico que viste en la última lección. Pero para cuando lleguemos a la décima época, ya lo estamos haciendo bastante bien. Para cuando terminemos, los datos de entrenamiento están por encima del 98% y los datos de validación tienen una precisión del 95%.
+
+```commandline
+Epoch 1/25
+20/20 [==============================] - 31s 1s/step - loss: 1.1151 - accuracy: 0.3337 - val_loss: 1.0972 - val_accuracy: 0.3333
+Epoch 2/25
+20/20 [==============================] - 22s 1s/step - loss: 1.1024 - accuracy: 0.3738 - val_loss: 1.1202 - val_accuracy: 0.3333
+Epoch 3/25
+20/20 [==============================] - 23s 1s/step - loss: 1.1008 - accuracy: 0.3329 - val_loss: 1.0950 - val_accuracy: 0.3656
+...
+Epoch 23/25
+20/20 [==============================] - 22s 1s/step - loss: 0.1311 - accuracy: 0.9548 - val_loss: 0.1216 - val_accuracy: 0.9570
+Epoch 24/25
+20/20 [==============================] - 21s 1s/step - loss: 0.2298 - accuracy: 0.9254 - val_loss: 0.0379 - val_accuracy: 0.9946
+Epoch 25/25
+20/20 [==============================] - 22s 1s/step - loss: 0.0767 - accuracy: 0.9766 - val_loss: 0.0408 - val_accuracy: 0.9785
+```
+Se trata de datos altamente especializados que están optimizados para esta lección y no un gran escenario real para Rock, Paper y Tijeras. Discutiré por qué en un momento , pero primero vamos a trazar la precisión. 
+
+```python
+import matplotlib.pyplot as plt
+
+# Plot the results
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+
+epochs = range(len(acc))
+
+plt.plot(epochs, acc, 'r', label='Training accuracy')
+plt.plot(epochs, val_acc, 'b', label='Validation accuracy')
+plt.title('Training and validation accuracy')
+plt.legend(loc=0)
+plt.figure()
+
+plt.show()
+```
+
+![img_19.png](ims%2FW4%2Fimg_19.png)
+
+Podemos ver el entrenamiento mejorando y la tendencia hacia uno. La validación en zig-zags un poco, pero siempre está entre 0.9 y una después de las primeras épocas. Ahora, vamos a explorar probándolo con algunas imágenes que no ha visto anteriormente.
+
 
 ### Try testing the classifier
 [<- Return to INDEX 4](#index-4)
 
+En el siguiente vídeo, verá a Laurence probando el clasificador. También debería probarlo utilizando los datos que puede encontrar
+[aquí](https://storage.googleapis.com/tensorflow-1-public/course2/week4/rps-test-set.zip)
+.
+
 ### Test the Rock Paper Scissors classifier
 [<- Return to INDEX 4](#index-4)
+
+![img_20.png](ims%2FW4%2Fimg_20.png)
+
+He generado algunos que puedes usar para probar, están en la URL en la lección anterior con el conjunto de entrenamiento, el conjunto de pruebas y el conjunto de validación están todos vinculados a. Descarga el zip de validación de RPS desde el enlace que se muestra y en él encontrarás 33 imágenes de diferentes modelos de mano que no utilizaban los conjuntos de entrenamiento y validación y que están en diferentes poses.
+
+![img_21.png](ims%2FW4%2Fimg_21.png)
+
+Ahora vamos a subir uno de estos al libro de trabajo y vamos a tratar de obtener lo que sucede. Voy a elegir una pose de papel,
+y la clasificación vuelve como 1-0-0. Cuando se utiliza el generador de imágenes, las clases provienen de directorios y por lo tanto se ordenan en orden alfabético. Así que el primer valor es para el papel y luego la roca y luego las tijeras.
+
+![img_22.png](ims%2FW4%2Fimg_22.png)
+
+También puedo cargar todos los archivos a la vez y ver clasificaciones para todos ellos. Así que intentemos eso. Estoy acelerando el video para superar todas las subidas. Así que echemos un vistazo a las clasificaciones que recibo. 
+
+![img_23.png](ims%2FW4%2Fimg_23.png)
+
+Recuerde que las neuronas están en el papel de orden y luego roca luego tijeras porque es alfabético. Así que podemos ver que el primero tiene razón. Es tijeras. Pero la segunda está equivocada. Es papel. Pero la tercera neurona tiene el valor más grande que está cerca de uno. Hay una pequeña señal de papel, pero no lo suficiente. El tercero es tijeras y eso es correcto y lo mismo con el cuarto y el quinto. Así que sigamos revisando la lista.
 
 ### What have we seen so far? 4
 [<- Return to INDEX 4](#index-4)
 
+Está llegando al final del Curso 2, ¡y ha recorrido un largo camino! Desde los primeros principios en la comprensión de cómo funciona el ML, hasta el uso de una DNN para hacer visión por ordenador básica, y luego más allá en convoluciones.
+
+Con las convoluciones, usted vio cómo extraer características de una imagen, y vio las herramientas en TensorFlow y Keras para construir con convoluciones y pooling, así como el manejo de imágenes complejas y de múltiples tamaños.
+
+A través de esto, usted vio cómo el sobreajuste puede tener un impacto en sus clasificadores, y exploró algunas estrategias para evitarlo, incluyendo el aumento de la imagen, el abandono, el aprendizaje por transferencia, y más. Para terminar, ¡examinó las consideraciones de su código para construir un modelo de clasificación multiclase! 
+
 ### Week 4 Quiz
 [<- Return to INDEX 4](#index-4)
+
+1. The diagram for traditional programming had Rules and Data In, but what came out?
+
+   - [X] Answers
+   - [ ] Binary
+   - [ ] Machine Learning
+   - [ ] Bugs
+
+   > Correct
+   > Exactly! Machine learning algorithms build a model based on sample data, known as "training data", in order to make predictions or decisions without being explicitly programmed to do so.
+
+2. Why does the DNN for Fashion MNIST have 10 output neurons?
+
+   - [ ] To make it train 10x faster
+   - [ ] To make it classify 10x faster
+   - [ ] Purely Arbitrary
+   - [X] The dataset has 10 classes
+
+   > Correct
+   > Exactly! There are 10 output neurons because we have 10 classes of clothing in the dataset. These should always match.
+
+3. What is a Convolution?
+
+   - [ ] A technique to make images smaller
+   - [ ] A technique to make images larger
+   - [X] A technique to extract features from an image
+   - [ ] A technique to remove unwanted images
+
+   > Correct
+
+4. Applying Convolutions on top of a DNN will have what impact on training?
+
+   - [ ] It will be slower
+   - [ ] It will be faster
+   - [ ] There will be no impact
+   - [X] It depends on many factors. It might make your training faster or slower, and a poorly designed Convolutional layer may even be less efficient than a plain DNN!
+
+   > Correct
+   > Exactly!
+
+5. What method on an ImageGenerator is used to normalize the image?
+
+   - [ ] normalize
+   - [ ] flatten
+   - [ ] rezize()
+   - [X] rescale
+
+   > Correct
+   > Correct!
+
+6. When using Image Augmentation with the ImageDataGenerator, what happens to your raw image data on-disk.
+
+   - [ ] A copy will be made, and the copies are augmented
+   - [ ] A copy will be made, and the originals will be augmented
+   - [X] Nothing
+   - [ ] The images will be edited on disk, so be sure to have a backup
+
+   > Correct
+   > That is, in fact, true. Nothing happens.
+
+7. Can you use Image augmentation with Transfer Learning?
+
+   - [ ] No - because the layers are frozen so they can't be augmented
+   - [X] Yes. It's pre-trained layers that are frozen. So you can augment your images as you train the bottom layers of the DNN with them
+
+   > Correct
+   > You've got it!
+
+8. When training for multiple classes what is the Class Mode for Image Augmentation?
+
+   - [ ] class_mode='multiple'
+   - [ ] class_mode='non_binary'
+   - [X] class_mode='categorical'
+   - [ ] class_mode='all'
+
+   > Correct
+   > Nicely done!
+
 
 ### Lecture Notes Week 4
 [<- Return to INDEX 4](#index-4)
 
+Los apuntes de las conferencias están disponibles en nuestra plataforma comunitaria. Si ya es miembro, inicie sesión en su cuenta y acceda a los apuntes de las conferencias 
+aquí [C2_W4.pdf](notes%2FC2_W4.pdf)
+.
+
 ### IMPORTANT Reminder about end of access to Lab Notebooks
 [<- Return to INDEX 4](#index-4)
+
+¡Hola alumno! 
+
+El(los) siguiente(s) tema(s) es(son) el(los) último(s) tema(s) calificado(s) de este curso. Si lo/los aprueba y también ha aprobado todos los ítems calificados anteriores, podrá obtener el certificado del curso. ¡Enhorabuena!
+
+Tenga en cuenta que, de acuerdo con 
+[la Política de Pagos y Reembolsos de Coursera](https://www.coursera.org/about/terms#payments-and-refund-policy)
+, su acceso a los ítems calificados (así como a los Laboratorios No Calificados alojados en Coursera) finalizará una vez que expire su suscripción. Si desea conservar sus cuadernos de laboratorio como referencia, le recomendamos encarecidamente que 
+[los descargue](https://community.deeplearning.ai/t/downloading-your-notebook-downloading-your-workspace-and-refreshing-your-workspace/475495)
+ antes de finalizar el curso o la Specializations.
+
+Puede dirigirse al 
+[Centro de Ayuda al Aprendiz de Coursera](https://www.coursera.support/s/article/360036160591-How-to-contact-Coursera?language=en_US)
+ si tiene preguntas sobre esta política, o si se queda bloqueado mientras tiene una suscripción activa. 
+
+Gracias y ¡siga aprendiendo!
+Equipo de control de calidad de DeepLearning.AI
 
 ### Wrap up 4
 [<- Return to INDEX 4](#index-4)
 
+¡Enhorabuena por haber terminado el Curso 2 de esta Specializations! Aquí ha pasado mucho tiempo repasando las Redes Neuronales Convolucionales: 
+
+- explorando cómo utilizarlas con grandes conjuntos de datos
+
+- aprovechando el aumento, el dropout, la regularización y el aprendizaje por transferencia
+
+- y, por supuesto, examinando las consideraciones de codificación entre la clasificación binaria o multiclase
+
+En el Curso 3, cambiará de marcha y continuará con el Procesamiento del Lenguaje Natural y, en particular, con el trabajo con textos. 
+
 ### A conversation with Andrew Ng 5
 [<- Return to INDEX 4](#index-4)
 
+![img_24.png](ims%2FW4%2Fimg_24.png)
+
+Enhorabuena por haber llegado al final de este segundo curso. Solo porque has aprendido cómo aumentar tu confianza, cómo implementar el aumento 
+de datos, cómo implementar el aprendizaje por transferencia y cómo usar el tamaño cruzado de varias clases, pero aún te queda mucho 
+por aprender. Muchos de los ejemplos que has visto hasta ahora han utilizado mucha visión artificial. 
+
+En el próximo curso, aprenderás cómo manejar el procesamiento del lenguaje natural y cómo trabajar con textos. También va a ser muy divertido cambiar de tema, de trabajar con píxeles a trabajar con personajes y palabras. Vamos a ver cómo convertir palabras en símbolos, cómo generar incrustaciones, para que podamos aprender de ellas.
+
+![img_25.png](ims%2FW4%2Fimg_25.png)
+
+Una incrustación es cuando podemos convertir una palabra básicamente en un vector en un espacio multidimensional y, desde la dirección en la que apunta ese vector, podemos empezar a determinar la semántica de esa palabra. Vamos a analizar todo eso y cómo las palabras también funcionan en secuencia y en diferentes modelos de secuencia para aprender cuál es el contexto de una oración y cuál es la semántica de la oración, sí.
+
+Eso suena emocionante. Así que creo que el procesamiento del lenguaje natural realmente está despegando, en parte, debido al aprendizaje profundo. Así que en el próximo curso aprenderás mucho sobre eso y tú mismo crearás algunos de estos interesantes modelos. Así que pasemos al siguiente curso.
+
 ### Acknowledgments
 [<- Return to INDEX 4](#index-4)
+
+Además de los desarrolladores originales del plan de estudios, las siguientes personas hicieron contribuciones significativas a la actualización del Curso 2:
+
+**Revisiones de los cuestionarios**
+
+- Diego Peluffo
+
+**Apoyo de ingeniería**
+
+- Andrés Zarta
+
+**Pruebas alfa y tutoría**
+
+- Giovanni Lignarolo
+
+- Deepthi Locanindi
+
+- Chris Favila
+
+**Probadores alfa**
+
+- Nilosree Sengupta
+
+- Paul Wilson Kolluri
+
+- Moustafa Shomer
+
+- Daewook Kim
+
+**Marketing**
+
+- Ishita Chaudary
+
+**Producción de vídeo**
+
+- Diego Peluffo
+
+**Apoyo administrativo y de contenidos adicional**
+
+- Ryan Keenan
+
+- Lara Pheatt-Pitzer
+
+- Inhae Koo
+
+- Muhammad Mubashar
+
+- Christopher Moroney
+
+- Dani Zysman
+
+- Emma Afflerbach
+
+
+Por último, ¡nuestro más sincero agradecimiento a USTED, por inscribirse en esta Specializations y formar parte de nuestra comunidad global de estudiantes!
+
 
 ## Weekly Assignment - Multiclass Classification
 [<- Return to INDEX 0](#index-0)
 
 ### Classification: Beyond two classes
+
+Ahora que ha explorado los conceptos que hay detrás de pasar de la clasificación binaria a la clasificación multiclase, es el momento de realizar otro Ejercicio. En éste, utilizará el conjunto de datos de lenguaje de signos de
+https://www.kaggle.com/datamunge/sign-language-mnist
+, ¡e intentará construir un clasificador multiclase para reconocer el lenguaje de signos!
+
+¡Construyamos un clasificador multiclase para reconocer el lenguaje de signos!
+
+Complete las tareas del cuaderno de 
+asignaciones
+ y suba aquí los archivos pertinentes para su calificación.
+
+> Este cuaderno está alojado en github por lo que para guardar cualquier cambio necesita crear una copia del mismo dentro de su Drive. Puede hacerlo haciendo clic en la pestaña `Archivo` y luego en la opción `Guardar una copia en Drive`.
+> 
+
+Deberá cargar un archivo:
+El cuaderno (un archivo con extensión .ipynb ) que se utilizará para probar las siguientes funciones:
+
+- parse_data_from_input
+
+- train_val_generators
+
+- create_model
+
+> IMPORTANTE PARA UNA CALIFICACIÓN CORRECTA:- No borre las celdas ya que incluyen metadatos importantes para la calificación- Rellene sus soluciones dentro de los espacios proporcionados. Puede añadir nuevas celdas pero éstas serán omitidas por el calificador.
 
