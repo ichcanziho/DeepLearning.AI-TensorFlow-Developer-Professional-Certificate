@@ -16,6 +16,13 @@ En este curso, aprenderás:
 
 Si usted es un desarrollador de software que quiere construir algoritmos escalables impulsados por IA, necesita entender cómo utilizar las herramientas para construirlos. Este curso forma parte de la próxima Especialización en Aprendizaje Automático en Tensorflow y le enseñará las mejores prácticas para utilizar TensorFlow, un popular marco de trabajo de código abierto para el aprendizaje automático. 
 
+<details>
+    <summary>Mostrar certificado</summary><p>
+
+      [<img src="certificate.png" />](https://www.coursera.org/account/accomplishments/verify/N7SRGP5PNRQS)
+
+</p></details>
+
 ![certificate.png](certificate.png)
 
 [Coursera N7SRGP5PNRQS.pdf](notes%2FCoursera%20N7SRGP5PNRQS.pdf)
