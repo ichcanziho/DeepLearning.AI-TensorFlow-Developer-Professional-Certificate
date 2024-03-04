@@ -888,6 +888,7 @@ La semana pasada vio cómo utilizar el Tokenizer para preparar su texto para ser
 - [Let's talk about the loss](#lets-talk-about-the-loss)
 - [Checkout the code - week 2 - (Lab 2)](#checkout-the-code---week-2---lab-2)
 - [Pre-tokenized datasets](#pre-tokenized-datasets)
+- [TensorFlow - Datasets](#tensorflow---datasets)
 - [Diving into the code (part 1) - week 2](#diving-into-the-code-part-1---week-2)
 - [Subwords text encoder](#subwords-text-encoder)
 - [Diving into the code (part 2) - week 2](#diving-into-the-code-part-2---week-2)
@@ -899,68 +900,735 @@ La semana pasada vio cómo utilizar el Tokenizer para preparar su texto para ser
 ### A conversation with Andrew Ng 2
 [<- Return to INDEX 2](#index-2)
 
+En esta semana de aprendizaje, nos centraremos en el uso de la capa Keras en TensorFlow para implementar incrustaciones de palabras, una idea crucial en el Procesamiento de Lenguaje Natural (PNL). En lugar de representar las palabras con números del 1 al tamaño total del vocabulario, exploraremos cómo podemos representarlas de manera más efectiva mediante vectores en un espacio n-dimensional. Esto nos permite capturar la semántica de las palabras de una manera más significativa.
+
+![img.png](ims%2FW2%2Fimg.png)
+
+- **Concepto de incrustaciones de palabras:** Aprenderemos cómo representar palabras como vectores en un espacio n-dimensional, lo que nos permite capturar relaciones semánticas entre palabras.
+  
+- **Entrenamiento de redes neuronales para clasificación de textos:** Utilizaremos incrustaciones de palabras en el contexto de entrenamiento de redes neuronales para clasificar textos. Exploraremos ejemplos prácticos, como la clasificación de críticas de películas en IMDB.
+
+- **Visualización y comprensión de la semántica:** Veremos cómo las incrustaciones de palabras nos ayudan a visualizar la semántica de las palabras al representarlas en gráficos tridimensionales, lo que facilita la comprensión de las relaciones entre ellas.
+
+
+![img_1.png](ims%2FW2%2Fimg_1.png)
+
+- **Uso de incrustaciones preentrenadas:** Se discutirá la posibilidad de utilizar incrustaciones de palabras preentrenadas, lo que puede proporcionar pistas sobre el significado de palabras nuevas para el modelo de aprendizaje, mejorando así su rendimiento.
+
+- **Importancia en PNL aplicada:** Las incrustaciones de palabras se han demostrado como una de las ideas más poderosas y útiles en la PNL aplicada, contribuyendo significativamente al rendimiento de los modelos.
+
+
+![img_2.png](ims%2FW2%2Fimg_2.png)
+
+¡Prepárate para profundizar en el fascinante mundo de las incrustaciones de palabras y su aplicación en TensorFlow para mejorar tus modelos de PNL!
+
+
 ### Introduction Week 2
 [<- Return to INDEX 2](#index-2)
+
+La semana pasada, miraste el texto de tokenización. Donde convertir texto en secuencias de números con un número era el valor de un par de valores 
+clave con la clave siendo la palabra. Así, por ejemplo, podría representar la palabra TensorFlow con el valor nueve y, a continuación, 
+reemplazar cada instancia de la palabra con un nueve en una secuencia. Usando herramientas y TensorFlow, usted es capaz de procesar cadenas 
+para obtener índices de todas las palabras en un corpus de cadenas y luego convertir las cadenas en matrices de números. 
+
+Este es el comienzo de sacar el sentimiento de tus oraciones. Pero ahora mismo, sigue siendo sólo una cadena de números que representan palabras. Así que a partir de ahí, ¿cómo se sentiría uno realmente? Bueno, eso es algo que se puede aprender de un corpus de palabras de la misma manera que las características fueron extraídas de las imágenes.
+
+![img_3.png](ims%2FW2%2Fimg_3.png)
+
+Este proceso se denomina incrustación, con la idea de que las palabras y las palabras asociadas se agrupan como vectores en un espacio multidimensional. Aquí, estoy mostrando un proyector incrustado con clasificaciones de críticas de películas. Esta semana, aprenderás a construir eso. Las revisiones se dividen en dos categorías principales: positivas y negativas.
+
+![img_4.png](ims%2FW2%2Fimg_4.png)
+
+Así, junto con las etiquetas, TensorFlow fue capaz de construir estas incrustaciones mostrando una clara agrupación de palabras que son distintas a ambos tipos de revisión. En realidad, puedo buscar palabras para ver cuáles coinciden con una clasificación. Así, por ejemplo, si busco aburrido, podemos ver que se ilumina en uno de los grupos y que las palabras asociadas eran claramente negativas, como inobservables.
+
+![img_5.png](ims%2FW2%2Fimg_5.png)
+
+Del mismo modo, si busco una palabra negativa como molesta, la encontraré junto con molesto en el clúster que es claramente las críticas negativas. O si busco diversión, encontraré que la diversión y la diversión son positivas, fundamental es neutral, y sin gracia es, por supuesto, negativo.
+
+![img_6.png](ims%2FW2%2Fimg_6.png)
+
+Esta semana, aprenderá cómo usar incrustaciones y cómo crear un clasificador que le dio esa visualización. Ya eres la mayor parte del camino con el trabajo que has estado haciendo con la tokenización de cadenas. Volveremos a eso más adelante, pero primero veamos cómo construir la clasificación IMDB que acaba de visualizar.
 
 ### The IMDB dataset
 [<- Return to INDEX 2](#index-2)
 
+Parte de la visión de TensorFlow para que el aprendizaje automático y el aprendizaje profundo sean más fáciles de aprender y de usar, es el concepto de tener conjuntos de datos integrados. Has visto el poco de una vista previa del camino de regreso en el primer curso, cuando las MNE de moda estaban disponibles para usted sin necesidad de descargar y dividir los datos en la formación de un conjunto de pruebas.
+
+![img_7.png](ims%2FW2%2Fimg_7.png)
+
+Expandiendo esto, hay una biblioteca llamada TensorFlow Data Services o TFDS para abreviar, y que contiene muchos conjuntos de datos y muchas categorías diferentes. Aquí hay algunos ejemplos; y aunque podemos ver que hay muchos conjuntos de datos diferentes para diferentes tipos, particularmente basados en imágenes, también hay algunos para el texto, y vamos a usar el conjunto de datos de revisiones IMDB a continuación.
+
+![img_8.png](ims%2FW2%2Fimg_8.png)
+
+Este conjunto de datos es ideal porque contiene un gran cuerpo de textos, 50.000 reseñas de películas que se clasifican como positivas o negativas. Fue escrito por Andrew Mass et al en Stanford, y usted puede aprender más sobre él en este enlace.
+
+![img_9.png](ims%2FW2%2Fimg_9.png)
+
 ### IMDB reviews dataset
 [<- Return to INDEX 2](#index-2)
+
+[Aquí](http://ai.stanford.edu/~amaas/data/sentiment/)
+ encontrará el enlace al conjunto de datos de críticas de IMDB.
+
+Aquí encontrará 50.000 críticas de películas clasificadas como positivas o negativas. 
 
 ### Looking into the details
 [<- Return to INDEX 2](#index-2)
 
+Así que empecemos a mirarlo. Hay un par de cosas que debe tener en cuenta antes de comenzar a trabajar con el código de esta semana en TensorFlow. 
+La primera es la versión de TensorFlow que estás usando. Use este código para determinarlo. Además, tenga en cuenta que todo el código 
+que estoy usando aquí está en Python 3. Hay algunas diferencias si usa Python 2. Por lo tanto, si está utilizando un Colab, 
+puede establecer el entorno en tres. Si está haciendo esto en su propio entorno, puede que necesite realizar algunos cambios. 
+
+Si el código anterior le dio TensorFlow 1.x, necesitará esta línea de código antes de poder ir más lejos. Si te dio 2.x, entonces no necesitarás nada porque la ejecución ansiosa está habilitada por defecto en TensorFlow 2.0. Si está utilizando Google Colab, debería tener ya instalados los conjuntos de datos de TensorFlow. 
+
+![img_10.png](ims%2FW2%2Fimg_10.png)
+
+ Si no los tiene, se instalan fácilmente con esta línea de código. Ahora, puede importar datasets de TensorFlow, y en este caso los llamo tfds. Con las revisiones imdb, ahora puedo llamar a tfds.load, pasarle las revisiones de cadena imdb, y devolverá los datos de imdb y los metadatos al respecto con este código. 
+
+![img_11.png](ims%2FW2%2Fimg_11.png)
+
+Los datos se dividen en 25.000 muestras para capacitación y 25.000 muestras para pruebas. Puedo dividirlos así. Cada uno de estos son iterables que contienen las 25.000 frases respectivas y etiquetas como tensores. 
+
+![img_12.png](ims%2FW2%2Fimg_12.png)
+
+Hasta este punto, hemos estado usando los tokenizers y las herramientas de relleno de Cara en matrices de oraciones, así que tenemos que hacer un 
+poco de conversión. Lo haremos así. En primer lugar, definamos las listas que contienen las frases y etiquetas para los datos de entrenamiento y 
+pruebas. Ahora, puedo iterar sobre los datos de entrenamiento extrayendo las oraciones y las etiquetas. 
+
+Los valores para S y yo son tensores, así que al llamar a su método NumPy, realmente extraeré su valor. Entonces haré lo mismo para el set de pruebas. 
+
+![img_13.png](ims%2FW2%2Fimg_13.png)
+
+Aquí hay un ejemplo de una revisión. Lo trunqué para encajar en esta diapositiva, pero puedes ver cómo se almacena como un tf.tensor. 
+
+![img_14.png](ims%2FW2%2Fimg_14.png)
+
+Del mismo modo, aquí hay un montón de etiquetas también almacenadas como tensores. El valor 1 indica una revisión positiva y cero una negativa.
+
+![img_15.png](ims%2FW2%2Fimg_15.png)
+
+Al entrenar, se espera que mis etiquetas sean matrices NumPy. Así que convertiré la lista de etiquetas que acabo de crear en matrices NumPy con este código. 
+
+![img_16.png](ims%2FW2%2Fimg_16.png)
+
+A continuación, vamos a tokenizar nuestras oraciones. Aquí está el código. He puesto los hiperparámetros en la parte superior de esta manera por la razón de que hace que sea más fácil cambiarlos y editarlos, en lugar de phishing a través de secuencias de funciones para los literales y luego cambiarlos. Ahora, como antes, importamos el tokenizador y las secuencias de pad. 
+
+Vamos a crear una instancia de tokenizer, dándole nuestro tamaño vocab y el token deseado fuera de vocabulario. Ahora encajaremos el tokenizador en nuestro conjunto de datos de entrenamiento. Una vez que tengamos nuestro índice de palabras, ahora podemos reemplazar las cadenas que contienen las palabras con el valor de token que creamos para ellas.
+
+Esta será la lista llamada secuencias. Como antes, las oraciones tendrán una longitud de variante. Así que rellenaremos o truncaremos las oraciones secuenciadas hasta que tengan la misma longitud, determinada por el parámetro maxlength. Entonces haremos lo mismo con las secuencias de prueba. Tenga en cuenta que el índice de palabras son palabras que se derivan del conjunto de entrenamiento, por lo que debería esperar ver mucho más de los tokens de vocabulario en el examen de prueba.
+
+![img_17.png](ims%2FW2%2Fimg_17.png)
+
+Ahora es el momento de definir nuestra red neuronal. Esto debería parecer muy familiar a estas alturas, excepto tal vez esta línea, la incrustación. Esta es la clave para el análisis de sentimientos de texto en TensorFlow, y aquí es donde realmente sucede la magia.
+
+![img_18.png](ims%2FW2%2Fimg_18.png)
+
+
+
 ### How can we use vectors?
 [<- Return to INDEX 2](#index-2)
+
+El alcance completo de cómo funcionan las incrustaciones está más allá del ámbito de este curso. Pero piénsalo así. Usted tiene palabras en una oración y, a menudo, palabras que tienen significados similares están cerca unas de otras. Así que en una crítica de película, podría decir que la película era aburrida y aburrida, o podría decir que fue divertida y emocionante.
+
+Entonces, ¿qué pasaría si pudieras elegir un vector en un espacio de dimensiones superiores decir 16 dimensiones, y las palabras que se encuentran juntas reciben vectores similares. Luego, con el tiempo, las palabras pueden comenzar a agruparse. El significado de las palabras puede provenir del etiquetado del conjunto de datos. 
+
+![img_19.png](ims%2FW2%2Fimg_19.png)
+
+Así que en este caso, decimos una crítica negativa y las palabras aburridas y aburridas aparecen mucho en la revisión negativa para que 
+tengan sentimientos similares, y estén cerca el uno del otro en la oración. Por lo tanto, sus vectores serán similares. 
+A medida que la red neuronal se entrena, puede aprender estos vectores asociándolos con las etiquetas para crear lo que se llama una `incrustación`, 
+es decir, los vectores de cada palabra con su sentimiento asociado. 
+
+![img_20.png](ims%2FW2%2Fimg_20.png)
+
+Los resultados de la incrustación serán una matriz 2D con la longitud de la frase y la dimensión de incrustación, 
+por ejemplo 16 como su tamaño. Así que necesitamos aplanarlo de la misma manera que necesitábamos para aplanar nuestras imágenes. 
+Luego alimentamos eso en una red neuronal densa para hacer la clasificación. 
+
+![img_21.png](ims%2FW2%2Fimg_21.png)
+
+A menudo, en el procesamiento de lenguaje natural, se utiliza un tipo de capa diferente al de un aplanado, y este es un promedio global de agrupación 1D. La razón de esto es el tamaño del vector de salida que se alimenta en la danza. 
+
+Entonces, por ejemplo, si muestro el resumen del modelo con el aplanamiento que acabamos de ver, se verá así. 
+
+![img_22.png](ims%2FW2%2Fimg_22.png)
+
+O alternativamente, puede usar una 1D de agrupación media global como esta, que promedia a través del vector para aplanarlo.
+
+![img_23.png](ims%2FW2%2Fimg_23.png)
+
+Su resumen de modelo debería verse así, que es más simple y debería ser un poco más rápido. Pruébalo usted mismo en colab y verifique los resultados.
+
+![img_24.png](ims%2FW2%2Fimg_24.png)
+
+Pruébalo usted mismo en colab y verifique los resultados. Más de 10 épocas con la agrupación media global, obtuve una precisión de 
+**0.9664 en el entrenamiento y 0.8187 en la prueba**, tomando alrededor de 6.2 segundos por época. Con aplanar, 
+mi precisión fue **1.0 y mi validación de aproximadamente 0.83** tomando alrededor de 6.5 segundos por época. 
+Así que fue un poco más lento, pero un poco más preciso. Pruébalos a ambos, y experimenta donde los resultados por ti mismo.
+
+![img_25.png](ims%2FW2%2Fimg_25.png)
 
 ### More into the details
 [<- Return to INDEX 2](#index-2)
 
+Puede compilar su modelo como antes e imprimir el resumen con este código. 
+
+![img_26.png](ims%2FW2%2Fimg_26.png)
+
+Ahora el entrenamiento es el paso más simple acolchado y sus etiquetas de entrenamiento final como su conjunto de entrenamiento, especificando el número de épocas, y pasando las etiquetas de prueba acolchadas y de prueba finales como su conjunto de pruebas. 
+
+![img_27.png](ims%2FW2%2Fimg_27.png)
+
+Aquí están los resultados del entrenamiento, con el conjunto de entrenamiento que nos da una precisión de 1.00 y la validación establecida en 0.8259. Así que hay una buena posibilidad de que estemos sobreajustando. Vamos a ver algunas estrategias para evitar esto más adelante, pero usted debe esperar resultados un poco como este.
+
+![img_28.png](ims%2FW2%2Fimg_28.png)
+
+Está bien. Ahora tenemos que hablar y demostrar las incrustaciones, para que pueda visualizarlas como lo hizo al principio 
+de esta lección. Comenzaremos por obtener los resultados de la capa de incrustaciones, que es la capa cero. 
+
+Podemos conseguir los pesos, e imprimir su forma así. Podemos ver que esta es una matriz de 10.000 por 16, tenemos 10.000 
+palabras en nuestro corpus, y estamos trabajando en una matriz de 16 dimensiones, por lo que nuestra incrustación tendrá esa forma. 
+
+![img_29.png](ims%2FW2%2Fimg_29.png)
+
+Para poder trazarlo, necesitamos una función de ayuda para revertir nuestro índice de palabras. Tal como está actualmente, 
+nuestro índice de palabras tiene la clave siendo la palabra, y el valor es el token de la palabra. 
+
+Tendremos que voltear esto, mirar a través de la lista acolchada para decodificar los tokens de nuevo en las palabras, así que hemos escrito esta función de ayuda.
+
+![img_30.png](ims%2FW2%2Fimg_30.png)
+
+Ahora es el momento de escribir los vectores y sus archivos automáticos de metadatos. El proyector TensorFlow lee este tipo de archivo y lo utiliza para trazar los vectores en el espacio 3D para que podamos visualizarlos. Para el archivo vectores, simplemente escribimos el valor de cada uno de los elementos en la matriz de incrustaciones, es decir, el coeficiente de cada dimensión en el vector para esta palabra. Para la matriz de metadatos, solo escribimos las palabras. 
+
+
+![img_31.png](ims%2FW2%2Fimg_31.png)
+
+Si estás trabajando en Colab, este código descargará los dos archivos. Para renderizar los resultados, vaya al proyector de incrustación de TensorFlow en projector.tensorflow.org, pulse el botón «Cargar datos» a la izquierda. Verá un cuadro de diálogo en el que se le pedirá que cargue datos desde el equipo
+
+![img_32.png](ims%2FW2%2Fimg_32.png)
+
+Use Vector.tsv para el primero y Meta.tsv para el segundo. Una vez cargados, deberías ver algo como esto. Haga clic en esta casilla de verificación «Sphhereize data» en la parte superior izquierda, y verá el agrupamiento binario de los datos. 
+
+![img_33.png](ims%2FW2%2Fimg_33.png)
+
+Experimente buscando palabras o haciendo clic en los puntos azules del gráfico que representan palabras. Sobre todo, diviértete con él. A continuación, pasaremos por un screencast de lo que acabas de ver, para que puedas explorarlo en acción. Después de eso, verá cómo TFTS ha incorporado tokenizers que le impiden escribir mucho del código de tokenización que acabamos de usar.
+
+![img_34.png](ims%2FW2%2Fimg_34.png)
+
+
 ### Checkout the code - week 2 - (Lab 1)
 [<- Return to INDEX 2](#index-2)
+
+He aquí el primer 
+cuaderno [C3_W2_Lab_1_imdb.ipynb](notebooks%2FW2%2FC3_W2_Lab_1_imdb.ipynb)
+ que Laurence recorrerá esta semana.
 
 ### Notebook for lesson 1 - week 2
 [<- Return to INDEX 2](#index-2)
 
+Bien, entonces echemos un vistazo al código que vamos a usar en este entorno. Asegúrate de usar un entorno de Python tres y como acelerador, un GPU para acelerar las cosas. Si importas TensorFlow como tf e imprimes la versión tf, verás la versión de TensorFlow. Si es 2.0, no necesitas habilitar la ejecución ansiosa, pero debido a su 1.13, vamos a activar la ejecución ansiosa. Además, si no tienes instalados conjuntos de datos de TensorFlow, esta línea instalará los conjuntos de datos para ti.
+
+```python
+import tensorflow_datasets as tfds
+import tensorflow as tf
+
+# Asegúrate de que sea Python tres con acelerador de GPU
+print(tf.__version__)
+
+# Habilita la ejecución ansiosa para TensorFlow version < 2.0
+if tf.__version__.startswith('1.'):
+  tf.enable_eager_execution()
+
+# Load the IMDB Reviews dataset
+imdb, info = tfds.load("imdb_reviews", with_info=True, as_supervised=True)
+```
+
+Después de cargar el conjunto de datos, dividimos en datos de entrenamiento y prueba y preparamos nuestras listas de frases y etiquetas.
+
+```python
+import numpy as np
+
+# Get the train and test sets
+train_data, test_data = imdb['train'], imdb['test']
+
+# Initialize sentences and labels lists
+training_sentences = []
+training_labels = []
+
+testing_sentences = []
+testing_labels = []
+
+# Loop over all training examples and save the sentences and labels
+for s,l in train_data:
+  training_sentences.append(s.numpy().decode('utf8'))
+  training_labels.append(l.numpy())
+
+# Loop over all test examples and save the sentences and labels
+for s,l in test_data:
+  testing_sentences.append(s.numpy().decode('utf8'))
+  testing_labels.append(l.numpy())
+
+# Convert labels lists to numpy array
+training_labels_final = np.array(training_labels)
+testing_labels_final = np.array(testing_labels)
+```
+
+Especificamos el tamaño del vocabulario, la longitud máxima, las dimensiones de incrustación y configuramos el tokenizador con estas especificaciones.
+
+```python
+vocab_size = 10000
+max_length = 120
+embedding_dim = 16
+trunc_type='post'
+oov_tok = "<OOV>"
+
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+# Initialize the Tokenizer class
+tokenizer = Tokenizer(num_words = vocab_size, oov_token=oov_tok)
+
+# Generate the word index dictionary for the training sentences
+tokenizer.fit_on_texts(training_sentences)
+word_index = tokenizer.word_index
+
+# Generate and pad the training sequences
+sequences = tokenizer.texts_to_sequences(training_sentences)
+padded = pad_sequences(sequences,maxlen=max_length, truncating=trunc_type)
+
+# Generate and pad the test sequences
+testing_sequences = tokenizer.texts_to_sequences(testing_sentences)
+testing_padded = pad_sequences(testing_sequences,maxlen=max_length, truncating=trunc_type)
+```
+
+Creamos el modelo, lo configuramos, lo compilamos y observamos su resumen antes de entrenarlo con los datos preparados.
+
+```python
+# Build the model
+model = tf.keras.Sequential([
+    tf.keras.layers.Embedding(vocab_size, embedding_dim, input_length=max_length),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(6, activation='relu'),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+# Setup the training parameters
+model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
+
+# Print the model summary
+model.summary()
+```
+
+```commandline
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ embedding (Embedding)       (None, 120, 16)           160000    
+                                                                 
+ flatten (Flatten)           (None, 1920)              0         
+                                                                 
+ dense (Dense)               (None, 6)                 11526     
+                                                                 
+ dense_1 (Dense)             (None, 1)                 7         
+                                                                 
+=================================================================
+Total params: 171533
+Trainable params: 171533
+Non-trainable params: 0
+_________________________________________________________________
+```
+
+```python
+num_epochs = 10
+
+# Train the model
+model.fit(padded, training_labels_final, epochs=num_epochs, 
+          validation_data=(testing_padded, testing_labels_final))
+```
+
+Después de entrenar el modelo, obtenemos la capa de incrustación y extraemos los pesos.
+
+```python
+# Get the embedding layer from the model (i.e. first layer)
+embedding_layer = model.layers[0]
+
+# Get the weights of the embedding layer
+embedding_weights = embedding_layer.get_weights()[0]
+
+# Print the shape. Expected is (vocab_size, embedding_dim)
+print(embedding_weights.shape)
+```
+
+Finalmente, preparamos y descargamos archivos `vecs.tsv` y `meta.tsv` para visualizar las incrustaciones de palabras en el Proyector de incrustación.
+
+```python
+# Get the index-word dictionary
+reverse_word_index = tokenizer.index_word
+
+import io
+
+# Open writeable files
+out_v = io.open('vecs.tsv', 'w', encoding='utf-8')
+out_m = io.open('meta.tsv', 'w', encoding='utf-8')
+
+# Loop through words in the vocabulary
+for word_num in range(1, vocab_size):
+  word_name = reverse_word_index[word_num]
+  word_embedding = embedding_weights[word_num]
+  out_m.write(word_name + "\n")
+  out_v.write('\t'.join([str(x) for x in word_embedding]) + "\n")
+
+out_v.close()
+out_m.close()
+
+# Use Colab's file download feature or adjust for your environment
+try:
+  from google.colab import files
+except ImportError:
+  pass
+else:
+  files.download('vecs.tsv')
+  files.download('meta.tsv')
+```
+
+![vecs.gif](ims%2FW2%2Fvecs.gif)
+
+Este segmento final demuestra cómo se visualizan los vectores de palabras en el Proyector de incrustación de TensorFlow y se examina cómo las palabras similarmente sentidas se agrupan cerca unas de otras, utilizando casos de estudio como "aburrido" y "excitante". Esto nos ayuda a entender cómo nuestra red neuronal ha aprendido a asociar palabras y su sentimiento en un espacio vectorial.
+
 ### Remember the sarcasm dataset?
 [<- Return to INDEX 2](#index-2)
+
+Así que ese fue un ejemplo usando el conjunto de datos IMDB, donde los datos le son proporcionados por la API de TFDS, que espero que le resulte útil. Ahora me gustaría volver al conjunto de datos sarcasmo de la semana pasada, y veamos la construcción de un clasificador para eso.
+
+![img_35.png](ims%2FW2%2Fimg_35.png)
+
+Comenzaremos con la importación de tensorflow y json, así como las secuencias de tokenizer y pad del pre-procesamiento.
+
+![img_36.png](ims%2FW2%2Fimg_36.png)
+
+Ahora vamos a configurar nuestros hiperparámetros; el tamaño del vocabulario, las dimensiones de incrustación, la longitud máxima de las oraciones y otras cosas como el tamaño de entrenamiento. Este conjunto de datos tiene alrededor de 27.000 registros. Así que entrenemos en 20.000 y validemos el resto. 
+
+![img_37.png](ims%2FW2%2Fimg_37.png)
+
+Los datos del sarcasmo se almacenan en esta URL, por lo que puede descargarlos a /tmp/sarcasm.json con este código.
+
+![img_38.png](ims%2FW2%2Fimg_38.png)
+
+Ahora que tiene el conjunto de datos, puede abrirlo y cargarlo como iterable con este código. Puede crear una matriz para oraciones y otra para etiquetas y, a continuación, iterar a través del almacén de datos, cargando cada título como una oración, y cada campo is_sarcástico, como su etiqueta.
+
+![img_39.png](ims%2FW2%2Fimg_39.png)
 
 ### Building a classifier for the sarcasm dataset
 [<- Return to INDEX 2](#index-2)
 
+Para dividir el corpus en conjuntos de entrenamiento y validación, usaremos este código. Para obtener el conjunto de entrenamiento, 
+toma elementos de matriz de cero al tamaño de entrenamiento, y para obtener el conjunto de pruebas, puede pasar del tamaño de entrenamiento 
+al final de la matriz con código como este. 
+
+Para obtener el entrenamiento y las etiquetas de prueba, usará códigos similares para cortar la matriz de etiquetas. 
+
+![img_40.png](ims%2FW2%2Fimg_40.png)
+Ahora que tenemos entrenamientos y pruebas de secuencias y etiquetas, es hora de secuenciarlos. Para rellenar esas secuencias, lo harás con este código. 
+
+Comienza con un tokenizador, pasándole el número de palabras que desea tokenizar y el deseado fuera del token de vocabulario. Luego encaja eso en el conjunto de entrenamiento llamando a ajuste en los textos, pasándolo la matriz de oraciones de entrenamiento. 
+
+A continuación, puede utilizar el texto a las secuencias para crear la secuencia de entrenamiento, reemplazando las palabras con sus tokens. A continuación, puede rellenar las secuencias de entrenamiento a la longitud deseada o truncar si son demasiado largas. 
+A continuación, hará lo mismo, pero con un conjunto de pruebas.
+
+![img_41.png](ims%2FW2%2Fimg_41.png)
+
+Ahora, podemos crear nuestra red neuronal de la manera habitual. Lo compilaremos con entropía cruzada binaria, ya que estamos clasificando a diferentes clases.
+
+![img_42.png](ims%2FW2%2Fimg_42.png)
+
+Cuando llamamos al resumen de un modelo, veremos que se ve así, casi como esperábamos. Es bastante simple e incrustar alimentaciones en una agrupación promedio, que luego alimenta nuestro ADN.
+
+![img_43.png](ims%2FW2%2Fimg_43.png)
+
+Para entrenar durante 30 épocas, pasa los datos y etiquetas acolchados. Si desea validar, le dará las pruebas acolchadas y etiquetas a.
+
+![img_44.png](ims%2FW2%2Fimg_44.png)
+
+Después de entrenar por poco tiempo, puede trazar los resultados. Aquí está el código para la trama simple.
+
+![img_45.png](ims%2FW2%2Fimg_45.png)
+
+Podemos ver que la precisión aumenta muy bien a medida que entrenamos y la precisión de validación estaba bien, pero no muy buena. Lo interesante es que los valores de pérdida de la derecha, la pérdida de entrenamiento caen, pero la pérdida de validación aumentó. Bueno, ¿por qué podría ser eso?
+
+![img_46.png](ims%2FW2%2Fimg_46.png)
+
 ### Let's talk about the loss
 [<- Return to INDEX 2](#index-2)
+
+Piense en la pérdida en este contexto, como una confianza en la predicción. Así que mientras que el número de predicciones precisas aumentó con el tiempo, lo interesante fue que la confianza por predicción disminuyó efectivamente. Puede que esto ocurra mucho con los datos de texto. Así que es muy importante vigilarlo. Una forma de hacerlo es explorar las diferencias a medida que modifica los hiperparámetros. 
+
+![img_47.png](ims%2FW2%2Fimg_47.png)
+
+Así, por ejemplo, si considera estos cambios, una disminución en el tamaño del vocabulario, y tomar oraciones más cortas, reducir la probabilidad de relleno, y luego volver a ejecutar, es posible que vea resultados como este.
+
+![img_48.png](ims%2FW2%2Fimg_48.png)
+
+Aquí, se puede ver que la pérdida se ha aplanado lo que se ve bien, pero por supuesto, su precisión no es tan alta.
+
+![img_49.png](ims%2FW2%2Fimg_49.png)
+
+Otro retoque. También se intentó cambiar el número de dimensiones utilizando la incrustación.
+
+![img_50.png](ims%2FW2%2Fimg_50.png)
+
+Aquí, podemos ver que eso tenía muy poca diferencia.  Poner los hiperparámetros como variables separadas como este es un ejercicio de programación útil, por lo que es mucho más fácil para usted ajustar y explorar su impacto en el entrenamiento. 
+
+![img_51.png](ims%2FW2%2Fimg_51.png)
+
+Siga trabajando en ellos y vea si puede encontrar alguna combinación que le dé un 90 por ciento más precisión de entrenamiento sin que el costo de la función perdida aumente bruscamente. En el siguiente video, también veremos el impacto de dividir nuestras palabras en sub-tokens y cómo esto podría afectar a tu entrenamiento.
+
+![img_52.png](ims%2FW2%2Fimg_52.png)
 
 ### Checkout the code - week 2 - (Lab 2)
 [<- Return to INDEX 2](#index-2)
 
+Echemos un vistazo al segundo 
+cuaderno de [W2_Lab_2_sarcasm_classifier.ipynb](notebooks%2FW2%2FW2_Lab_2_sarcasm_classifier.ipynb)
+ esta semana. 
+
+
 ### Pre-tokenized datasets
 [<- Return to INDEX 2](#index-2)
+
+A principios de esta semana, analizamos el uso de TensorFlow Data Services o TFDS para cargar las revisiones del conjunto de datos IMDb y realizar la clasificación en ellas. En ese video, cargó el texto sin procesar para las reseñas, y las tokenizó usted mismo. Sin embargo, a menudo con conjuntos de datos preempaquetados como estos, algunos científicos de datos ya han hecho el trabajo por usted, y el dataset IMDb no es una excepción. 
+
+![img_53.png](ims%2FW2%2Fimg_53.png)
+
+En este video, vamos a echar un vistazo a una versión del conjunto de datos IMDb que ha sido pre-tokenizado para usted, pero la tokenización se realiza en palabras secundarias. Lo usaremos para demostrar cómo la clasificación de textos puede tener algunos problemas únicos, a saber, que la secuencia de palabras puede ser tan importante como su existencia.
+
+### TensorFlow - Datasets
+[<- Return to INDEX 2](#index-2)
+
+Por favor, encuentre 
+[aquí](https://github.com/tensorflow/datasets/tree/master/docs/catalog)
+ la url GitHub de los conjuntos de datos.
+
+Para más información, consulte la 
+[documentación de los conjuntos de datos de TensorFlow](https://www.tensorflow.org/datasets/catalog/overview)
+. 
 
 ### Diving into the code (part 1) - week 2
 [<- Return to INDEX 2](#index-2)
 
+
+Así que vamos a empezar por mirar los conjuntos de datos de TensorFlow, puede encontrarlos en esta URL. Si miras el conjunto de datos de IMDB revisa, verás que hay un montón de versiones que puedes usar. 
+
+![img_54.png](ims%2FW2%2Fimg_54.png)
+
+Estos incluyen, "plain_text» que usamos en el último video, 
+
+![img_55.png](ims%2FW2%2Fimg_55.png)
+
+"bytes», donde el texto está codificado a nivel de byte,
+
+![img_56.png](ims%2FW2%2Fimg_56.png)
+
+y la codificación de sub-palabras que veremos en este video. 
+
+![img_57.png](ims%2FW2%2Fimg_57.png)
+
+Una cosa a tener en cuenta es que deberías usar TensorFlow 2.0 para el código que compartiré aquí. 
+Hay algunas inconsistencias con la versión 1.x. Por lo tanto, si está usando el colab, primero debe imprimir la versión TF. Si es 1.x, 
+debe instalar TensorFlow 2 así. Tenga en cuenta que con el tiempo el 0 de alfa cambiará a versiones posteriores. 
+
+Por lo tanto, le recomiendo que busque la última guía de instalación para TensorFlow 2.0 si tiene algún problema. Recomendaría ejecutar este código nuevamente para asegurarme de que está en la versión 2 antes de ir más lejos, especialmente si está usando un bloc de notas Colab o Júpiter. Una vez que esté en TensorFlow 2, ahora puede comenzar a usar el conjunto de datos de las subpalabras imdb. Usaremos la versión 8k.
+
+![img_58.png](ims%2FW2%2Fimg_58.png)
+
+Obtener acceso a sus datos de entrenamiento y pruebas es tan fácil como esto. 
+
+![img_59.png](ims%2FW2%2Fimg_59.png)
+
+A continuación, si desea acceder a las palabras secundarias tokenizer, puede hacerlo con este código. Puede aprender todo sobre el codificador de textos de sub-palabras en esta URL.
+
+![img_60.png](ims%2FW2%2Fimg_60.png)
+
 ### Subwords text encoder
 [<- Return to INDEX 2](#index-2)
+
+La documentación del codificador de texto de subpalabras puede encontrarse 
+[aquí](https://www.tensorflow.org/datasets/api_docs/python/tfds/deprecated/text/SubwordTextEncoder)
+.
+
+![img_61.png](ims%2FW2%2Fimg_61.png)
 
 ### Diving into the code (part 2) - week 2
 [<- Return to INDEX 2](#index-2)
 
+Ahora tenemos un tokenizador de subpalabras previamente entrenado, por lo que podemos inspeccionar su vocabulario observando su propiedad de subpalabras. 
+
+
+![img_62.png](ims%2FW2%2Fimg_62.png)
+
+Si queremos ver cómo codifica o decodifica cadenas, podemos hacerlo con este código. Así que podemos codificar simplemente llamando al método de codificación pasándole la cadena. Del mismo modo, decodifique llamando al método de decodificación. 
+
+![img_63.png](ims%2FW2%2Fimg_63.png)
+
+Podemos ver los resultados de la tokenización cuando imprimimos las cadenas codificadas y decodificadas. Si queremos ver los tokens en sí, podemos tomar cada elemento y decodificarlo, mostrando el valor del token. Ten en cuenta que se distingue entre mayúsculas y minúsculas y que la puntuación se mantiene a diferencia del tokenizador que vimos en el último vídeo. 
+
+![img_64.png](ims%2FW2%2Fimg_64.png)
+
+Todavía no necesitas hacer nada con ellas, solo quería mostrarte cómo funciona la tokenización de subpalabras. Así que ahora, echemos un vistazo a cómo clasificar IMDB con él. ¿Cuáles van a ser los resultados?
+
+![img_65.png](ims%2FW2%2Fimg_65.png)
+
+Este es el modelo. Una vez más, debería resultar muy familiar en este momento. Sin embargo, una cosa a tener en cuenta es la forma de los vectores que provienen del tokenizador a través de la incrustación, y no se aplanan fácilmente. Así que, en su lugar, utilizaremos el agrupamiento medio global 1D.
+
+![img_66.png](ims%2FW2%2Fimg_66.png)
+
+Este es el resultado del resumen del modelo. 
+
+![img_67.png](ims%2FW2%2Fimg_67.png)
+
+Puedes compilar y entrenar el modelo de esta manera, es bastante estándar. 
+
+![img_68.png](ims%2FW2%2Fimg_68.png)
+
+Puedes graficar los resultados con este código,
+
+![img_69.png](ims%2FW2%2Fimg_69.png)
+
+y tus gráficos probablemente tendrán un aspecto parecido a este.
+
+![img_70.png](ims%2FW2%2Fimg_70.png)
+
+Los significados de las subpalabras suelen carecer de sentido y solo cuando los juntamos en secuencias tienen una semántica significativa. Por lo tanto, aprender de las secuencias sería una buena forma de avanzar, y eso es exactamente lo que haréis la semana que viene con las redes neuronales recurrentes
+
+![img_71.png](ims%2FW2%2Fimg_71.png)
+
 ### Checkout the code - week 2 - (Lab 3)
 [<- Return to INDEX 2](#index-2)
+
+Echemos un vistazo al tercer 
+cuaderno de [C3_W2_Lab_3_imdb_subwords.ipynb](notebooks%2FW2%2FC3_W2_Lab_3_imdb_subwords.ipynb)
+ esta semana. 
 
 ### Week 2 Quiz
 [<- Return to INDEX 2](#index-2)
 
+1. **Question 1**
+What is the name of the TensorFlow library containing common data that you can use to train and test neural networks?
+
+   - [x] TensorFlow Datasets
+   - [ ] There is no library of common data sets, you have to use your own
+   - [ ] TensorFlow Data Libraries
+   - [ ] TensorFlow Data
+
+   > **Correct!** TensorFlow Datasets is the go-to library for a variety of datasets that are ready to be used for training and evaluating machine learning models.
+
+2. **Question 2**
+How many reviews are there in the IMDB dataset, and how are they split?
+
+   - [ ] 60,000 records, 80/20 train/test split
+   - [ ] 50,000 records, 80/20 train/test split
+   - [ ] 60,000 records, 50/50 train/test split
+   - [x] 50,000 records, 50/50 train/test split
+
+   > **That's right!** The IMDB dataset contains 50,000 movie reviews split 50/50 between training and test sets.
+   
+3. **Question 3**
+How are the labels for the IMDB dataset encoded?
+
+   - [ ] Reviews encoded as a number 1-10
+   - [x] Reviews encoded as a number 0-1
+   - [ ] Reviews encoded as a boolean true/false
+   - [ ] Reviews encoded as a number 1-5
+
+   > **Correct!** Each label in the IMDB dataset is encoded as a number between 0 and 1, representing negative and positive sentiments, respectively.
+
+4. **Question 4**
+What is the purpose of the embedding dimension?
+
+   - [x] It is the number of dimensions for the vector representing the word encoding
+   - [ ] It is the number of letters in the word, denoting the size of the encoding
+   - [ ] It is the number of words to encode in the embedding
+   - [ ] It is the number of dimensions required to encode every word in the corpus
+
+   > **That's right!** The embedding dimension represents the size of the vector space in which words will be embedded. It determines the richness of the word representations.
+   
+5. **Question 5**
+When tokenizing a corpus, what does the num_words=n parameter do?
+
+   - [ ] It specifies the maximum number of words to be tokenized, and stops tokenizing when it reaches n
+   - [ ] It specifies the maximum number of words to be tokenized, and picks the first ‘n’ words that were tokenized
+   - [x] It specifies the maximum number of words to be tokenized, and picks the most common ‘n-1’ words
+   - [ ] It errors out if there are more than n distinct words in the corpus
+
+   > **Correct!** The num_words=n parameter selects the most common ‘n-1’ words in the dataset to be included in the tokenizer's dictionary.
+
+6. **Question 6**
+To use word embeddings in TensorFlow, in a sequential layer, what is the name of the class?
+
+   - [x] tf.keras.layers.Embedding
+   - [ ] tf.keras.layers.WordEmbedding
+   - [ ] tf.keras.layers.Embed
+   - [ ] tf.keras.layers.Word2Vector
+
+   > **That's right!** tf.keras.layers.Embedding is the class used for implementing word embeddings in a TensorFlow sequential model.
+
+7. **Question 7**
+IMDB Reviews are either positive or negative. What type of loss function should be used in this scenario?
+
+   - [ ] Adam
+   - [ ] Categorical crossentropy
+   - [ ] Binary Gradient descent
+   - [x] Binary crossentropy
+
+   > **Correct!** In a binary classification problem like distinguishing between positive and negative IMDB reviews, binary crossentropy is the appropriate loss function.
+
+8. **Question 8**
+When using IMDB Sub Words dataset, our results in classification were poor. Why?
+
+   - [x] Sequence becomes much more important when dealing with subwords, but we’re ignoring word positions
+   - [ ] We didn’t train long enough
+   - [ ] Our neural network didn’t have enough layers
+   - [ ] The sub words make no sense, so can’t be classified
+
+   > **That's right!** The importance of sequence and order is amplified with subwords, a factor that needs to be effectively addressed for successful classification.
+
 ### Week 2 Wrap Up
 [<- Return to INDEX 2](#index-2)
+
+**Éstos son los puntos clave de esta semana:**
+
+- Ha visto cómo tomar sus palabras tokenizadas y pasarlas a una capa Embedding.
+
+- Las incrustaciones mapean su vocabulario a vectores en un espacio de mayor dimensión. 
+
+- La semántica de las palabras se aprendió cuando esas palabras se etiquetaron con significados similares. Por ejemplo, al examinar las críticas de cine, las películas con un sentimiento positivo tenían la dimensionalidad de sus palabras apuntando en una dirección determinada, y las que tenían un sentimiento negativo, en una dirección diferente. A partir de ellas, las palabras de futuras reseñas podrían tener su dirección establecida y su modelo podría inferir el sentimiento a partir de ella. 
+
+- A continuación, analizará la tokenización de subpalabras y verá que no sólo importan los significados de las palabras, sino también la secuencia en la que se encuentran. 
+
+
+**La semana que viene**
+
+- Observará otras arquitecturas de red que puede utilizar al construir modelos de PNL. 
+
+- Utilizará redes neuronales recurrentes para tomar nota de la secuencia de sus tokens.
+
+- Utilizará una capa convolucional para extraer características de su modelo.
+
+- Compare el rendimiento de diferentes arquitecturas en la construcción de clasificadores binarios.
+
+
+¡Nos vemos allí!
 
 ### Lecture Notes Week 2
 [<- Return to INDEX 2](#index-2)
 
+Puedes leer las notas de esta semana en: [C3_W2.pdf](notes%2FC3_W2.pdf)
+
 ## Weekly Assignment - More on the BBC News Archive
 [<- Return to INDEX 0](#index-0)
+
+Respuesta a la tarea: [C3W2_Assignment.ipynb](notebooks%2FW2%2Fassignment%2FC3W2_Assignment.ipynb)
 
 ### Diving deeper into the BBC News Archive
 
