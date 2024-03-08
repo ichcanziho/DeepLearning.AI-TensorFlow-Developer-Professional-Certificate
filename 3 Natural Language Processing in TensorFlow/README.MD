@@ -1662,62 +1662,394 @@ En las dos últimas semanas, primero analizó la tokenización de palabras para 
 ### A conversation with Andrew Ng 3
 [<- Return to INDEX 3](#index-3)
 
+En este video se aborda la implementación de modelos de secuencia en TensorFlow, centrándose en redes neuronales recurrentes (RNN) y su importancia para entender el orden de las palabras en una oración.
+
+![img.png](ims%2FW3%2Fimg.png)
+
+- Las palabras y su orden relativo son cruciales para el significado de una oración.
+- Se destaca la diferencia de significado al cambiar el orden de las palabras en una frase.
+- Se menciona la utilidad de las incrustaciones de palabras para la clasificación basada en el significado de palabras similares.
+- Se introducen arquitecturas especializadas de redes neuronales como RNN, GRU y LSTM para procesamiento de lenguaje natural.
+- Se enfatiza la capacidad de LSTM para mantener el contexto a lo largo de secuencias más largas mediante su estado de celda.
+- Se destaca la importancia de mantener el contexto en secuencias largas mediante el ejemplo de una frase compleja.
+- Se finaliza el video anticipando el contenido del próximo video.
+
+![img_1.png](ims%2FW3%2Fimg_1.png)
+
+El video proporciona una comprensión básica de cómo implementar y utilizar modelos de secuencia en TensorFlow, destacando la importancia del orden de las palabras para el procesamiento de lenguaje natural.
+
 ### Introduction week 3
 [<- Return to INDEX 3](#index-3)
+
+La semana pasada, analizamos hacer la clasificación usando textos y tratando de entrenar y entender el sentimiento positivo y negativo en las críticas de películas. Terminamos mirando el efecto de tokenizar palabras, y vimos que nuestro clasificador no pudo obtener ningún resultado significativo. 
+
+La razón principal de esto fue que el contexto de las palabras era difícil de seguir cuando las palabras se dividieron en sub-palabras y la secuencia en la que aparecen los tokens para las sub-palabras se vuelve muy importante para entender su significado. 
+
+![img_2.png](ims%2FW3%2Fimg_2.png)
+
+Echemos un vistazo a eso ahora. La red neuronal es como una función que cuando la alimentas en datos y etiquetas, deduce las reglas de estas, y luego puedes usar esas reglas. 
+
+![img_3.png](ims%2FW3%2Fimg_3.png)
+
+Así que podría verse como una función un poco como esta, tomas los datos y tomas las etiquetas, y obtienes las reglas.
+
+![img_4.png](ims%2FW3%2Fimg_4.png)
+
+Pero esto no tiene en cuenta ningún tipo de secuencia. Para entender por qué las secuencias pueden ser importantes, considere este conjunto de números. Si nunca los has visto antes, se llaman la secuencia de Fibonacci. Así que vamos a reemplazar los valores reales con variables como n_0, n_1 y n_2, etc., para denotarlos.
+
+Entonces la secuencia en sí se puede derivar donde un número es la suma de los dos números antes de él. Así que 3 es 2 más 1, 5 es 2 más 3, 8 es 3 más 5, etc. Nuestro n_x es igual a n_x menos 1, más n_x menos 2, donde x es la posición en la secuencia. 
+
+![img_5.png](ims%2FW3%2Fimg_5.png)
+
+Visualizado, también podría verse así, uno y dos se alimentan en la primera función y tres salen. Dos se transporta a la siguiente, donde se alimenta junto con los tres para darnos un cinco. Los tres se llevan a la siguiente donde se alimenta en la función junto con los cinco para obtener un ocho y así sucesivamente. 
+
+![img_6.png](ims%2FW3%2Fimg_6.png)
+
+Esto es similar a la idea básica de una red neuronal recurrente o RNN, que a menudo se dibuja un poco así. Tiene su x como en la entrada y su y como salida. Pero también hay un elemento que se alimenta en la función de una función anterior. 
+
+![img_7.png](ims%2FW3%2Fimg_7.png)
+
+Eso se vuelve un poco más claro cuando los encadenas juntos de esta manera, x_0 se alimenta en la función devolviendo y_0. Una salida de la función se alimenta a la siguiente función, que se alimenta en la función junto con x_2 para obtener y_2, produciendo una salida y continuando la secuencia. 
+
+![img_8.png](ims%2FW3%2Fimg_8.png)
+
+Como puede ver, hay un elemento de x_0 alimentado todo el camino a través de la red, similar a x_1 y x_2, etc. Esto forma la base de la red neuronal recurrente o RNN. No voy a entrar en detalles y cómo funcionan, pero usted puede aprender mucho más sobre ellos en este curso de Andrew.
+
+![img_9.png](ims%2FW3%2Fimg_9.png)
+
+
 
 ### Link to Andrew's sequence modeling course
 [<- Return to INDEX 3](#index-3)
 
+Aquí tiene el 
+[enlace](https://www.coursera.org/lecture/nlp-sequence-models/deep-rnns-ehs0S)
+ al curso de Andrew sobre modelado de secuencias.
+
+
 ### LSTMs
 [<- Return to INDEX 3](#index-3)
+
+Puede haber una limitación al abordar la clasificación de texto de esta manera. Considere lo siguiente. Aquí hay una frase. 
+Hoy tiene un hermoso azul. ¿ Qué crees que vendría después? Probablemente cielo. ¿ Verdad? Hoy tiene un hermoso cielo azul. 
+
+¿ Por qué dirías eso? Bueno, hay una gran pista en la palabra azul. En un contexto como este, es muy probable que cuando estamos hablando de un hermoso algo azul, nos referimos a un hermoso cielo azul.
+Por lo tanto, la palabra de contexto que nos ayuda a entender la siguiente palabra está muy cerca de la palabra que nos interesa. 
+
+![img_10.png](ims%2FW3%2Fimg_10.png)
+
+ Pero, ¿qué tal una frase como esta ? Vivía en Irlanda así que en la escuela me hicieron aprender a hablar algo. ¿ Cómo terminarías esa frase? Bueno, podrías decir irlandés pero serías mucho más exacto si dijeras que viví en Irlanda así que en la escuela me hicieron aprender a hablar gaélico. 
+
+En primer lugar, por supuesto, es la cuestión sintáctica. El irlandés describe a la gente, el gaélico describe el idioma. Pero lo más importante en el contexto ML es la palabra clave que nos da los detalles sobre el idioma. Esa es la palabra Irlanda, que aparece mucho antes en la frase. Así que, si estamos viendo una secuencia de palabras podríamos perder ese contexto. 
+
+![img_11.png](ims%2FW3%2Fimg_11.png)
+
+Teniendo esto presente una actualización de RNN se denomina LSTM, se ha creado una memoria a largo plazo a corto plazo. Además del contexto que se está paased tal como está en RNN, los LSTM tienen una canalización adicional de contextos llamados estado de celda. 
+
+![img_12.png](ims%2FW3%2Fimg_12.png)
+
+ Esto puede pasar a través de la red para impactarla. Esto ayuda a mantener el contexto de la relevancia de los tokens anteriores en los posteriores para que se puedan evitar problemas como el que acabamos de discutir. Los estados de celda también pueden ser bidireccionales. Por lo tanto, los contextos posteriores pueden afectar a los anteriores como veremos cuando veamos el código. 
+
+![img_13.png](ims%2FW3%2Fimg_13.png)
+
+El detalle sobre LSTM está fuera del alcance de este curso, pero puedes aprender más sobre ellos en este video de Andrew.
+
+![img_14.png](ims%2FW3%2Fimg_14.png)
+
 
 ### More info on LSTMs
 [<- Return to INDEX 3](#index-3)
 
+Aquí encontrará un 
+[enlace](https://www.coursera.org/lecture/nlp-sequence-models/long-short-term-memory-lstm-KXoay)
+ con más información sobre las LSTM (células de memoria a largo plazo) de Andrew.
+
+
 ### Implementing LSTMs in code
 [<- Return to INDEX 3](#index-3)
+
+Así que ahora echemos un vistazo a cómo implementar LSTM en el código. Aquí está mi modelo donde agregué la segunda capa como un LSTM. Utilizo el tf.keras.layers.lstm para hacerlo. El parámetro pasado es el número de salidas que deseo de esa capa, en este caso es 64. Si lo envuelvo con tf.keras.layers.bidireccional, hará que mi estado celular vaya en ambas direcciones. 
+
+![img_15.png](ims%2FW3%2Fimg_15.png)
+
+ Verá esto cuando explore el resumen del modelo, que tiene este aspecto. Tenemos nuestra incrustación y nuestra bidireccional que contiene el LSTM, seguido de las dos capas densas. Si usted nota que la salida de la bidireccional es ahora un 128, a pesar de que le dijimos a nuestro LSTM que queríamos 64, el bidireccional duplica esto hasta un 128.
+
+![img_16.png](ims%2FW3%2Fimg_16.png)
+
+También puede apilar LSTM como cualquier otra capa keras usando código como este. Pero cuando alimenta un LSTM en otro, tiene que poner las secuencias de retorno igual parámetro verdadero en el primero. Esto asegura que las salidas del LSTM coincidan con las entradas deseadas de la siguiente.
+
+![img_17.png](ims%2FW3%2Fimg_17.png)
+
+El resumen del modelo se verá así. Veamos el impacto de usar un LSTM en el modelo que vimos en el último módulo, donde teníamos tokens de subpalabra.
+
+![img_18.png](ims%2FW3%2Fimg_18.png)
+
+
 
 ### Check out the code - week 3 - (Lab 1 and Lab 2)
 [<- Return to INDEX 3](#index-3)
 
+
+Hemos creado una serie de cuadernos para que explore los distintos tipos de modelos de secuencias. 
+
+Dedique algún tiempo a repasarlos para ver cómo funcionan y qué impacto tienen los distintos tipos de capas en el entrenamiento para la clasificación.
+
+IMDB Subwords 8K con LSTM de una capa [C3_W3_Lab_1_single_layer_LSTM.ipynb](notebooks%2FW3%2FC3_W3_Lab_1_single_layer_LSTM.ipynb)
+
+IMDB Subwords 8K con LSTM multicapa [C3_W3_Lab_2_multiple_layer_LSTM.ipynb](notebooks%2FW3%2FC3_W3_Lab_2_multiple_layer_LSTM.ipynb)
+
+
 ### Accuracy and loss
 [<- Return to INDEX 3](#index-3)
+
+Aquí está la comparación de las precisiones entre el LSTM de una capa y la de dos capas una en 10 épocas. No hay mucha diferencia 
+excepto la precisión del conjunto de validación cae. Pero observe cómo la curva de entrenamiento es más suave. 
+
+Descubrí por las redes de entrenamiento que la irregularidad puede ser una indicación de que su modelo necesita mejora, y el único LSTM que puede ver aquí no es el más suave. 
+
+![img_20.png](ims%2FW3%2Fimg_20.png)
+
+Si nos fijamos en la pérdida, en las primeras 10 épocas, podemos ver resultados similares. 
+
+![img_21.png](ims%2FW3%2Fimg_21.png)
+
+Pero mira lo que sucede cuando aumentamos a 50 épocas de entrenamiento. Nuestro LSTM de una capa, mientras sube con precisión, también es propenso a algunas salsas bastante agudas. El resultado final podría ser bueno, pero esas caídas me hacen sospechar sobre la precisión general del modelo. 
+
+Nuestras dos capas uno se ve mucho más suave, y como tal me hace mucho más seguro en sus resultados. Tenga en cuenta también la precisión de la validación. Teniendo en cuenta que los niveles se sitúan en alrededor del 80 por ciento, no está mal dado que el conjunto de entrenamiento y el conjunto de pruebas fueron 25.000 revisiones.
+
+Pero estamos usando 8.000 sub-palabras tomadas sólo del conjunto de entrenamiento. Así que habría muchos tokens en los conjuntos de pruebas que estarían fuera de vocabulario. Sin embargo, a pesar de eso, todavía estamos en cerca del 80 por ciento de precisión. 
+
+![img_22.png](ims%2FW3%2Fimg_22.png)
+
+Nuestros resultados de pérdida son similares con las dos capas que tienen una curva mucho más suave. La pérdida está aumentando época por época. Así que vale la pena monitorear para ver si se aplana en épocas posteriores como se desearía. Espero que haya sido una buena introducción sobre cómo los RNN y los LSTM pueden ayudarle con la clasificación de texto.
+
+![img_23.png](ims%2FW3%2Fimg_23.png)
+
+Su secuenciación inherente es ideal para predecir texto invisible si desea generar algunos, y veremos que la próxima semana. Pero primero, me gustaría explorar otros tipos de RNN, y los verás en el siguiente video.
 
 ### A word from Laurence
 [<- Return to INDEX 3](#index-3)
 
+En el último video vimos LSTM y cómo funcionan con el estado celular para ayudar a mantener el contexto de una manera que ayude a entender el lenguaje. Bueno, las palabras que no son vecinos inmediatos pueden afectar el contexto del otro.
+
+![img_19.png](ims%2FW3%2Fimg_19.png)
+
+En este video, verá algunas otras opciones de RNN incluyendo convoluciones, unidades recurrentes cerradas también llamadas GRU, 
+y más sobre cómo escribir el código para ellos. Investigarás el impacto que tienen en el entrenamiento. No voy a profundizar 
+en cómo funcionan, y esa información está disponible en la especialización de aprendizaje profundo de Andrew. Así que revisa ahí fuera.
+
+
 ### Looking into the code
 [<- Return to INDEX 3](#index-3)
+
+Así que empecemos con esta red neuronal básica. Tiene una incrustación que toma mi tamaño vocab , dimensiones de incrustación y longitud de entrada como de costumbre. La salida de la incrustación se aplana, promedió y luego se alimenta a una red neuronal densa.
+
+![img_24.png](ims%2FW3%2Fimg_24.png)
+
+Pero podemos experimentar con las capas que unen la incrustación y la densa eliminando el aplanamiento y pulsando desde aquí, y reemplazándolas con un LSTM como este. 
+
+![img_25.png](ims%2FW3%2Fimg_25.png)
+
+Para un aprendiz que usa el conjunto de datos de sarcasmo con estos, cuando solo uso la agrupación y el aplanamiento, rápidamente obtuve cerca del 85% de precisión y luego se aplanó. El conjunto de validación era un poco menos preciso, pero las curvas estamos bastante sincronizados. 
+
+Por otro lado, al usar LSTM, alcancé una precisión del 85 por ciento muy rápidamente y continué subiendo hacia un 97,5 por ciento de precisión dentro de 50 épocas. El conjunto de validación cayó lentamente, pero todavía estaba cerca del mismo valor que la versión no LSTM. Aún así, la caída indica que hay algo de sobreajuste pasando aquí. Así que un poco de ajuste al LSTM debería ayudar a solucionarlo.
+
+![img_26.png](ims%2FW3%2Fimg_26.png)
+
+Del mismo modo, los valores de pérdida de mi no LSTM uno llegaron a estado saludable con bastante rapidez y luego aplanado. Mientras que con el LSTM, la pérdida de entrenamiento disminuye muy bien, pero la validación aumentó a medida que continúo entrenando. 
+
+![img_27.png](ims%2FW3%2Fimg_27.png)
+
+Una vez más, esto muestra algunos ajustes excesivos en la red LSTM. Mientras que la precisión de la predicción aumentó, la confianza en ella disminuyó. Por lo tanto, debe tener cuidado de ajustar sus parámetros de entrenamiento cuando use diferentes tipos de red, no es solo una entrega directa como lo hice aquí.
 
 ### Using a convolutional network
 [<- Return to INDEX 3](#index-3)
 
+Otro tipo de capa que puedes usar es una convolución, de una manera muy similar a la que hiciste con las imágenes. El código para usar una convolucional en la red está aquí. Es muy similar a lo que tenías antes. Especifique el número de circunvoluciones que desea aprender, su tamaño y su función de activación.
+
+El efecto de esto será entonces el mismo. Ahora las palabras se agruparán en el tamaño del filtro en este caso 5. Y las convoluciones aprenderán que pueden asignar la clasificación de palabras a la salida deseada. 
+
+![img_28.png](ims%2FW3%2Fimg_28.png)
+
+Si entrenamos con las convoluciones ahora, veremos que nuestra precisión funciona incluso mejor que antes con cerca del 100% en 
+entrenamiento y alrededor del 80% en validación. Pero como antes, nuestra pérdida aumenta en el conjunto de validación, 
+lo que indica un posible sobreajuste. 
+
+
+
+![img_29.png](ims%2FW3%2Fimg_29.png)
+
+Como tengo una red súper simple aquí, no es sorprendente, y tomará algo de experimentación con diferentes combinaciones de capas conversacionales para mejorar esto. Si volvemos al modelo y exploramos los parámetros, veremos que tenemos 128 filtros cada uno para 5 palabras. 
+
+![img_30.png](ims%2FW3%2Fimg_30.png)
+
+ Y una exploración del modelo mostrará estas dimensiones. Como el tamaño de la entrada fue de 120 palabras, y un filtro que es de 5 palabras de largo afeitará 2 palabras de la parte delantera y trasera, dejándonos con 116. Los 128 filtros que especificamos aparecerán aquí como parte de la capa convolucional.
+
+![img_31.png](ims%2FW3%2Fimg_31.png)
+
+
+
+
 ### Check out the code - week 3 - (Lab 3)
 [<- Return to INDEX 3](#index-3)
+
+Dedique algún tiempo a revisar este cuaderno para ver cómo funciona.
+
+Subpalabras IMDB 8K con capa convolucional 1D [C3_W3_Lab_3_Conv1D.ipynb](notebooks%2FW3%2FC3_W3_Lab_3_Conv1D.ipynb)
 
 ### Going back to the IMDB dataset
 [<- Return to INDEX 3](#index-3)
 
+Así que ahora que hemos visto estos, volvamos al conjunto de datos IMDB que usamos anteriormente en este curso. Aquí, voy a usar una incrustación que aplané antes de que entre en la densa. Mi modelo se verá así, con unos 171,533 parámetros, y el rendimiento será así. Es una buena precisión, pero claro sobreajuste, pero solo toma unos cinco segundos por época para entrenar. 
+
+![normal.gif](ims%2FW3%2Fnormal.gif)
+
+Si cambio esto para usar un LSTM, ahora tendré solo 30.129 parámetros, pero tomará unos 43 segundos por época. La precisión es mejor, pero todavía hay algo de sobreajuste.
+
+![lstm1.gif](ims%2FW3%2Flstm1.gif)
+
+Si pruebo una capa GRU en su lugar, con un GRU siendo un tipo diferente de RNN, y lo hago bidireccional, mi red tendrá unos parámetros de 169,997. Mi tiempo de entrenamiento caerá a 20 segundos por época, y mi precisión es otra vez muy buena en el entrenamiento, y no muy mal en la validación, pero de nuevo, mostrando algo de sobreajuste.
+
+![bidirectional.gif](ims%2FW3%2Fbidirectional.gif)
+
+Con una red convolucional, tendré unos 171.149 parámetros y solo toma unos seis segundos por época para acercarme al 100% de precisión en el entrenamiento, y alrededor del 83 por ciento en la validación, pero de nuevo con sobreajuste.
+
+![convolutional.gif](ims%2FW3%2Fconvolutional.gif)
+
+
 ### Check out the code - week 3 - (Lab 4)
 [<- Return to INDEX 3](#index-3)
+
+Dedique algún tiempo a revisar este cuaderno para ver cómo funciona y qué impacto tienen los distintos tipos de capas en el entrenamiento para la clasificación.
+
+Clasificaciones de IMDB con LSTM, GRU y Conv1D [C3_W3_Lab_4_imdb_reviews_with_GRU_LSTM_Conv1D.ipynb](notebooks%2FW3%2FC3_W3_Lab_4_imdb_reviews_with_GRU_LSTM_Conv1D.ipynb)
+
 
 ### Tips from Laurence
 [<- Return to INDEX 3](#index-3)
 
+Antes de ir a la siguiente unidad, he creado algunos CO-LABS con cada una de estas opciones. Pruébalos usted mismo, compruebe el tiempo, verifique los resultados y vea qué técnicas puede averiguar para evitar algunos de los sobreajustes. Recuerde que con el texto, probablemente obtendrá un poco más de sobreajuste de lo que habría hecho con las imágenes. No menos importante porque casi siempre tendrás palabras sin vocabulario en el conjunto de datos de validación. 
+
+![img_32.png](ims%2FW3%2Fimg_32.png)
+
+Esas son palabras en el conjunto de datos de validación que no estaban presentes en el entrenamiento, lo que naturalmente conduce a un sobreajuste. Estas palabras no se pueden clasificar y, por supuesto, vas a tener estos problemas de sobreajuste, pero mira lo que puedes hacer para evitarlos.
+
 ### Exploring different sequence models (Lab 5 and Lab 6)
 [<- Return to INDEX 3](#index-3)
+
+Hemos creado un par de cuadernos para que explore los distintos tipos de modelos de secuencia para la detección del sarcasmo.
+
+Dedique algún tiempo a revisarlos para ver cómo funcionan y qué impacto tienen los distintos tipos de capas en el entrenamiento para la clasificación.
+
+Sarcasmo con LSTM bidireccional [C3_W3_Lab_5_sarcasm_with_bi_LSTM.ipynb](notebooks%2FW3%2FC3_W3_Lab_5_sarcasm_with_bi_LSTM.ipynb)
+
+Sarcasmo con capa convolucional 1D  [C3_W3_Lab_6_sarcasm_with_1D_convolutional.ipynb](notebooks%2FW3%2FC3_W3_Lab_6_sarcasm_with_1D_convolutional.ipynb)
 
 ### Week 3 Quiz
 [<- Return to INDEX 3](#index-3)
 
+1. **Question 1**
+Why does sequence make a large difference when determining semantics of language?
+
+   - [ ] It doesn’t
+   - [x] Because the order in which words appear dictate their meaning
+   - [ ] Because the order of words doesn’t matter
+   - [ ] Because the order in which words appear dictate their impact on the meaning of the sentence
+
+   > **Correct!** The sequence in which words are placed in a sentence crucially determines its semantics, as the arrangement can change the intended message or emphasis.
+
+2. **Question 2**
+How do Recurrent Neural Networks help you understand the impact of sequence on meaning?
+
+   - [ ] They shuffle the words evenly
+   - [x] They carry meaning from one cell to the next
+   - [ ] They look at the whole sentence at a time
+   - [ ] They don’t
+
+   > **That's right!** RNNs are designed to understand and recall previous inputs thanks to their internal state, aiding in grasping sequences and their consequential meanings.
+
+3. **Question 3**
+How does an LSTM help understand meaning when words that qualify each other aren’t necessarily beside each other in a sentence?
+
+   - [ ] They load all words into a cell state
+   - [ ] They shuffle the words randomly
+   - [x] Values from earlier words can be carried to later ones via a cell state
+   - [ ] They don’t
+
+   > **Correct!** LSTMs are capable of retaining information over long sequences, allowing the network to remember and utilize distant word relationships within a sentence.
+
+4. **Question 4**
+What keras layer type allows LSTMs to look forward and backward in a sentence?
+
+   - [ ] Bilateral
+   - [ ] Unilateral
+   - [x] Bidirectional
+   - [ ] Bothdirection
+
+   > **Correct!** A Bidirectional layer wraps around an LSTM, allowing it to access both past (backward) and future (forward) context of the sequence at every point.
+
+5. **Question 5**
+What’s the output shape of a bidirectional LSTM layer with 64 units?
+
+   - [ ] (None, 64)
+   - [ ] (128,None)
+   - [x] (None, 128)
+   - [ ] (128,1)
+
+   > **That's right!** A bidirectional LSTM layer doubles the output units because it concatenates the outputs from both forward and backward passes, resulting in 128 units.
+
+6. **Question 6**
+When stacking LSTMs, how do you instruct an LSTM to feed the next one in the sequence?
+
+   - [x] Ensure that return_sequences is set to True only on units that feed to another LSTM
+   - [ ] Ensure that they have the same number of units
+   - [ ] Do nothing, TensorFlow handles this automatically
+   - [ ] Ensure that return_sequences is set to True on all units
+
+   > **Correct!** Setting `return_sequences` to True is crucial for stacking LSTMs, as it allows the output of one LSTM layer to be sequenced into the next.
+
+7. **Question 7**
+If a sentence has 120 tokens in it, and a Conv1D with 128 filters and a Kernel size of 5 is passed over it, what’s the output shape?
+
+   - [ ] (None, 120, 124)
+   - [ ] (None, 120, 128)
+   - [ ] (None, 116, 124)
+   - [x] (None, 116, 128)
+
+   > **That's right!** The Conv1D operation reduces the sequence length (120 - 5 + 1 = 116), and the number of filters determines the last dimension (128).
+
+8. **Question 8**
+What’s the best way to avoid overfitting in NLP datasets?
+
+   - [ ] Use LSTMs
+   - [ ] Use GRUs
+   - [ ] Use Conv1D
+   - [x] None of the above
+
+   > **Correct!** Avoiding overfitting often requires a combination of techniques such as dropout, regularization, and sometimes data augmentation, rather than the use of a specific model type.
+
 ### Week 3 Wrap up
 [<- Return to INDEX 3](#index-3)
+
+Ha estado experimentando con la NLP para la clasificación de texto durante las últimas semanas. La semana que viene, 
+cambiará de marcha y echará un vistazo al uso de las herramientas que ha aprendido para predecir texto, lo que en última 
+instancia significa que puede crear texto. 
+
+Al aprender secuencias de palabras, puede predecir la palabra más común que viene a continuación en la secuencia. Así, 
+al partir de una nueva secuencia de palabras, puede crear un modelo que se base en ellas. Tomará diferentes conjuntos de 
+entrenamiento, como canciones tradicionales irlandesas o poesía de Shakespeare, y aprenderá a crear nuevos conjuntos de 
+palabras utilizando sus incrustaciones
 
 ### Lecture Notes Week 3
 [<- Return to INDEX 3](#index-3)
 
+> ## Notas de esta semana: [C3_W3.pdf](notes%2FC3_W3.pdf)
+
 ## Weekly Assignment - Exploring overfitting in NLP
 [<- Return to INDEX 0](#index-0)
+
+> ## Respuseta de esta tarea en: [C3W3_Assignment.ipynb](notebooks%2FW3%2Fassignment%2FC3W3_Assignment.ipynb)
+
 
 ### Exploring overfitting in NLP
 
@@ -1755,8 +2087,32 @@ Tomando todo lo que ha aprendido en el entrenamiento de una red neuronal basada 
 ### A conversation with Andrew Ng 4
 [<- Return to INDEX 4](#index-4)
 
+Bienvenida de nuevo. Una de las aplicaciones más divertidas de los modelos de secuencia, es que pueden leer el cuerpo del texto, por lo que entrenar en el cierto cuerpo de texto, y luego generar o sintetizar nuevos textos, que suena como si hubiera sido escrito por autor similar o conjunto de autores. 
+
+Es como, una de las cosas que vamos a hacer esta semana. En los cursos, vamos a tomar un cuerpo de trabajo de Shakespeare, y Shakespeare como autor medieval inglés, y por eso escribió en un estilo de inglés diferente al que estamos acostumbrados a leer, y eso hace que sea un ejercicio realmente interesante en la generación de textos, 
+
+porque si No estoy familiarizado con el lenguaje Shakespeare y cómo se hace, entonces el lenguaje es realmente generado por la red neuronal, probablemente se verá mucho como el original, probablemente, si usted vivió en el 1600 cuando Shakespeare estaba alrededor, usted sería capaz de identificar como siendo generado por una red neuronal, pero para nosotros ahora con esta versión ligeramente diferente de Inglaterra, en realidad hace que sea un escenario realmente divertido. 
+
+![img.png](ims%2FW4%2Fimg.png)
+
+Hay una aplicación muy divertida en la red neuronal, y uno de mis profesores favoritos en la secundaria, en realidad fue mi profesor de inglés que me hizo memorizar mucho Shakespeare. Realmente me pregunto qué pensaría ella de esto. Sí, yo tenía exactamente lo mismo. Jugué a Henry el cuarto en la secundaria. Así que incluso, los conozco a todos y bien un tiempo sostengo este humor desligado de su ídolo Ray, incluso recuerdo. No puedo hablar de eso. Así que para hacer todas estas cosas divertidas tú mismo, vamos a ver los videos de esta semana.
+
 ### Introduction Week 4
 [<- Return to INDEX 4](#index-4)
+
+Hemos visto la clasificación del texto en las últimas lecciones. Pero ¿qué pasa si queremos generar nuevo texto? Ahora bien, esto puede sonar como un nuevo terreno ininterrumpido, pero cuando lo piensas, realmente has cubierto todo lo que necesitas para hacer esto ya. En lugar de generar nuevo texto, ¿qué tal pensar en él como un problema de predicción? 
+
+Recuerde, por ejemplo, cuando tenía un montón de píxeles para una imagen, y entrenó a una red neuronal para clasificar cuáles eran esos píxeles, y predijo el contenido de la imagen, como tal vez un artículo de moda, o un trozo de escritura a mano. Bueno, la predicción de texto es muy similar. 
+
+![img_1.png](ims%2FW4%2Fimg_1.png)
+
+Podemos obtener un cuerpo de textos, extraer el vocabulario completo de él, y luego crear conjuntos de datos a partir de eso, donde hacemos que la frase X y la siguiente palabra en esa frase sea Ys. Por ejemplo, considere la frase, Brillo, Brillo, Pequeño, Estrella. 
+
+¿Qué pasaría si creáramos datos de entrenamiento donde los Xs son Twinkle, Twinkle, Little, y la Y es estrella? Entonces, siempre que la red neuronal vea las palabras Brillo, Brillo, Little, la siguiente palabra pronosticada sería estrella. 
+
+![img_2.png](ims%2FW4%2Fimg_2.png)
+
+Por lo tanto, dadas suficientes palabras en un corpus con una red neuronal entrenada en cada una de las frases en ese corpus, y la siguiente palabra pronosticada, podemos llegar a una generación de texto bastante sofisticada y esta semana, veremos codificarlo.
 
 ### Looking into the code 1 week 4
 [<- Return to INDEX 4](#index-4)
@@ -1809,17 +2165,115 @@ Tomando todo lo que ha aprendido en el entrenamiento de una red neuronal basada 
 ### Lecture Notes Week 4
 [<- Return to INDEX 4](#index-4)
 
+> ## notas de esta semana: [C3_W4.pdf](notes%2FC3_W4.pdf)
+
 ### Reminder about the end of access to Lab Notebooks
 [<- Return to INDEX 4](#index-4)
+
+¡Hola alumno! 
+
+El(los) siguiente(s) tema(s) es(son) el(los) último(s) tema(s) calificado(s) de este curso. Si lo/los aprueba y también ha aprobado todos los ítems calificados anteriores, podrá obtener el certificado del curso. ¡Enhorabuena!
+
+Tenga en cuenta que, de acuerdo con 
+[la Política de Pagos y Reembolsos de Coursera](https://www.coursera.org/about/terms#payments-and-refund-policy)
+, su acceso a los ítems calificados (así como a los Laboratorios No Calificados alojados en Coursera) finalizará una vez que expire su suscripción. Si desea conservar sus cuadernos de laboratorio como referencia, le recomendamos encarecidamente que 
+[los descargue](https://community.deeplearning.ai/t/downloading-your-notebook-downloading-your-workspace-and-refreshing-your-workspace/475495)
+ antes de finalizar el curso o la Specializations.
+
+Puede dirigirse al 
+[Centro de Ayuda al Aprendiz de Coursera](https://www.coursera.support/s/article/360036160591-How-to-contact-Coursera?language=en_US)
+ si tiene preguntas sobre esta política, o si se queda bloqueado mientras tiene una suscripción activa. 
+
+Gracias y ¡siga aprendiendo!
+Equipo de control de calidad de DeepLearning.AI
 
 ### Wrap up week 4
 [<- Return to INDEX 4](#index-4)
 
+Durante las últimas cuatro semanas usted ha obtenido una base de cómo hacer el procesamiento del Lenguaje Natural con TensorFlow y Keras. Usted fue desde los primeros principios -- Tokenización básica y Padding de texto para producir estructuras de datos que podrían ser utilizados en una Red Neuronal. 
+
+A continuación, aprendió sobre incrustaciones, y cómo las palabras podrían ser mapeadas a vectores, y palabras de semántica similar dados vectores que apuntan en una dirección similar, dándole un modelo matemático para su significado, que luego podría ser alimentado en una red neuronal profunda para la clasificación.
+
+A partir de ahí empezó a aprender sobre los modelos de secuencia, y cómo ayudan a profundizar en su comprensión del sentimiento en el texto al no limitarse a observar las palabras de forma aislada, sino también cómo cambian sus significados cuando se califican unas a otras. 
+
+Para terminar, ¡tomó todo lo que había aprendido y lo utilizó para construir un generador de poesía! 
+
+Esto es sólo un comienzo en el uso de TensorFlow para el procesamiento del lenguaje natural. Espero que haya sido un buen comienzo para usted, ¡y que se sienta equipado para pasar al siguiente nivel! 
+
 ### A conversation with Andrew NG Final
 [<- Return to INDEX 4](#index-4)
 
+Felicidades por llegar al final de este curso, donde has aprendido mucho sobre cómo implementar modelos para el procesamiento del lenguaje natural. Pero los modelos de secuencia que ha aprendido como el RNN, el GIU, el LCM, son útiles para aún más aplicaciones específicamente aplicaciones de series temporales. Todo, desde el procesamiento, ya sea los datos hasta el procesamiento de datos del mercado de valores, para tratar de entender el electrocardiograma «EKG» que es la serie temporal de grabaciones eléctricas de su corazón.
+
+![img_3.png](ims%2FW4%2Fimg_3.png)
+
+Estos tipos de modelos son útiles, todas estas aplicaciones. Entonces, en el próximo curso, profundizarás para aprender 
+más sobre cómo construir y entrenar tales modelos. Así que como muchas de esas cosas como Andrew ha mencionado sólo 
+que hemos hecho con el procesamiento del lenguaje natural y el modelado de secuencias, e incluso otras cosas que hemos 
+aprendido en este curso, por ejemplo, las convoluciones y el curso de red neuronal convolucional.
+
+![img_4.png](ims%2FW4%2Fimg_4.png)
+
+Las convoluciones van a ser capaz de unirse a medida que empiezas a hacer secuencias y predicciones, y creemos que va a ser un módulo muy, muy agradable para ayudar realmente a construir bajo esas habilidades que has estado haciendo y ayudar a avanzar hacia el dominio de en términos de ellas. Estos modelos son importantes y en el próximo curso espero que disfruten aprendiendo sobre ellos. Así que, por favor, pasa al siguiente curso.
+
 ### Acknowledgments
 [<- Return to INDEX 4](#index-4)
+
+Además de los desarrolladores originales del plan de estudios, las siguientes personas hicieron contribuciones significativas a la actualización del Curso 2:
+
+**Revisiones de los cuestionarios**
+
+- Diego Peluffo
+
+**Apoyo de ingeniería**
+
+- Andrés Zarta
+
+**Pruebas alfa y tutoría**
+
+- Giovanni Lignarolo
+
+- Deepthi Locanindi
+
+- Chris Favila
+
+**Probadores alfa**
+
+- Nilosree Sengupta
+
+- Paul Wilson Kolluri
+
+- Moustafa Shomer
+
+- Daewook Kim
+
+**Marketing**
+
+- Ishita Chaudary
+
+**Producción de vídeo**
+
+- Diego Peluffo
+
+**Apoyo administrativo y de contenidos adicional**
+
+- Ryan Keenan
+
+- Lara Pheatt-Pitzer
+
+- Inhae Koo
+
+- Muhammad Mubashar
+
+- Christopher Moroney
+
+- Dani Zysman
+
+- Emma Afflerbach
+
+
+Por último, ¡nuestro más sincero agradecimiento a USTED, por inscribirse en esta Specializations y formar parte de nuestra comunidad global de estudiantes!
+
 
 ## Weekly Assignment - Generate Shakespeare-like text
 [<- Return to INDEX 0](#index-0)
