@@ -16,6 +16,9 @@ Si usted es un desarrollador de software que quiere construir algoritmos escalab
 las herramientas para construirlos. Esta Specializations le enseñará las mejores prácticas para utilizar TensorFlow, un popular 
 marco de trabajo de código abierto para el aprendizaje automático. 
 
+[<img src="certificate.png" />](https://www.coursera.org/account/accomplishments/verify/V2QDPSPV6FWL)
+
+
 En el Curso 3 de la Specializations de deeplearning.ai TensorFlow, construirá sistemas de procesamiento de lenguaje natural utilizando TensorFlow. 
 Aprenderá a procesar texto, incluyendo la tokenización y la representación de frases como vectores, para que puedan ser introducidos 
 en una red neuronal. También aprenderá a aplicar RNNs, GRUs y LSTMs en TensorFlow. 
@@ -2117,50 +2120,575 @@ Por lo tanto, dadas suficientes palabras en un corpus con una red neuronal entre
 ### Looking into the code 1 week 4
 [<- Return to INDEX 4](#index-4)
 
+Así que empecemos con un ejemplo simple. He tomado una canción irlandesa tradicional y aquí están las primeras palabras de ella, y aquí está el comienzo del código para procesarla. 
+
+![img_5.png](ims%2FW4%2Fimg_5.png)
+
+En este caso, para mantener las cosas simples, puse toda la canción en una sola cadena. Puedes ver esa cadena aquí y he indicado saltos de línea con\ n. Luego, llamando a la función de división en\ n, puedo crear una lista de oraciones de Python a partir de los datos y convertiré todo eso a minúsculas. Usando el tokenizer, entonces puedo llamar fit_on_texts a este corpus de trabajo y creará el diccionario de palabras y el corpus general. 
+
+![img_6.png](ims%2FW4%2Fimg_6.png)
+
+Este es un par de valores clave con la clave siendo la palabra y el valor es el token de esa palabra. Podemos encontrar el número total de palabras en el corpus, obteniendo la longitud de su índice de palabras. Vamos a añadir uno a esto, para considerar palabras de vocabulario externo.
+
 ### Preparing the training data
 [<- Return to INDEX 4](#index-4)
+
+Así que ahora, veamos el código para tomar este corpus y convertirlo en datos de entrenamiento. Aquí está el comienzo, desempaquetaré esta línea por línea. En primer lugar, nuestras x de entrenamiento se llamarán secuencias de entrada, y esta será una lista de Python. 
+
+![img_7.png](ims%2FW4%2Fimg_7.png)
+
+Luego, para cada línea en el corpus, generaremos una lista de tokens usando los tokenizers, textos al método de secuencias. Esto convertirá una línea de texto como, «En la ciudad de Athy un Jeremy Lanigan», en una lista de los tokens que representan las palabras. 
+
+![img_8.png](ims%2FW4%2Fimg_8.png)
+
+Luego vamos a iterar sobre esta lista de tokens y crear un número de secuencias de n-gramos, es decir, las dos primeras 
+palabras de la oración o una secuencia, luego las tres primeras son otra secuencia, etc. 
+
+![img_9.png](ims%2FW4%2Fimg_9.png)
+
+El resultado de esto será, para 
+la primera línea de la oración, la siguiente entrada secuencias que se generarán.
+
+El mismo proceso sucederá para cada línea, pero como puede ver, las secuencias de entrada son simplemente las oraciones que se dividen en frases, las dos primeras palabras, las tres primeras palabras, etc.
+
+![img_10.png](ims%2FW4%2Fimg_10.png)
+
+Luego necesitamos encontrar la longitud de la frase más larga en el corpus. Para hacer esto, iteraremos sobre todas las secuencias y encontraremos la más larga con código como este. 
+
+![img_11.png](ims%2FW4%2Fimg_11.png)
+
+Una vez que tengamos nuestra longitud de secuencia más larga, lo siguiente que hacer es rellenar todas las secuencias para que tengan la misma longitud. Vamos a pre-pad con ceros para que sea más fácil extraer la etiqueta, lo verás en unos momentos. 
+
+![img_12.png](ims%2FW4%2Fimg_12.png)
+
+Así que ahora, nuestra línea estará representada por un conjunto de secuencias de entrada acolchadas que se ven así. 
+Ahora, que tenemos nuestras secuencias, lo siguiente que tenemos que hacer es convertirlas en x e y, nuestros valores de entrada 
+y sus etiquetas. 
+
+Cuando lo piensas, ahora que las oraciones están representadas de esta manera, todo lo que tenemos que hacer es tomar todo menos el último carácter como la x y luego usar el último carácter como la y en nuestra etiqueta.
+
+![img_13.png](ims%2FW4%2Fimg_13.png)
+
+Hacemos eso así, donde para la primera secuencia, todo hasta los cuatro es nuestra entrada y los dos son nuestra etiqueta. Del mismo modo, aquí para la segunda secuencia donde la entrada es de dos palabras y la etiqueta es la tercera palabra, tokenizada a 66.
+
+Aquí, la entrada es de tres palabras y la etiqueta es ocho, que fue la cuarta palabra de la oración. En este punto, debería quedar claro por qué hicimos pre-relleno, porque nos hace mucho más fácil obtener la etiqueta simplemente agarrando el último token.
+
+![img_14.png](ims%2FW4%2Fimg_14.png)
 
 ### More on the training data
 [<- Return to INDEX 4](#index-4)
 
+Así que ahora, tenemos que dividir nuestras secuencias en nuestras X y nuestras Y. Para hacer esto, vamos a tomar los primeros n tokens, y hacerlos nuestras x. Luego obtendremos el último token y lo convertiremos en nuestra etiqueta. Antes de que la etiqueta se convierta en y, hay un paso más, y lo verás en breve.
+
+Python hace que esto sea realmente fácil de hacer con su menos sintaxis. Entonces, para obtener mis x, simplemente obtengo todas las secuencias de entrada cortadas para eliminar el último token. Para obtener las etiquetas, obtengo toda la secuencia de entrada cortada para mantener el último token. 
+
+![img_15.png](ims%2FW4%2Fimg_15.png)
+
+ Ahora, debería codificar mis etiquetas, ya que esto realmente es un problema de clasificación. Cuando se le dé una secuencia de palabras, puedo clasificar desde el corpus, cuál sería la siguiente palabra. Entonces, para codificar uno-hot, puedo usar la utilidad de contraste para convertir una lista a una categórica. Simplemente le doy la lista de etiquetas y el número de clases que es mi número de palabras, y creará una codificación unificada de las etiquetas.
+
+![img_16.png](ims%2FW4%2Fimg_16.png)
+
+Así, por ejemplo, si consideramos esta lista de tokens como una frase, entonces la x es la lista hasta el último valor, y la etiqueta es el último valor que en este caso es 70. 
+
+La y es una matriz codificada de una sola vez si la longitud es el tamaño del corpus de palabras y el valor que se establece en uno es el que está en el índice de la etiqueta que en este caso es el elemento 70.
+
+![img_17.png](ims%2FW4%2Fimg_17.png)
+
+Está bien. Ahora tiene todos los datos listos para entrenar una red para la predicción. Con suerte, esto fue útil para ti. Verás la red neuronal en el siguiente vídeo. Pero primero, veamos su pantalla de procesamiento de los datos, utilizando los métodos que vio en esta lección.
+
+![img_18.png](ims%2FW4%2Fimg_18.png)
+
 ### Finding what the next word should be
 [<- Return to INDEX 4](#index-4)
+
+En el video anterior miramos los datos, una cadena que contiene una sola canción, y vimos cómo prepararlos para generar nuevo texto. Vimos cómo tokenizar los datos y luego crear engramas de sub-oración que fueron etiquetados con la siguiente palabra en la oración. 
+
+Luego codificamos las etiquetas para ponernos en una posición donde podamos construir una red neuronal que pueda, dada una frase, predecir la siguiente palabra. Ahora que tenemos nuestros datos como xs y ys, es relativamente simple para nosotros crear una red neuronal para clasificar cuál debería ser la siguiente palabra, dado un conjunto de palabras. Aquí está el código.
+
+![img_19.png](ims%2FW4%2Fimg_19.png)
+
+Empezaremos con una capa de incrustación. Vamos a querer que maneje todas nuestras palabras, así que lo establecemos en el 
+primer parámetro. El segundo parámetro es el número de dimensiones que se van a utilizar para trazar el vector de una palabra. 
+Siéntase libre de modificar esto para ver cuál sería su impacto en los resultados, pero voy a mantenerlo en 64 por ahora. 
+
+Finalmente, el tamaño de las dimensiones de entrada será alimentado, y esta es la longitud de la secuencia más larga menos 1. Restamos uno porque recortamos la última palabra de cada secuencia para obtener la etiqueta, por lo que nuestras secuencias serán una menor que la longitud máxima de secuencia.
+
+A continuación agregaremos un LSTM. Como vimos con los LSTM anteriormente en el curso, su estado celular significa que llevan contexto junto con ellos, por lo que no son solo palabras vecinas las que tienen un impacto. Voy a especificar 20 unidades aquí, pero de nuevo, deberías sentirte libre de experimentar.
+
+Finalmente hay una capa densa de tamaño como el total de palabras, que es el mismo tamaño que usamos para la codificación uno-hot. Así, esta capa tendrá una neurona, por palabra y esa neurona debería iluminarse cuando predecimos una palabra dada. 
+
+Estamos haciendo una clasificación categórica, así que estableceremos las leyes como entropía cruzada categórica. Y usaremos el 
+optimizador Adam, que parece funcionar particularmente bien para tareas como esta.
+
+![img_20.png](ims%2FW4%2Fimg_20.png)
+
+Finalmente, vamos a entrenar para una gran cantidad de épocas, digamos alrededor de 500, ya que un modelo como este tarda un tiempo en converger, sobre todo porque tiene muy pocos datos. Entonces, si entrenamos el modelo para 500 épocas, se verá así.
+
+![img_21.png](ims%2FW4%2Fimg_21.png)
 
 ### Example
 [<- Return to INDEX 4](#index-4)
 
+Aquí hay algunas frases que se generaron cuando le di a la red neuronal la frase Lawrence fue a Dublín, y le pedí que predijera las siguientes 10 palabras. Veremos el código para eso en un momento, pero observe que hay muchas repeticiones de palabras. En esta frase, tres de las últimas cinco palabras son pared, y aquí tres de las cuatro últimas son bola, e incluso en ésta la palabra relaciones se repite. Esto se debe a que nuestro LSTM solo llevaba el contexto hacia adelante. 
+
+
+![img_22.png](ims%2FW4%2Fimg_22.png)
+
+Echemos un vistazo a lo que sucede si cambiamos el código para que sea bidireccional. Al agregar esta línea simplemente definir el LSTM es bidireccional, y luego volver a entrenar
+![img_23.png](ims%2FW4%2Fimg_23.png)
+
+
+puede ver que converje un poco más rápido como verá en este gráfico. 
+
+![img_24.png](ims%2FW4%2Fimg_24.png)
+
+Después de entrenar y probar, ahora recibo estas frases. Tienen un poco más de sentido, pero todavía hay algo de repetición. Dicho esto, recuerden que esta es una canción donde las palabras riman como bola, todo y pared, etcétera, y como tales muchas de ellas van a aparecer.
+
+![img_25.png](ims%2FW4%2Fimg_25.png)
+
 ### Predicting a word
 [<- Return to INDEX 4](#index-4)
+
+
+Así que ahora, echemos un vistazo a cómo obtener una predicción para una palabra y cómo generar nuevo texto basado en esas predicciones. Así que empecemos con una sola frase. Por ejemplo, «Lawrence fue a Dublín». Estoy llamando a esta frase la semilla.
+
+![img_26.png](ims%2FW4%2Fimg_26.png)
+
+Si quiero predecir las siguientes 10 palabras en la oración para seguir esto, entonces este código tokenizer eso para mí usando el método de texto a secuencias en el tokenizer.
+
+![img_27.png](ims%2FW4%2Fimg_27.png)
+
+Como no tenemos una palabra de vocabulario externa, ignorará 'Lawrence, 'que no está en el corpus y obtendrá la siguiente secuencia. 
+
+![img_28.png](ims%2FW4%2Fimg_28.png)
+
+Este código rellenará la secuencia para que coincida con los del conjunto de entrenamiento. 
+
+![img_29.png](ims%2FW4%2Fimg_29.png)
+
+Así que terminamos con algo como esto que podemos pasar al modelo para obtener una predicción de vuelta. 
+
+![img_30.png](ims%2FW4%2Fimg_30.png)
+
+Esto nos dará el símbolo de la palabra más probable que sea la siguiente en la secuencia.
+
+![img_31.png](ims%2FW4%2Fimg_31.png)
+
+Así que ahora, podemos hacer una búsqueda inversa en los elementos del índice de palabras para convertir el token de nuevo en una palabra y agregar eso a nuestros textos iniciales, y eso es todo.
+
+![img_32.png](ims%2FW4%2Fimg_32.png)
+
+Aquí está el código completo para hacerlo 10 veces y puedes ajustarlo por más. Pero, ¿sabes que cuantas más palabras predigas, más probable es que te pongas galimatías? Porque cada palabra se predice, por lo que no es 100% segura, y luego la siguiente es menos segura, y la siguiente, etc
+
+![img_33.png](ims%2FW4%2Fimg_33.png)
+
+Así que, por ejemplo, si intentas la misma semilla y predices 100 palabras, terminarás con algo como esto. Usando un corpus más grande vamos a ayudar, y luego el siguiente video, usted verá el impacto de eso, así como algunos ajustes que una red neuronal que le ayudará a crear poesía.
+
+![img_34.png](ims%2FW4%2Fimg_34.png)
 
 ### Check out the code - week 4 - (Lab 1)
 [<- Return to INDEX 4](#index-4)
 
+Aquí tiene el primer 
+cuaderno de [C3_W4_Lab_1.ipynb](notebooks%2FW4%2FC3_W4_Lab_1.ipynb)
+ esta semana.
+
 ### Notebook for lesson 1 - week 4
 [<- Return to INDEX 4](#index-4)
+
+Primero, importamos todas las bibliotecas necesarias:
+
+```python
+
+import tensorflow as tf
+import numpy as np
+from tensorflow.keras.layers import Embedding, LSTM, Dense, Bidirectional
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+```
+
+Los datos consisten en la letra de una canción, la cual se procesa para ser utilizada por el modelo. La letra se divide en líneas y se convierte a minúsculas:
+
+```python
+# Define the lyrics of the song
+data="In the town of Athy one Jeremy Lanigan \n Battered away til he hadnt a pound. \nHis father died and made him a man again \n Left him a farm and ten acres of ground. \nHe gave a grand party for friends and relations \nWho didnt forget him when come to the wall, \nAnd if youll but listen Ill make your eyes glisten \nOf the rows and the ructions of Lanigans Ball. \nMyself to be sure got free invitation, \nFor all the nice girls and boys I might ask, \nAnd just in a minute both friends and relations \nWere dancing round merry as bees round a cask. \nJudy ODaly, that nice little milliner, \nShe tipped me a wink for to give her a call, \nAnd I soon arrived with Peggy McGilligan \nJust in time for Lanigans Ball. \nThere were lashings of punch and wine for the ladies, \nPotatoes and cakes; there was bacon and tea, \nThere were the Nolans, Dolans, OGradys \nCourting the girls and dancing away. \nSongs they went round as plenty as water, \nThe harp that once sounded in Taras old hall,\nSweet Nelly Gray and The Rat Catchers Daughter,\nAll singing together at Lanigans Ball. \nThey were doing all kinds of nonsensical polkas \nAll round the room in a whirligig. \nJulia and I, we banished their nonsense \nAnd tipped them the twist of a reel and a jig. \nAch mavrone, how the girls got all mad at me \nDanced til youd think the ceiling would fall. \nFor I spent three weeks at Brooks Academy \nLearning new steps for Lanigans Ball. \nThree long weeks I spent up in Dublin, \nThree long weeks to learn nothing at all,\n Three long weeks I spent up in Dublin, \nLearning new steps for Lanigans Ball. \nShe stepped out and I stepped in again, \nI stepped out and she stepped in again, \nShe stepped out and I stepped in again, \nLearning new steps for Lanigans Ball. \nBoys were all merry and the girls they were hearty \nAnd danced all around in couples and groups, \nTil an accident happened, young Terrance McCarthy \nPut his right leg through miss Finnertys hoops. \nPoor creature fainted and cried Meelia murther, \nCalled for her brothers and gathered them all. \nCarmody swore that hed go no further \nTil he had satisfaction at Lanigans Ball. \nIn the midst of the row miss Kerrigan fainted, \nHer cheeks at the same time as red as a rose. \nSome of the lads declared she was painted, \nShe took a small drop too much, I suppose. \nHer sweetheart, Ned Morgan, so powerful and able, \nWhen he saw his fair colleen stretched out by the wall, \nTore the left leg from under the table \nAnd smashed all the Chaneys at Lanigans Ball. \nBoys, oh boys, twas then there were runctions. \nMyself got a lick from big Phelim McHugh. \nI soon replied to his introduction \nAnd kicked up a terrible hullabaloo. \nOld Casey, the piper, was near being strangled. \nThey squeezed up his pipes, bellows, chanters and all. \nThe girls, in their ribbons, they got all entangled \nAnd that put an end to Lanigans Ball."
+
+# Split the long string per line and put in a list
+corpus = data.lower().split("\n")
+
+# Preview the result
+print(corpus)
+```
+
+```commandline
+['in the town of athy one jeremy lanigan ', ' battered away til he hadnt a pound. ', 'his father died and made him a man again ', ' left him a farm and ten acres of ground. ', 'he gave a grand party for friends and relations ', 'who didnt forget him when come to the wall, ', 'and if youll but listen ill make your eyes glisten ', 'of the rows and the ructions of lanigans ball. ', 'myself to be sure got free invitation, ', 'for all the nice girls and boys i might ask, ', 'and just in a minute both friends and relations ', 'were dancing round merry as bees round a cask. ', 'judy odaly, that nice little milliner, ', 'she tipped me a wink for to give her a call, ', 'and i soon arrived with peggy mcgilligan ', 'just in time for lanigans ball. ', 'there were lashings of punch and wine for the ladies, ', 'potatoes and cakes; there was bacon and tea, ', 'there were the nolans, dolans, ogradys ', 'courting the girls and dancing away. ', 'songs they went round as plenty as water, ', 'the harp that once sounded in taras old hall,', 'sweet nelly gray and the rat catchers daughter,', 'all singing together at lanigans ball. ', 'they were doing all kinds of nonsensical polkas ', 'all round the room in a whirligig. ', 'julia and i, we banished their nonsense ', 'and tipped them the twist of a reel and a jig. ', 'ach mavrone, how the girls got all mad at me ', 'danced til youd think the ceiling would fall. ', 'for i spent three weeks at brooks academy ', 'learning new steps for lanigans ball. ', 'three long weeks i spent up in dublin, ', 'three long weeks to learn nothing at all,', ' three long weeks i spent up in dublin, ', 'learning new steps for lanigans ball. ', 'she stepped out and i stepped in again, ', 'i stepped out and she stepped in again, ', 'she stepped out and i stepped in again, ', 'learning new steps for lanigans ball. ', 'boys were all merry and the girls they were hearty ', 'and danced all around in couples and groups, ', 'til an accident happened, young terrance mccarthy ', 'put his right leg through miss finnertys hoops. ', 'poor creature fainted and cried meelia murther, ', 'called for her brothers and gathered them all. ', 'carmody swore that hed go no further ', 'til he had satisfaction at lanigans ball. ', 'in the midst of the row miss kerrigan fainted, ', 'her cheeks at the same time as red as a rose. ', 'some of the lads declared she was painted, ', 'she took a small drop too much, i suppose. ', 'her sweetheart, ned morgan, so powerful and able, ', 'when he saw his fair colleen stretched out by the wall, ', 'tore the left leg from under the table ', 'and smashed all the chaneys at lanigans ball. ', 'boys, oh boys, twas then there were runctions. ', 'myself got a lick from big phelim mchugh. ', 'i soon replied to his introduction ', 'and kicked up a terrible hullabaloo. ', 'old casey, the piper, was near being strangled. ', 'they squeezed up his pipes, bellows, chanters and all. ', 'the girls, in their ribbons, they got all entangled ', 'and that put an end to lanigans ball.']
+```
+La tokenización convierte las palabras en índices en un diccionario:
+
+
+```python
+# Initialize the Tokenizer class
+tokenizer = Tokenizer()
+
+# Generate the word index dictionary
+tokenizer.fit_on_texts(corpus)
+
+# Define the total words. You add 1 for the index `0` which is just the padding token.
+total_words = len(tokenizer.word_index) + 1
+
+print(f'word index dictionary: {tokenizer.word_index}')
+print(f'total words: {total_words}')
+```
+
+```commandline
+word index dictionary: {'and': 1, 'the': 2, 'a': 3, 'in': 4, 'all': 5, 'i': 6, 'for': 7, 'of': 8, 'lanigans': 9, 'ball': 10, 'were': 11, 'at': 12, 'to': 13, 'she': 14, 'stepped': 15, 'his': 16, 'girls': 17, 'as': 18, 'they': 19, 'til': 20, 'he': 21, 'again': 22, 'got': 23, 'boys': 24, 'round': 25, 'that': 26, 'her': 27, 'there': 28, 'three': 29, 'weeks': 30, 'up': 31, 'out': 32, 'him': 33, 'was': 34, 'spent': 35, 'learning': 36, 'new': 37, 'steps': 38, 'long': 39, 'away': 40, 'left': 41, 'friends': 42, 'relations': 43, 'when': 44, 'wall': 45, 'myself': 46, 'nice': 47, 'just': 48, 'dancing': 49, 'merry': 50, 'tipped': 51, 'me': 52, 'soon': 53, 'time': 54, 'old': 55, 'their': 56, 'them': 57, 'danced': 58, 'dublin': 59, 'an': 60, 'put': 61, 'leg': 62, 'miss': 63, 'fainted': 64, 'from': 65, 'town': 66, 'athy': 67, 'one': 68, 'jeremy': 69, 'lanigan': 70, 'battered': 71, 'hadnt': 72, 'pound': 73, 'father': 74, 'died': 75, 'made': 76, 'man': 77, 'farm': 78, 'ten': 79, 'acres': 80, 'ground': 81, 'gave': 82, 'grand': 83, 'party': 84, 'who': 85, 'didnt': 86, 'forget': 87, 'come': 88, 'if': 89, 'youll': 90, 'but': 91, 'listen': 92, 'ill': 93, 'make': 94, 'your': 95, 'eyes': 96, 'glisten': 97, 'rows': 98, 'ructions': 99, 'be': 100, 'sure': 101, 'free': 102, 'invitation': 103, 'might': 104, 'ask': 105, 'minute': 106, 'both': 107, 'bees': 108, 'cask': 109, 'judy': 110, 'odaly': 111, 'little': 112, 'milliner': 113, 'wink': 114, 'give': 115, 'call': 116, 'arrived': 117, 'with': 118, 'peggy': 119, 'mcgilligan': 120, 'lashings': 121, 'punch': 122, 'wine': 123, 'ladies': 124, 'potatoes': 125, 'cakes': 126, 'bacon': 127, 'tea': 128, 'nolans': 129, 'dolans': 130, 'ogradys': 131, 'courting': 132, 'songs': 133, 'went': 134, 'plenty': 135, 'water': 136, 'harp': 137, 'once': 138, 'sounded': 139, 'taras': 140, 'hall': 141, 'sweet': 142, 'nelly': 143, 'gray': 144, 'rat': 145, 'catchers': 146, 'daughter': 147, 'singing': 148, 'together': 149, 'doing': 150, 'kinds': 151, 'nonsensical': 152, 'polkas': 153, 'room': 154, 'whirligig': 155, 'julia': 156, 'we': 157, 'banished': 158, 'nonsense': 159, 'twist': 160, 'reel': 161, 'jig': 162, 'ach': 163, 'mavrone': 164, 'how': 165, 'mad': 166, 'youd': 167, 'think': 168, 'ceiling': 169, 'would': 170, 'fall': 171, 'brooks': 172, 'academy': 173, 'learn': 174, 'nothing': 175, 'hearty': 176, 'around': 177, 'couples': 178, 'groups': 179, 'accident': 180, 'happened': 181, 'young': 182, 'terrance': 183, 'mccarthy': 184, 'right': 185, 'through': 186, 'finnertys': 187, 'hoops': 188, 'poor': 189, 'creature': 190, 'cried': 191, 'meelia': 192, 'murther': 193, 'called': 194, 'brothers': 195, 'gathered': 196, 'carmody': 197, 'swore': 198, 'hed': 199, 'go': 200, 'no': 201, 'further': 202, 'had': 203, 'satisfaction': 204, 'midst': 205, 'row': 206, 'kerrigan': 207, 'cheeks': 208, 'same': 209, 'red': 210, 'rose': 211, 'some': 212, 'lads': 213, 'declared': 214, 'painted': 215, 'took': 216, 'small': 217, 'drop': 218, 'too': 219, 'much': 220, 'suppose': 221, 'sweetheart': 222, 'ned': 223, 'morgan': 224, 'so': 225, 'powerful': 226, 'able': 227, 'saw': 228, 'fair': 229, 'colleen': 230, 'stretched': 231, 'by': 232, 'tore': 233, 'under': 234, 'table': 235, 'smashed': 236, 'chaneys': 237, 'oh': 238, 'twas': 239, 'then': 240, 'runctions': 241, 'lick': 242, 'big': 243, 'phelim': 244, 'mchugh': 245, 'replied': 246, 'introduction': 247, 'kicked': 248, 'terrible': 249, 'hullabaloo': 250, 'casey': 251, 'piper': 252, 'near': 253, 'being': 254, 'strangled': 255, 'squeezed': 256, 'pipes': 257, 'bellows': 258, 'chanters': 259, 'ribbons': 260, 'entangled': 261, 'end': 262}
+total words: 263
+```
+Generamos secuencias de entrada a partir de las líneas tokenizadas de la canción:
+```python
+# Initialize the sequences list
+input_sequences = []
+
+# Loop over every line
+for line in corpus:
+
+    # Tokenize the current line
+    token_list = tokenizer.texts_to_sequences([line])[0]
+
+    # Loop over the line several times to generate the subphrases
+    for i in range(1, len(token_list)):
+
+        # Generate the subphrase
+        n_gram_sequence = token_list[:i+1]
+
+        # Append the subphrase to the sequences list
+        input_sequences.append(n_gram_sequence)
+
+# Get the length of the longest line
+max_sequence_len = max([len(x) for x in input_sequences])
+
+# Pad all sequences
+input_sequences = np.array(pad_sequences(input_sequences, maxlen=max_sequence_len, padding='pre'))
+
+# Create inputs and label by splitting the last token in the subphrases
+xs, labels = input_sequences[:,:-1],input_sequences[:,-1]
+
+# Convert the label into one-hot arrays
+ys = tf.keras.utils.to_categorical(labels, num_classes=total_words)
+```
+
+```python
+# Get sample sentence
+sentence = corpus[0].split()
+print(f'sample sentence: {sentence}')
+
+# Initialize token list
+token_list = []
+
+# Look up the indices of each word and append to the list
+for word in sentence:
+  token_list.append(tokenizer.word_index[word])
+
+# Print the token list
+print(token_list)
+```
+
+```commandline
+sample sentence: ['in', 'the', 'town', 'of', 'athy', 'one', 'jeremy', 'lanigan']
+[4, 2, 66, 8, 67, 68, 69, 70]
+```
+
+```python
+# Pick element
+elem_number = 6
+
+# Print token list and phrase
+print(f'token list: {xs[elem_number]}')
+print(f'decoded to text: {tokenizer.sequences_to_texts([xs[elem_number]])}')
+```
+```commandline
+token list: [ 0  0  0  4  2 66  8 67 68 69]
+decoded to text: ['in the town of athy one jeremy']
+```
+
+```python
+# Print label
+print(f'one-hot label: {ys[elem_number]}')
+print(f'index of label: {np.argmax(ys[elem_number])}')
+```
+
+```commandline
+one-hot label: [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+index of label: 70
+```
+
+```python
+# Pick element
+elem_number = 5
+
+# Print token list and phrase
+print(f'token list: {xs[elem_number]}')
+print(f'decoded to text: {tokenizer.sequences_to_texts([xs[elem_number]])}')
+
+# Print label
+print(f'one-hot label: {ys[elem_number]}')
+print(f'index of label: {np.argmax(ys[elem_number])}')
+```
+
+```commandline
+token list: [ 0  0  0  0  4  2 66  8 67 68]
+decoded to text: ['in the town of athy one']
+one-hot label: [0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+index of label: 69
+
+```
+Definimos y compilamos el modelo secuencial con capas Embedding, LSTM, y Dense:
+```python
+# Build the model
+model = Sequential([
+          Embedding(total_words, 64, input_length=max_sequence_len-1),
+          Bidirectional(LSTM(20)),
+          Dense(total_words, activation='softmax')
+])
+
+# Use categorical crossentropy because this is a multi-class problem
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+# Print the model summary
+model.summary()
+```
+
+```commandline
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ embedding (Embedding)       (None, 10, 64)            16832     
+                                                                 
+ bidirectional (Bidirection  (None, 40)                13600     
+ al)                                                             
+                                                                 
+ dense (Dense)               (None, 263)               10783     
+                                                                 
+=================================================================
+Total params: 41215 (161.00 KB)
+Trainable params: 41215 (161.00 KB)
+Non-trainable params: 0 (0.00 Byte)
+_________________________________________________________________
+```
+Entrenamos el modelo con los datos de entrada y las etiquetas correspondientes:
+```python
+# Train the model
+history = model.fit(xs, ys, epochs=500)
+```
+
+```commandline
+Epoch 499/500
+15/15 [==============================] - 0s 7ms/step - loss: 0.1254 - accuracy: 0.9492
+Epoch 500/500
+15/15 [==============================] - 0s 7ms/step - loss: 0.1256 - accuracy: 0.9470
+```
+Para visualizar la mejora en la precisión a lo largo de las épocas de entrenamiento:
+```python
+import matplotlib.pyplot as plt
+
+# Plot utility
+def plot_graphs(history, string):
+  plt.plot(history.history[string])
+  plt.xlabel("Epochs")
+  plt.ylabel(string)
+  plt.show()
+
+# Visualize the accuracy
+plot_graphs(history, 'accuracy')
+```
+
+![img_35.png](ims%2FW4%2Fimg_35.png)
+
+Finalmente, utilizamos el modelo entrenado para generar texto:
+```python
+# Define seed text
+seed_text = "Laurence went to Dublin"
+
+# Define total words to predict
+next_words = 100
+
+# Loop until desired length is reached
+for _ in range(next_words):
+
+    # Convert the seed text to a token sequence
+    token_list = tokenizer.texts_to_sequences([seed_text])[0]
+
+    # Pad the sequence
+    token_list = pad_sequences([token_list], maxlen=max_sequence_len-1, padding='pre')
+
+    # Feed to the model and get the probabilities for each index
+    probabilities = model.predict(token_list)
+
+    # Get the index with the highest probability
+    predicted = np.argmax(probabilities, axis=-1)[0]
+
+    # Ignore if index is 0 because that is just the padding.
+    if predicted != 0:
+
+        # Look up the word associated with the index.
+        output_word = tokenizer.index_word[predicted]
+
+        # Combine with the seed text
+        seed_text += " " + output_word
+
+# Print the result
+print(seed_text)
+```
+
+```commandline
+Laurence went to Dublin had punch at lanigans ball ball ball the kerrigan for lanigans ball entangled new ball the jeremy lanigan phelim fainted new gray new steps ball ball ball the ogradys miss fall hoops kerrigan new room a again had gathered tipped at at lanigans ball ball the miss hoops hoops your eyes painted fainted out by the wall new nelly ball new girls new room by the entangled new accident kerrigan new accident your eyes glisten fainted new gray by the wall new didnt girls new wall new wall new the fall big miss hoops your eyes little fainted didnt together
+```
 
 ### Poetry
 [<- Return to INDEX 4](#index-4)
 
+En el video anterior, usamos la canción individual para generar texto. Recibimos algo de texto, pero una vez que intentamos predecir más allá de unas pocas palabras, rápidamente se convirtió en galimatías. Así que en este video, vamos a echar un vistazo a la adaptación de ese trabajo para un cuerpo más grande de palabras para ver el impacto.
+
+La buena noticia es que requerirá muy pocos cambios en el código, por lo que podrá hacerlo funcionar con bastante rapidez.
+
+![img_36.png](ims%2FW4%2Fimg_36.png)
+
+He preparado un archivo con un montón de canciones que tiene 1.692 frases en total para ver cuál sería el impacto en la poesía que crearía una red neuronal. Para descargar estas letras, puedes usar este código.
+
+![img_37.png](ims%2FW4%2Fimg_37.png)
+
 ### Link to the dataset
 [<- Return to INDEX 4](#index-4)
+
+Puede encontrar el conjunto de datos de letras de canciones irlandesas 
+[aquí](https://github.com/https-deeplearning-ai/tensorflow-1-public/blob/main/C3/W4/misc/Laurences_generated_poetry.txt)
+.
 
 ### Looking into the code 2 week 4
 [<- Return to INDEX 4](#index-4)
 
+Ahora, en lugar de codificar la canción en una cadena llamada datos, puedo leerla desde el archivo así. Actualicé el modelo un poco para que funcione mejor con un corpus de trabajo más grande, pero siéntase libre de experimentar con estos hiperparámetros. 
+![img_38.png](ims%2FW4%2Fimg_38.png)
+
+Tres cosas con las que puedes experimentar. Primero, es la dimensionalidad de la incrustación, 100 es puramente arbitraria y me encantaría escuchar qué tipo de resultados obtendrá con diferentes valores.
+
+Del mismo modo, aumente el número de unidades LSTM a 150. Una vez más, puede probar diferentes valores o puede ver cómo se comporta si elimina el bidireccional. Tal vez usted quiere que las palabras sólo tengan sentido hacia adelante, donde el perro grande tiene sentido, pero el perro grande no tiene tanto sentido. 
+
+Tal vez el mayor impacto sea en el optimizador. En lugar de codificar duro Adam como mi optimizador esta vez y obtener los valores predeterminados, ahora he creado mi propio optimizador Adam y establecí la tasa de aprendizaje en él. Intente experimentar con diferentes valores aquí y vea el impacto que tienen en la convergencia. 
+
+![img_39.png](ims%2FW4%2Fimg_39.png)
+
+En particular, vea cómo las diferentes convergencias pueden crear diferentes poemas. Y, por supuesto, el entrenamiento para diferentes épocas siempre tendrá un impacto con más generalmente ser mejor, pero eventualmente llegarás a la ley de los rendimientos decrecientes.
+
 ### Laurence the poet
 [<- Return to INDEX 4](#index-4)
+
+En un laboratorio conjunto con estos datos y estos parámetros, utilizando una GPU, normalmente tarda unos 20 minutos en entrenar un modelo. Una vez hecho, prueba una frase semilla y consigue que te dé 100 palabras. Tenga en cuenta que no hay saltos de línea en la predicción, por lo que tendrá que agregarlos manualmente para convertir el flujo de palabras en poesía. Aquí hay un ejemplo simple.
+
+![img_40.png](ims%2FW4%2Fimg_40.png)
+
+Ayúdame Obi-Wan Kenobi, eres mi única esperanza. Mi querida y la esperanza como lo hice volar con sus sabores, junto con todas sus alegrías. Pero seguro que voy a construir, te quiero todavía, oro que se unió. ¿ Los hombres huyen a través de nuestro país, nuestra boda a la que me había llegado. Off Holyhead deseaba bajar entre los cerdos. Jugó a un buen Riggs, me avergüenzo. Encuéntrame hermano, me dio su historia. Sé irlandeses para saludarte adorable Molly. Se fue de mi casa, a casa para dejar las viejas latas. La cadena del capataz estaba brillando una vez. Cielo arriba creo que me encanta.
+
+![img_41.png](ims%2FW4%2Fimg_41.png)
 
 ### Check out the code - week 4 - (Lab 2)
 [<- Return to INDEX 4](#index-4)
 
+Echemos un vistazo al segundo 
+cuaderno de [C3_W4_Lab_2_irish_lyrics.ipynb](notebooks%2FW4%2FC3_W4_Lab_2_irish_lyrics.ipynb)
+ esta semana. 
+
 ### Your next task
 [<- Return to INDEX 4](#index-4)
+
+Ahora, este enfoque funciona muy bien hasta que tiene grandes cuerpos de texto con muchas palabras. Así, por ejemplo, podría probar las obras completas de Shakespeare y probablemente golpeará errores de memoria, como asignar las codificaciones de una sola vez en caliente de las etiquetas a matrices que tienen más de 31.477 elementos, que es el número de palabras únicas en la colección, y hay más de 15 millones secuencias generadas usando el algoritmo que mostramos aquí. Por lo tanto, las etiquetas por sí solas requerirían el almacenamiento de muchos terabytes de RAM. Por lo tanto, para su próxima tarea, usted mismo revisará un libro de trabajo que utiliza predicción basada en caracteres. 
+
+![img_42.png](ims%2FW4%2Fimg_42.png)
+
+ El número total de caracteres únicos en un corpus es mucho menor que el número total de palabras únicas, al menos en inglés. Por lo tanto, los mismos principios que usa para predecir palabras se pueden utilizar para aplicar aquí. El libro de trabajo está en esta URL, así que pruébalo, y una vez que lo haya hecho, estará listo para el ejercicio final de esta semana.
+
+![img_43.png](ims%2FW4%2Fimg_43.png)
+
 
 ### Link to generative text using a character-based RNN
 [<- Return to INDEX 4](#index-4)
 
+Encuentre 
+[aquí](https://www.tensorflow.org/tutorials/sequences/text_generation)
+ el enlace a la generación de texto mediante una RNN basada en caracteres.
+
 ### Week 4 quiz
 [<- Return to INDEX 4](#index-4)
+
+1. **Question 1**
+When predicting words to generate poetry, the more words predicted the more likely it will end up gibberish. Why?
+
+   - [ ] Because the probability of prediction compounds, and thus increases overall
+   - [ ] Because you are more likely to hit words not in the training set
+   - [ ] It doesn’t, the likelihood of gibberish doesn’t change
+   - [x] Because the probability that each word matches an existing phrase goes down the more words you create
+
+   > **Correct!** As more words are generated, the chance of each subsequent word aligning cohesively with those prior diminishes, often leading to nonsensical or gibberish outcomes.
+
+2. **Question 2**
+What is a major drawback of word-based training for text generation instead of character-based generation?
+
+   - [ ] There is no major drawback, it’s always better to do word-based training
+   - [ ] Character based generation is more accurate because there are less characters to predict
+   - [ ] Word based generation is more accurate because there is a larger body of words to draw from
+   - [x] Because there are far more words in a typical corpus than characters, it is much more memory intensive
+
+   > **Correct!** The extensive vocabulary required for word-based models significantly increases their memory usage, distinguishing it as a primary disadvantage when compared to character-based alternatives.
+
+3. **Question 3**
+What are the critical steps in preparing the input sequences for the prediction model?
+
+   - [x] Converting the seed text to a token sequence using texts_to_sequences.
+       > **You've got it!**
+   - [ ] Pre-padding the subphrases sequences.
+   - [x] Generating subphrases from each line using n_gram_sequences.
+       > **Keep it up!**
+   - [ ] Splitting the dataset into training and testing sentences.
+
+4. **Question 4**
+In natural language processing, predicting the next item in a sequence is a classification problem. Therefore, after creating inputs and labels from the subphrases, we one-hot encode the labels. What function do we use to create one-hot encoded arrays of the labels?
+
+   - [ ] tf.keras.utils.img_to_array
+   - [ ] tf.keras.utils.SequenceEnqueuer
+   - [x] tf.keras.utils.to_categorical
+   - [ ] tf.keras.preprocessing.text.one_hot
+
+   > **Nailed it!** The `tf.keras.utils.to_categorical` function is the go-to method for converting label vectors into a binary (class matrix) representation, essential for classification tasks in NLP.
+
+5. **Question 5**
+True or False: When building the model, we use a sigmoid activated Dense output layer with one neuron per word that lights up when we predict a given word.
+
+   - [x] False
+   - [ ] True
+
+   > **Absolutely!** Utilizing a sigmoid activation function in this context is incorrect as it is typically used for binary classification. For predicting individual words from a large vocabulary, alternative architectures are more suitable.
 
 ### Lecture Notes Week 4
 [<- Return to INDEX 4](#index-4)
@@ -2279,3 +2807,7 @@ Por último, ¡nuestro más sincero agradecimiento a USTED, por inscribirse en e
 [<- Return to INDEX 0](#index-0)
 
 ### Predicting the next word
+
+Link al cuaderno con la respuesta: [C3W4_Assignment.ipynb](notebooks%2FW4%2Fassignment%2FC3W4_Assignment.ipynb)
+
+![cover.png](notebooks%2FW4%2Fassignment%2Fcover.png)
