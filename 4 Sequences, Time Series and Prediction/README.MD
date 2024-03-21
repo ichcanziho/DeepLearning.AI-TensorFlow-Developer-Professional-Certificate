@@ -973,11 +973,78 @@ aquí [C4_W1.pdf](notes%2FC4_W1.pdf)
 ## Assignment Troubleshooting Tips
 [<- Return to INDEX 1](#index-1)
 
+He aquí algunas directrices generales antes de entregar sus tareas en este curso. Téngalas en cuenta no sólo para la tarea de esta semana, sino también para las siguientes:
+
+1. Asegúrese de guardar su trabajo antes de hacer clic en el botón `Submit`. De lo contrario, es posible que aparezca un 
+mensaje de error como el de la celda de código siguiente. Recuerde que todo lo que tiene que rellenar dentro de las 
+funciones calificadas se inicializa en `None`.
+
+   ```commandline
+   Failed test case: x has incorrect type.
+   Expected:
+   some.Type,
+   but got:
+   <class 'NoneType'>.
+   ```
+
+2. Por favor, no cambie el nombre del cuaderno. El calificador buscará el nombre de archivo original y sus metadatos asociados, por lo que debe trabajar en el archivo que se abre automáticamente al hacer clic en el botón `Launch Notebook`. Si intenta enviar un cuaderno renombrado, es posible que también aparezca un error como el que se muestra arriba.
+
+3. Por favor, no modifique ningún código fuera de las etiquetas `START CODE HERE`  y `END CODE HERE`. Su solución sólo debe colocarse entre estos marcadores para garantizar una calificación correcta. Modificar los parámetros de las funciones y otras celdas de prueba probablemente romperá el calificador. Si desea experimentar con ellas, puede hacerlo después de haber superado con éxito la tarea.
+
+4. Después de seguir los consejos anteriores y el calificador le sigue dando 0/100, es posible que los metadatos necesarios para la calificación estén dañados. Por favor, obtenga un nuevo cuaderno de laboratorio refrescando su espacio de trabajo
+([instrucciones aquí](https://www.coursera.org/learn/tensorflow-sequences-time-series-and-prediction/supplement/F77WP/optional-downloading-your-notebook-and-refreshing-your-workspace)
+). A continuación, copie sus soluciones en el nuevo cuaderno. Asegúrese de que todas las celdas siguen funcionando como se espera y, a continuación, vuelva a enviarlas.
+
+5. Si tiene más preguntas, por favor cree un tema en la comunidad Discourse en lugar de los foros de discusión de Coursera. Puede unirse 
+[siguiendo las instrucciones aquí](https://www.coursera.org/learn/tensorflow-sequences-time-series-and-prediction/ungradedLti/smWBG/important-have-questions-issues-or-ideas-join-our-community-on-discourse)
+. Obtendrá ayuda allí más rápidamente porque varios mentores y sus compañeros de aprendizaje están supervisando los mensajes. Sólo asegúrese de crear el tema en la categoría correcta del curso.
+
+
+
 ## Downloading your Notebooks and Refreshing your Workspace
 [<- Return to INDEX 1](#index-1)
 
+Este curso utiliza Coursera **Labs** para proporcionar un entorno de cuadernos y calificar su trabajo. Puede haber algunos casos en 
+los que necesite descargar sus cuadernos o actualizar su espacio de trabajo para empezar desde cero. Este elemento de lectura 
+describe los pasos para hacerlo.
+
+#### Descarga de su cuaderno
+
+En caso de que necesite descargar su cuaderno para solucionar problemas o para ejecutarlo en su entorno local, puede seguir estos sencillos pasos:
+
+1. En la barra de menús del cuaderno en el que esté trabajando, haga clic en **File → Save and Checkpoint** para guardar primero su progreso.
+
+2. Haga clic en **File → Download as → Notebook (.ipynb)**. Esto debería iniciar la descarga del archivo en su máquina local.
+
+#### Actualizar su espacio de trabajo
+
+Esto le resultará útil siempre que necesite empezar de cero, buscar la última versión de la tarea o encontrarse con un error 404.
+
+1. Abra el cuaderno desde el aula.
+
+2. Una vez abierto el cuaderno, haga clic en **File → Open**
+
+3. Cuando se abra su espacio de trabajo, marque la casilla situada delante del archivo del cuaderno. Una vez seleccionado, pulse **Shutdown**. El icono junto al nombre del archivo debería pasar de verde a gris.
+
+4. Marque de nuevo la casilla de verificación y esta vez elija **Rename** e introduzca cualquier nombre de archivo que no sea el original. 
+Por ejemplo, **C4W1_Assignment.ipynb** (original) → **C4W1_Assignment_v2.ipynb**
+
+5. (Opcional) Marque la casilla de cualquier otro archivo del que desee obtener una copia nueva (por ejemplo, archivos de conjuntos de datos 
+que pueda haber manipulado de forma irreversible). A continuación, haga clic en **Delete**. También puede optar por **Rename** o **Download** cada archivo individualmente en caso de que desee conservarlos antes de borrarlos.
+
+6. Haga clic en el botón **Help** situado en la parte superior derecha de la página.
+
+7. Haga clic en el botón **Get latest version**.
+
+8. Haga clic en el botón **Update Lab**. La página se actualizará y ahora debería ver la última versión del cuaderno.
+
+
 ## Working with Generated Time Series
 [<- Return to INDEX 1](#index-1)
+
+En clase, usted creó una serie de datos sintéticos e hizo predicciones utilizando métodos estadísticos. Este cuaderno contiene un patrón diferente para la serie de datos. Vea si puede hacer predicciones para ella similares al proceso mostrado en las clases
+
+> ## Respuesta: [C4W1_Assignment.ipynb](notebooks%2FW1%2Fassigment%201%2FC4W1_Assignment.ipynb)
 
 # Deep Neural Networks for Time Series
 [<- Return to INDEX 0](#index-0)
