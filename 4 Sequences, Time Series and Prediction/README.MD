@@ -1073,53 +1073,421 @@ Durante la semana 2, intensificamos nuestro enfoque en cómo preparar adecuadame
 ## A Conversation with Andrew Ng W2
 [<- Return to INDEX 2](#index-2)
 
+![img.png](ims%2FW2%2Fimg.png)
+
+Bienvenidos a la segunda semana de este curso. Aprendió acerca de cómo calcular el análisis estadístico de una serie temporal. En esta semana aprenderás a aplicar una nueva red a estas secuencias. Sí, vamos a empezar con un DNN relativamente simple, y si recuerdas DNN todo el camino como al comienzo de la especialización, así que vas a ser capaz de llevar esas habilidades a tener en cuenta los datos de series de tiempo.
+
+Así que vamos a construir un DNN muy simple al igual que un DNN de tres capas. Entonces una técnica, aunque es que me parece realmente útil que vas a aprender esta semana, es ser capaz de ajustar la tasa de aprendizaje del optimizador. Pasaremos mucho tiempo ajustando la tasa de aprendizaje.
+
+![img_1.png](ims%2FW2%2Fimg_1.png)
+
+Uno de mis recuerdos más distintivos de un par de décadas atrás fue un pasante de verano en investigación de Microsoft permaneciendo hasta 3:00 AM en la oficina, afinando las tasas de aprendizaje. Me gustaría poder ajustar mi propia tasa de aprendizaje a veces. Así que creo que dar a la gente una manera sistemática de hacer esto, será muy útil. Sí. Creo que sí, y sé que he pasado demasiadas noches sin dormir en ello. 
+
+Así que tratamos de automatizar aquí y así enseñarte una técnica para automatizar y espero que sea útil, y espero que te ayude a empezar a aprender cómo predecir tus datos de series de tiempo. Al final de esta semana, usted ha entrenado DNN en los datos de la serie del tiempo que vio la semana pasada y se llega a ver lo bien que lo hace. Por favor, ve al siguiente video.
+
 ## Preparing Features and Labels Notebook (Lab 1)
 [<- Return to INDEX 2](#index-2)
+
+En los próximos vídeos, Laurence le mostrará una serie de comandos para preparar características y etiquetas. Puede utilizar el cuaderno de 
+aquí [C4_W2_Lab_1_features_and_labels.ipynb](notebooks%2FW2%2FC4_W2_Lab_1_features_and_labels.ipynb)
+ para seguirle la pista y ver los enlaces a la documentación de cada comando.
 
 ## Preparing Features and Labels
 [<- Return to INDEX 2](#index-2)
 
+![img_2.png](ims%2FW2%2Fimg_2.png)
+
+La semana pasada buscó crear un conjunto de datos estacionales sintéticos que contenía tendencia, estacionalidad y un poco de ruido. También ha mirado algunos métodos estadísticos para analizar el conjunto de datos y hacer predicciones a partir de él. Algunos de los resultados que obtuviste fueron realmente bastante buenos, pero aún no se aplicó el aprendizaje automático. Esta semana, vas a ver el uso de algunos métodos de aprendizaje automático con los mismos datos. Veamos a dónde nos puede llevar el aprendizaje automático.
+
+![img_3.png](ims%2FW2%2Fimg_3.png)
+
+En primer lugar, como con cualquier otro problema ML, tenemos que dividir nuestros datos en características y etiquetas. En este caso nuestra característica es efectivamente una serie de valores en la serie, con nuestra etiqueta siendo el siguiente valor. Llamaremos a ese número de valores que tratarán como nuestra característica, el tamaño de la ventana, donde estamos tomando una ventana de los datos y entrenando un modelo ML para predecir el siguiente valor. Así que, por ejemplo, si tomamos nuestros datos de series temporales, digamos, 30 días a la vez, usaremos 30 valores como entidad y el siguiente valor será la etiqueta. Luego, con el tiempo, entrenaremos una red neuronal para que coincida con las 30 características con la única etiqueta.
+
+![img_4.png](ims%2FW2%2Fimg_4.png)
+
+Así que vamos, por ejemplo, a utilizar la clase TF.Data.Dataset para crear algunos datos para nosotros, vamos a hacer un rango de 10 valores.
+Cuando los imprimiremos veremos una serie de datos del 0 al 9.
+
+![img_5.png](ims%2FW2%2Fimg_5.png)
+
+Así que ahora vamos a hacerlo un poco más interesante. Utilizaremos dataset.window para expandir nuestro conjunto de datos usando windowing.
+
+Sus parámetros son el tamaño de la ventana y cuánto queremos cambiar por cada vez. Así que si establecemos un tamaño de ventana de 5 con un desplazamiento de 1 cuando lo imprimimos, veremos algo como esto, 01234, que simplemente se detiene allí porque son cinco valores, entonces vemos 12345 etc, etc. Una vez que lleguemos al final del conjunto de datos tendremos menos valores porque simplemente no existen. Así que obtendremos 6789, y luego 789, etc., etc.
+
+![img_6.png](ims%2FW2%2Fimg_6.png)
+
+Así que vamos a editar nuestra ventana un poco, para que tengamos datos de tamaño regular. Podemos hacerlo con un parámetro adicional en la ventana llamado drop_remainder. Y si ponemos esto en verdadero, truncará los datos dejando caer todos los restos. A saber, esto significa que sólo nos dará ventanas de cinco elementos. Así que cuando lo imprima, ahora se verá así, comenzando en 01234 y terminando en 56789.
+
+![img_7.png](ims%2FW2%2Fimg_7.png)
+
+Genial, ahora vamos a poner estos en numpy listas para que podamos empezar a usarlos con el aprendizaje automático. La buena noticia es, es que esto es súper fácil, simplemente llamamos al método .numpy en cada elemento en el conjunto de datos, y cuando imprimimos ahora vemos que tenemos una lista numpy.
+
+![img_8.png](ims%2FW2%2Fimg_8.png)
+
+De acuerdo, lo siguiente es dividir los datos en entidades y etiquetas. Para cada elemento de la lista, tiene sentido tener todos los valores excepto el último en ser la característica, y luego el último puede ser la etiqueta. Y esto se puede lograr con mapeo, así, donde nos dividimos en todo pero el último con: -1, y luego solo el último con -1:. Lo que nos da esta salida cuando imprimimos, que ahora parece un buen conjunto de características y etiquetas. 
+
+![img_9.png](ims%2FW2%2Fimg_9.png)
+
+Normalmente, usted barajaría sus datos antes de entrenar. Y esto es posible usando el método aleatorio. Lo llamamos con el tamaño del búfer de diez, porque esa es la cantidad de elementos de datos que tenemos.
+Y cuando imprima los resultados, veremos que nuestras características y conjuntos de etiquetas se han barajado.
+
+![img_10.png](ims%2FW2%2Fimg_10.png)
+
+Finalmente, podemos ver el procesamiento por lotes de los datos, y esto se hace con el método por lotes.
+Tomará un parámetro de tamaño, y en este caso es 2. Así que lo que haremos es agrupar los datos en conjuntos de dos, y si los imprimimos, veremos esto. Ahora tenemos tres lotes de dos elementos de datos cada uno. Y si nos fijamos en el primer set, verá las x e y correspondientes. Así que cuando x sea cuatro, cinco, seis y siete, nuestra y es ocho, o cuando x es cero, uno, dos, tres, verá que nuestra y es cuatro.
+
+
+![img_11.png](ims%2FW2%2Fimg_11.png)
+
+Bien, ahora que has visto las herramientas que nos permiten crear una serie de x e y, o características y etiquetas, tienes todo lo que necesitas para trabajar en un conjunto de datos con el fin de obtener predicciones de él. Vamos a echar un vistazo a un reparto de pantalla de este código, antes de pasar a crear nuestras primeras redes neuronales para ejecutar predicciones sobre estos datos.
+
 ## Preparing Features and Labels (screencast)
 [<- Return to INDEX 2](#index-2)
+
+En el video anterior, vio cómo preparar una serie temporal para el aprendizaje automático mediante la ventana de los datos. Viste el código para crear un conjunto de datos muy simple, y luego aprendiste cómo puedes preparar ese conjunto de datos como entidades y etiquetas o x e y. En esta clase, pasarás por un screencast de un cuaderno que contiene todo ese código.
+
+> El código está en: [C4_W2_Lab_1_features_and_labels.ipynb](notebooks%2FW2%2FC4_W2_Lab_1_features_and_labels.ipynb)
+
+El resumen es exactamente igual que la explicación anterior pero en un notebook.
 
 ## Single Layer Network Notebook (Lab 2)
 [<- Return to INDEX 2](#index-2)
 
+Las próximas clases mostrarán cómo puede alimentar conjuntos de datos con ventanas a una única red neuronal. Puede utilizar el cuaderno de notas 
+aquí [C4_W2_Lab_2_single_layer_NN.ipynb](notebooks%2FW2%2FC4_W2_Lab_2_single_layer_NN.ipynb)
+ para seguirnos o puede ejecutarlo después del screencast.
+
 ## Feeding Windowed Dataset into Neural Network
 [<- Return to INDEX 2](#index-2)
+
+![img_12.png](ims%2FW2%2Fimg_12.png)
+
+En los últimos videos vio cómo preparar datos de series de tiempo para el aprendizaje automático creando un conjunto de datos de ventana donde los valores n anteriores podrían verse como las entidades de entrada son x. Y el valor actual con cualquier marca de tiempo es la etiqueta de salida o la y. 
+
+![img_13.png](ims%2FW2%2Fimg_13.png)
+
+Entonces se vería un poco como Esto Con una serie de valores de entrada en x, normalmente llamada ventana en los datos. Usted vio en los videos anteriores cómo usar las herramientas en datasets de flujo tensor para crear estas ventanas. Esta semana adaptarás ese código para alimentar una red neuronal y luego entrenarás en los datos.
+
+![img_14.png](ims%2FW2%2Fimg_14.png)
+
+Así que comencemos con esta función que llamará a un conjunto de datos de Windows. Tomará en una serie de datos junto con los parámetros para el tamaño de la ventana que queremos. El tamaño de los lotes que se utilizarán al entrenar, y el tamaño del búfer aleatorio, que determina cómo se barajarán los datos.
+
+- El primer paso será crear un dataset a partir de la serie utilizando un dataset tf.data. Y le pasaremos la serie usando su método from_tensor_slices.
+- A continuación, utilizaremos el método de ventana del conjunto de datos basado en nuestro window_size para cortar los datos en las ventanas apropiadas. Cada uno está siendo desplazado por un tiempo determinado. Los mantendremos todos del mismo tamaño estableciendo el resto de la gota en verdadero.
+- A continuación, aplanamos los datos para facilitar el trabajo con ellos. Y será aplanado en trozos del tamaño de nuestra window_size + 1.
+
+![img_15.png](ims%2FW2%2Fimg_15.png)
+
+Una vez que está aplanado, es fácil barajar. Llamas a un shuffle y le pasas el búfer shuffle. El uso de un búfer aleatorio acelera las cosas un poco. Entonces, por ejemplo, si tiene 100.000 elementos en su conjunto de datos, pero establece el búfer en mil. Simplemente llenará el búfer con los primeros mil elementos, elige uno de ellos al azar. Y luego reemplazará eso con el primer elemento 1,000 y antes de elegir aleatoriamente de nuevo, y así sucesivamente. De esta manera, con conjuntos de datos súper grandes, el elemento aleatorio que elige puede elegir entre un número más pequeño que acelera efectivamente las cosas.
+
+El conjunto de datos mezclados se divide entonces en xs, que es todos los elementos excepto el último, y el y que es el último elemento.
+
+A continuación, se empila en el tamaño del lote seleccionado y se devuelve.
 
 ## Single Layer Neural Network
 [<- Return to INDEX 2](#index-2)
 
+![img_16.png](ims%2FW2%2Fimg_16.png)
+
+Ahora que tenemos un conjunto de datos de ventana, podemos comenzar a entrenar redes neuronales con él. Comencemos con una super simple que es efectivamente una regresión lineal. Mediremos su precisión, y luego trabajaremos desde allí para mejorarlo. Antes de que podamos hacer un entrenamiento, tenemos que dividir nuestro conjunto de datos en conjuntos de entrenamiento y validación. 
+
+![img_17.png](ims%2FW2%2Fimg_17.png)
+
+Aquí está el código para hacer eso en el paso de tiempo 1000. Podemos ver que los datos de entrenamiento es el subconjunto de la serie llamada x tren hasta el tiempo de división. 
+
+![img_18.png](ims%2FW2%2Fimg_18.png)
+
+Aquí está el código para hacer una regresión lineal simple. Vamos a verlo línea por línea. Comenzaremos configurando todas las constantes que queremos pasar a la función de dataset de ventana. Estos incluyen el tamaño de la ventana en los datos, el tamaño del lote que queremos para el entrenamiento, y el tamaño del buffer barajado como acabamos de discutir. 
+
+A continuación, vamos a crear nuestro conjunto de datos. Lo haremos tomando nuestra serie y en el cuaderno que pasarás más adelante, crearás la misma serie sintética que hiciste en la primera semana. Pasará su serie a lo largo de lo que su tamaño de ventana deseado, tamaño de lote, y tamaño de búfer barajado, y le devolverá un conjunto de datos formateados que podría usar para la capacitación. Luego voy a crear una sola capa densa con su forma de entrada es el tamaño de la ventana. Para la regresión lineal, eso es todo lo que necesita. 
+
+Estoy usando este enfoque. Al pasar la capa a una variable llamada L0, porque más tarde quiero imprimir sus pesos aprendidos, y es mucho más fácil para mí hacerlo si tengo una variable para referirse a la capa para eso. Entonces simplemente defino mi modelo como una secuencia que contiene la capa única así. 
+
+![img_19.png](ims%2FW2%2Fimg_19.png)
+
+Ahora compilaré y ajustaré mi modelo con este código. Voy a utilizar la función de pérdida de error cuadrado media estableciendo la pérdida a MSE, y mi optimizador usará el Descenso de gradiente estocástico. Usaría esta metodología en lugar de la cadena cruda, para poder establecer parámetros para inicializarla como la tasa de aprendizaje o LR y el impulso. 
+
+Experimente con diferentes valores aquí para ver si puede obtener su modelo para converger más rápido o con mayor precisión. A continuación, puede adaptarse a su modelo simplemente pasándole el conjunto de datos, que ya ha sido preformateado con los valores x e y.
+
+Voy a correr por 100 épocas aquí. Ignorando la salida de epoch pero epoch estableciendo verbose en cero. Una vez que haya terminado el entrenamiento, puede realmente inspeccionar los diferentes pesos con este código. 
+
+![img_20.png](ims%2FW2%2Fimg_20.png)
+
+Recuerde antes cuando nos referimos a la capa con una variable llamada L 0? Bueno, aquí es donde eso es útil. La salida se verá así. Si lo inspecciona de cerca, verá que la primera matriz tiene 20 valores, y la secundaria tiene solo un valor. 
+
+Esto se debe a que la red ha aprendido una regresión lineal para adaptarse a los valores lo mejor posible. Así que cada uno de los valores de la primera matriz puede ser visto como los pesos para los 20 valores en x, y el valor para la segunda matriz es el valor b.
+
+
 ## Machine Learning on Time Windows
 [<- Return to INDEX 2](#index-2)
+
+Entonces, si piensas en este diagrama y consideras que la ventana de entrada tiene 20 valores de ancho, , entonces llamémoslos x0, x1, x2, etc., hasta x19. Pero seamos claros. Ese no es el valor en el eje horizontal que comúnmente se llama el eje x, es el valor de la serie de tiempo en ese punto en el eje horizontal. 
+
+![img_21.png](ims%2FW2%2Fimg_21.png)
+
+ Así que el valor en el tiempo t0, que es 20 pasos antes de que el valor actual se llame x0, y t1 se llama x1, etc. Del mismo modo, para la salida, que entonces consideraríamos que es el valor en el momento actual es la y.
 
 ## Prediction
 [<- Return to INDEX 2](#index-2)
 
+
+![img_22.png](ims%2FW2%2Fimg_22.png)
+
+Así que ahora, si miramos los valores de nuevo y vemos que estos son los pesos para los valores en esa marca de tiempo particular y b es el sesgo o la pendiente, 
+
+![img_23.png](ims%2FW2%2Fimg_23.png)
+
+podemos hacer una regresión lineal estándar así para predecir el valor de y en cualquier paso multiplicando los valores x por los pesos y luego agregar el sesgo. 
+
+![img_24.png](ims%2FW2%2Fimg_24.png)
+
+Así que, por ejemplo, si tomo 20 elementos de mi serie e imprimo, puedo ver los valores 20x. Si quiero predecirlas, puedo pasar esa serie a mi modelo para obtener una predicción. El nuevo eje NumPy luego simplemente lo cambia a la dimensión de entrada que es utilizada por el modelo. 
+
+![img_25.png](ims%2FW2%2Fimg_25.png)
+
+La salida se verá así. La matriz superior es los 20 valores que proporcionan la entrada a nuestro modelo y la parte inferior es el valor previsto de vuelta desde el modelo. 
+
+Así que hemos entrenado a nuestro modelo para decir que cuando ve 20 valores como este, el siguiente valor previsto es 49.08478. Así que si queremos trazar nuestras previsiones para cada punto en la serie temporal relativa a los 20 puntos anteriores donde nuestro tamaño de ventana era 20, podemos escribir código como este. 
+
+![img_26.png](ims%2FW2%2Fimg_26.png)
+
+Creamos una lista vacía de pronósticos y luego iteramos sobre la serie tomando rebanadas y tamaño de ventana, prediciendo, y agregando los resultados a la lista de pronósticos.
+
+Habíamos dividido nuestra serie de tiempo en entrenamiento y pruebas sentido tomando todo antes de un cierto tiempo es entrenamiento y el resto es validación. Así que tomaremos las previsiones después de el tiempo de división y las cargaremos en una matriz NuimPy para gráficos. 
+
+![img_27.png](ims%2FW2%2Fimg_27.png)
+
+Ese gráfico se ve así con los valores reales en azul y los predichos en naranja. Se puede ver que nuestras predicciones se ven bastante bueno y obtenerlas fue relativamente simple en comparación con toda la gimnasia estadística que tuvimos que hacer en los últimos videos. 
+
+![img_28.png](ims%2FW2%2Fimg_28.png)
+
+Así que vamos a medir el error absoluto medio como hemos hecho antes, y podemos ver que estamos en un estadio similar al que estábamos con un análisis complejo que hicimos anteriormente. 
+
+![img_29.png](ims%2FW2%2Fimg_29.png)
+
+Ahora eso es solo usar una sola capa en una red neuronal para calcular una regresión lineal. Veamos si podríamos hacerlo mejor con un DNN completamente conectado a continuación. Antes de llegar a eso, vamos a revisar el libro de trabajo para esta lección para asegurarnos de que entiendas todo lo que hemos hecho hasta ahora. El siguiente video será un screencast de pasar por eso y luego trabajarás en el DNN después de eso.
+
 ## More on Single Layer Neural Network
 [<- Return to INDEX 2](#index-2)
+
+![img_30.png](ims%2FW2%2Fimg_30.png)
+
+En el último video, vio cómo escribir código para obtener un modelo de regresión lineal de aprendizaje automático de los datos de series de tiempo. En este video, te paso a través del cuaderno con todo el código y luego puedes probarlo por ti mismo.
+
+> Nota: el notebook de esta lección está en -> [C4_W2_Lab_2_single_layer_NN.ipynb](notebooks%2FW2%2FC4_W2_Lab_2_single_layer_NN.ipynb)
+
 
 ## Deep Neural Network Notebook (Lab 3)
 [<- Return to INDEX 2](#index-2)
 
+La última sección de esta semana demostrará el uso de redes neuronales multicapa y puede utilizar el cuaderno de 
+aquí [C4_W2_Lab_3_deep_NN.ipynb](notebooks%2FW2%2FC4_W2_Lab_3_deep_NN.ipynb)
+ como referencia para los próximos vídeos.
+
 ## Deep Neural Network Training, Tuning and Prediction
 [<- Return to INDEX 2](#index-2)
+
+![img_31.png](ims%2FW2%2Fimg_31.png)
+
+Vale, así que esta semana has estado buscando aprendizaje automático para predicando el siguiente valor en una secuencia. Usted ha aprendido cómo dividir sus datos en fragmentos de ventana en los que podría entrenar , y luego vio una simple red neuronal de una sola capa que le dio lo que efectivamente era una regresión lineal. Ahora vamos a tomar eso al siguiente paso con un DNN para ver si podemos mejorar la precisión de nuestro modelo. 
+
+![img_32.png](ims%2FW2%2Fimg_32.png)
+
+No es muy diferente del modelo de regresión lineal que vimos anteriormente. Y esta es una red neuronal profunda relativamente simple que tiene tres capas. Así que desempacémoslo línea por línea. Primero tendremos que obtener un conjunto de datos que generará pasando datos x_train, junto con el tamaño deseado de la ventana, el tamaño del lote y el tamaño del búfer aleatorio.
+
+A continuación, definiremos el modelo. Vamos a mantenerlo simple con tres capas de 10, 10 y 1 neuronas. La forma de entrada es del tamaño de la ventana y activaremos cada capa usando un relu.
+
+A continuación, compilaremos el modelo como antes con una función de pérdida de error cuadrado medio y optimizador de gradiente estocástico.
+
+![img_33.png](ims%2FW2%2Fimg_33.png)
+
+Finalmente, encajaremos el modelo en más de 100 épocas, y después de unos segundos de entrenamiento, veremos resultados que se ven así. 
+
+![img_34.png](ims%2FW2%2Fimg_34.png)
+
+Es bastante bueno todavía. Y cuando calculamos el error absoluto medio, somos más bajos que antes, , así que es un paso en la dirección correcta. Pero también es un poco una puñalada en la oscuridad, particularmente con la función optimizador. ¿No sería bueno si pudiéramos elegir la tasa de aprendizaje óptima en lugar de la que elegimos?
+
+
+![img_35.png](ims%2FW2%2Fimg_35.png)
+
+Podríamos aprender de manera más eficiente y construir un modelo mejor. Ahora veamos una técnica para que usa devoluciones de llamada que usó hace mucho tiempo en el primer curso. Así que aquí hay un código para la red neuronal anterior. Pero he agregado una devolución de llamada para ajustar la tasa de aprendizaje usando un programador de tasas de aprendizaje. Puedes ver ese código aquí.
+
+![img_36.png](ims%2FW2%2Fimg_36.png)
+
+Esto será llamado en la devolución de llamada al final de cada época. Lo que hará es cambiar las tasas de aprendizaje a un valor basado en el número de la época. Así que en la época 1, es 1 veces 10 a -8 veces 10 al poder de 1 sobre 20. Y para cuando lleguemos a la época 100, será 1 veces 10 a -8 veces 10 al poder de 5, y eso es 100 sobre 20.
+
+![img_37.png](ims%2FW2%2Fimg_37.png)
+
+Esto sucederá en cada devolución de llamada porque lo configuramos en el parámetro callbacks del atuendo modelado.
+
+![img_38.png](ims%2FW2%2Fimg_38.png)
+
+Después de entrenar con esto, podemos trazar la última por época contra la tasa de aprendizaje por época usando este código, y veremos un gráfico como este.
+
+![img_39.png](ims%2FW2%2Fimg_39.png)
+
+El eje y nos muestra la pérdida para esa época y el eje x nos muestra la tasa de aprendizaje. Entonces podemos tratar de elegir el punto más bajo de la curva donde todavía es relativamente estable así, y eso es justo alrededor de 7 veces 10 a -6.
+
+![img_40.png](ims%2FW2%2Fimg_40.png)
+
+Así que vamos a establecer que sea nuestra tasa de aprendizaje y luego volveremos a entrenar. Así que aquí está el mismo código de red neuronal, y hemos actualizado la tasa de aprendizaje, así que también lo entrenaremos un poco más. Vamos a comprobar los resultados después del entrenamiento para 500 épocas.
+
+![img_41.png](ims%2FW2%2Fimg_41.png)
+
+Aquí están los códigos para trazar la pérdida que se calculó durante el entrenamiento, y nos dará un gráfico como este.
+
+![img_42.png](ims%2FW2%2Fimg_42.png)
+
+Lo cual en la primera inspección parece que probablemente estamos perdiendo nuestro tiempo entrenando más allá de tal vez solo 10 épocas, pero está algo sesgado por el hecho de que las pérdidas anteriores eran tan altas. 
+
+![img_43.png](ims%2FW2%2Fimg_43.png)
+
+Si los recortamos y trazamos la pérdida para épocas después del número 10 con código como esto, entonces el gráfico nos contará una historia diferente.
+
+![img_44.png](ims%2FW2%2Fimg_44.png)
+
+Podemos ver que la pérdida continuaba disminuyendo incluso después de 500 épocas. Y eso demuestra que nuestra red está aprendiendo muy bien.
+
+![img_45.png](ims%2FW2%2Fimg_45.png)
+
+Y los resultados de las predicciones superpuestas contra los originales se ven así.
+
+![img_46.png](ims%2FW2%2Fimg_46.png)
+
+Y el error absoluto medio en los resultados es significativamente menor que antes.
+
+![img_47.png](ims%2FW2%2Fimg_47.png)
+
+Te llevaré a través de un screencast de este código en acción en el siguiente video. Usando un DNN muy simple, hemos mejorado nuestros resultados muy bien. Pero sigue siendo sólo un DNN, no hay secuenciación tomada en cuenta, y en una serie temporal como esta, los valores que están inmediatamente antes de un valor son más propensos a impactarlo que aquellos más allá en el pasado. Y esa es la configuración perfecta para usar RNS como teníamos en el curso en lenguaje natural. Ahora veremos eso la próxima semana, pero primero, vamos a profundizar en este código.
 
 ## Deep Neural Network
 [<- Return to INDEX 2](#index-2)
 
+![img_48.png](ims%2FW2%2Fimg_48.png)
+
+En el video anterior, examinamos el entrenamiento de una red neuronal profunda para aprender, para predecir el siguiente valor en una secuencia de Windows. También analizamos algunos ajustes básicos de hiperparámetros para elegir una buena tasa de aprendizaje para el descenso del gradiente, lo que nos permitió mejorar aún más el modelo. En este video, vamos a terminar esta semana revisando el libro de trabajo que muestra cómo hacer todo eso.
+
+> Nota el notebook de esta sección está en: [C4_W2_Lab_3_deep_NN.ipynb](notebooks%2FW2%2FC4_W2_Lab_3_deep_NN.ipynb)
+
+![img_49.png](ims%2FW2%2Fimg_49.png)
+
+Así que eso termina esta semana. Vaya a través del libro de trabajo usted mismo y experimente con diferentes definiciones de red neuronal , cambiando alrededor de las capas y cosas así para ver si podemos hacerlo aún mejor.
+
+La semana que viene vamos a llevar esto al siguiente nivel usando los tipos de red neuronal que eran redes neuronales actuales que tienen capacidades de secuenciación incorporadas. Nos vemos allí.
+
 ## Week 2 Quiz
 [<- Return to INDEX 2](#index-2)
+
+1. **Question 1**
+What is a windowed dataset?
+
+   - [ ] The time series aligned to a fixed shape
+   - [ ] A consistent set of subsets of a time series
+   - [ ] There’s no such thing
+   - [x] A fixed-size subset of a time series
+
+   > **Correct!** A windowed dataset involves creating a fixed-size subset from a time series data for processing or model training purposes.
+
+2. **Question 2**
+What does ‘drop_remainder=True’ do?
+
+   - [x] It ensures that all rows in the data window are the same length by cropping data
+   - [ ] It ensures that all data is used
+   - [ ] It ensures that all rows in the data window are the same length by adding data
+   - [ ] It ensures that the data is all the same shape
+
+   > **Correct!** Using 'drop_remainder=True' when preparing datasets ensures uniformity in data window size by cutting off any excess rows.
+
+3. **Question 3**
+What’s the correct line of code to split an n column window into n-1 columns for features and 1 column for a label
+
+   - [ ] dataset = dataset.map(lambda window: (window[n-1], window[1]))
+   - [x] dataset = dataset.map(lambda window: (window[:-1], window[-1:]))
+   - [ ] dataset = dataset.map(lambda window: (window[-1:], window[:-1]))
+   - [ ] dataset = dataset.map(lambda window: (window[n], window[1]))
+
+   > **Correct!** The code snippet `dataset = dataset.map(lambda window: (window[:-1], window[-1:]))` correctly splits the input window into features and labels.
+
+4. **Question 4**
+What does MSE stand for?
+
+   - [ ] Mean Series error
+   - [ ] Mean Second error
+   - [x] Mean Squared error
+   - [ ] Mean Slight error
+
+   > **Correct!** MSE stands for Mean Squared Error, a common loss function used in regression problems to quantify the difference between the predicted and actual values.
+
+5. **Question 5**
+What does MAE stand for?
+
+   - [ ] Mean Average Error
+   - [ ] Mean Advanced Error
+   - [x] Mean Absolute Error
+   - [ ] Mean Active Error
+
+   > **Correct!** MAE stands for Mean Absolute Error, another loss function used to measure how close predictions are to the outcomes.
+
+6. **Question 6**
+If time values are in time[], series values are in series[] and we want to split the series into training and validation at time split_time, what is the correct code?
+
+   - [x] 
+     ```python
+     time_train = time[:split_time]
+     x_train = series[:split_time]
+     time_valid = time[split_time:]
+     x_valid = series[split_time:]
+     ```
+   - [ ] Other options...
+
+   > **Correct!** This code snippet correctly divides the dataset into training and validation sets according to the `split_time` index.
+
+7. **Question 7**
+If you want to inspect the learned parameters in a layer after training, what’s a good technique to use?
+
+   - [ ] Run the model with unit data and inspect the output for that layer.
+   - [x] Assign a variable to the layer and add it to the model using that variable. Inspect its properties after training.
+   - [ ] Decompile the model and inspect the parameter set for that layer.
+   - [ ] Iterate through the layers dataset of the model to find the layer you want.
+
+   > **Correct!** Assigning a variable to a layer for later inspection is an effective method to understand learned parameters post-training.
+
+8. **Question 8**
+How do you set the learning rate of the SGD optimizer?
+
+   - [ ] You can’t set it
+   - [ ] Use the Rate property
+   - [ ] Use the RateOfLearning property
+   - [x] Use the learning_rate property
+
+   > **Correct!** The `learning_rate` property is used to define the learning rate for the SGD (Stochastic Gradient Descent) optimizer.
+
+9. **Question 9**
+If you want to amend the learning rate of the optimizer on the fly, after each epoch. What do you do?
+
+   - [ ] Use a LearningRateScheduler and pass it as a parameter to a callback
+   - [ ] Callback to a custom function and change the SGD property
+   - [x] Use a LearningRateScheduler object in the callbacks namespace and assign that to the callback
+   - [ ] You can’t set it
+
+   > **Correct!** Utilizing a LearningRateScheduler allows for dynamic adjustment of the learning rate throughout the training process.
 
 ## Week 2 Wrap Up
 [<- Return to INDEX 2](#index-2)
 
+Ya ha explorado los datos de series temporales y ha visto cómo dividirlos en conjuntos de entrenamiento y validación para entrenar una DNN.
+
+Pero los datos de secuencias tienden a funcionar mejor con RNNs. Así que la semana que viene, va a ver cómo entrenar un modelo utilizando RNNs y LSTMs en estos datos para ver qué ocurre.
+
 ## Lecture Notes Week 2
 [<- Return to INDEX 2](#index-2)
 
+Los apuntes de las conferencias están disponibles aquí: [C4_W2.pdf](notes%2FC4_W2.pdf)
+
 # Weekly Assignment Prediction with a DNN
 [<- Return to INDEX 0](#index-0)
+
+
 
 ## Forecasting Using Neural Networks
 [<- Return to INDEX 2](#index-2)
