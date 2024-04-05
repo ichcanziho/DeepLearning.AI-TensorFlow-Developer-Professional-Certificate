@@ -1487,7 +1487,15 @@ Los apuntes de las conferencias están disponibles aquí: [C4_W2.pdf](notes%2FC4
 # Weekly Assignment Prediction with a DNN
 [<- Return to INDEX 0](#index-0)
 
+En clase ha visto cómo dividir un conjunto de datos y cómo empezar a entrenar una DNN utilizándolo. Para este ejercicio creará su propio conjunto de datos sintéticos.
 
+Una vez que tenga su serie, ¡creará una DNN para predecir los valores de esa serie!
+
+Esta tarea se calificará en función del MSE de sus predicciones. Al final de la tarea habrá presentado su modelo entrenado, que se utilizará para calcular la previsión. El pronóstico debe tener un MSE de 30 o menos para aprobar esta tarea.
+
+> Respuesta: [C4W2_Assignment.ipynb](notebooks%2FW2%2Fassigment%202%2FC4W2_Assignment.ipynb)
+
+![img.png](notebooks%2FW2%2Fassigment%202%2Fimg.png)
 
 ## Forecasting Using Neural Networks
 [<- Return to INDEX 2](#index-2)
