@@ -2747,7 +2747,8 @@ Las convoluciones van a ser capaz de unirse a medida que empiezas a hacer secuen
 ### Acknowledgments
 [<- Return to INDEX 4](#index-4)
 
-Además de los desarrolladores originales del plan de estudios, las siguientes personas hicieron contribuciones significativas a la actualización del Curso 2:
+Además de los desarrolladores originales del plan de estudios, las siguientes personas hicieron contribuciones 
+significativas a la actualización del Curso 3:
 
 **Revisiones de los cuestionarios**
 

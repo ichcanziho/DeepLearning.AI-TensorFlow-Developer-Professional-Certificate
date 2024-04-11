@@ -16,6 +16,9 @@ Si usted es un desarrollador de software que quiere construir algoritmos escalab
 cómo utilizar las herramientas para construirlos. Esta Specializations le enseñará las mejores prácticas para utilizar 
 TensorFlow, un popular marco de trabajo de código abierto para el aprendizaje automático. 
 
+[<img src="certificate.png" />](https://www.coursera.org/account/accomplishments/verify/KNY96VBU28LF)
+
+
 En este cuarto curso, aprenderá a construir modelos de series temporales en TensorFlow. Primero implementará las mejores 
 prácticas para preparar los datos de series temporales. También explorará cómo se pueden utilizar las RNN y las ConvNets 1D 
 para la predicción. Por último, ¡aplicará todo lo aprendido a lo largo de la Especialización para construir un modelo de 
@@ -1526,53 +1529,392 @@ La tercera semana está dedicada a las Redes Neuronales Recurrentes (RNN), con u
 ## A Conversation with Andrew Ng W3
 [<- Return to INDEX 3](#index-3)
 
+![img.png](ims%2FW3%2Fimg.png)
+
+Bienvenidos a la tercera semana. En esta semana, puede aplicar RNN y LCM a los datos de secuencia de tiempo. La semana pasada aplicaste DNN a estos datos. Pero las series temporales son datos temporales, parece que deberías aplicar un modelo de secuencia , como un RNN o un LCM a eso. Así que eso es lo que haces esta semana.
+
+
+![img_1.png](ims%2FW3%2Fimg_1.png)
+
+En este extracto, se discute la aplicación de modelos de redes neuronales recurrentes (RNN) y modelos lineales de cadena (LCM) a datos de series de tiempo. Se compara el uso de estos modelos con el uso de redes neuronales profundas (DNN) en semanas anteriores, enfatizando que los modelos de secuencia como RNN y LCM son más adecuados para datos temporales debido a su capacidad para mantener el contexto a lo largo de una serie. Se menciona que los datos financieros, por ejemplo, pueden beneficiarse especialmente de estos modelos debido a la influencia temporal en los precios.
+
+![img_2.png](ims%2FW3%2Fimg_2.png)
+
+También se introduce el concepto de capas Lambda en Tensorflow y Keras, que permiten escribir código personalizado como parte de una red neuronal. Esto proporciona un mayor control sobre el preprocesamiento de datos dentro de la red neuronal misma, lo que puede simplificar el flujo de trabajo y brindar más flexibilidad al desarrollador.
+
 ## Conceptual Overview
 [<- Return to INDEX 3](#index-3)
+
+![img_3.png](ims%2FW3%2Fimg_3.png)
+
+En las últimas dos semanas, has buscado crear redes neuronales para pronosticar datos de series temporales. Comenzaste con algunas técnicas analíticas simples, que luego lo extendiste a usar Machine Learning para hacer una regresión simple. Desde allí usas el DNN que ajustaste un poco para obtener un modelo aún mejor.
+
+Esta semana, vamos a ver RNN para la tarea de predicción. Una red neuronal recurrente, o RNN es una red neuronal que contiene capas recurrentes. 
+
+![img_4.png](ims%2FW3%2Fimg_4.png)
+
+Estos están diseñados para procesos secuencialmente secuencia de entradas. RNN son bastante flexibles, capaces de procesar todo tipo de secuencias. Como viste en el curso anterior, podrían haber sido utilizados para predecir texto. Aquí los usaremos para procesar la serie temporal. 
+
+Este ejemplo, creará un RNN que contiene dos capas recurrentes y una capa densa final, que servirá como salida. Con un RNN, puedes alimentarlo en lotes de secuencias, y emitirá un lote de pronósticos, al igual que hicimos la semana pasada. 
+
+![img_5.png](ims%2FW3%2Fimg_5.png)
+
+Una diferencia será que la forma de entrada completa cuando usando RNN es tridimensional. La primera dimensión será el tamaño del lote, la segunda será las marcas de tiempo, y la tercera es la dimensionalidad de las entradas en cada paso de tiempo. Por ejemplo, si es una serie temporal univariada, este valor será uno, para multivariante será más. 
+
+Los modelos que has estado usando a fecha tenían entradas bidimensionales, la dimensión del lote fue la primera, y la segunda tenía todas las características de entrada. 
+Pero antes de ir más lejos, vamos a profundizar en las capas RNN para ver cómo funcionan. 
+
+![img_6.png](ims%2FW3%2Fimg_6.png)
+
+Lo que parece que hay muchas celdas, en realidad solo hay una, y se usa repetidamente para calcular las salidas. En este diagrama, parece que hay muchos de ellos, pero estoy usando el mismo siendo reutilizado varias veces por la capa. En cada paso de tiempo, la celda de memoria toma el valor de entrada para ese paso. Así que, por ejemplo, es cero en el tiempo cero, y entrada de estado cero. 
+
+![img_7.png](ims%2FW3%2Fimg_7.png)
+
+Luego calcula la salida para ese paso, en este caso Y0, y un vector H0 de estado que se alimenta en el siguiente paso. H0 se introduce en la celda con X1 para producir Y1 y H1, que luego se introduce en la celda en el siguiente paso con X2 para producir Y2 y H2. 
+
+![img_8.png](ims%2FW3%2Fimg_8.png)
+
+Estos pasos continuarán hasta que lleguemos al final de nuestra dimensión de entrada, que en este caso tiene 30 valores. Ahora, esto es lo que le da a este tipo de arquitectura el nombre de una red neuronal recurrente, porque los valores se repiten debido a la salida de la celda, un paso que se devuelve en sí mismo en el siguiente paso de tiempo.
+
+![img_9.png](ims%2FW3%2Fimg_9.png)
+
+Como vimos en el curso de la PNL, esto es realmente útil para determinar estados. La ubicación de una palabra en una oración puede determinarla semántica. Del mismo modo, para series numéricas, cosas como números más cercanos en la serie podrían tener un impacto mayor que aquellos más lejos de nuestro valor objetivo.
 
 ## RNN Notebook (Lab 1)
 [<- Return to INDEX 3](#index-3)
 
+En los próximos vídeos, Laurence demostrará el uso de RNNs para construir su modelo predictivo. Puede utilizar el cuaderno 
+aquí [C4_W3_Lab_1_RNN.ipynb](notebooks%2FW3%2FC4_W3_Lab_1_RNN.ipynb)
+ para seguirle la pista.
+
 ## Shape of the Inputs to the RNN
 [<- Return to INDEX 3](#index-3)
+
+![img_10.png](ims%2FW3%2Fimg_10.png)
+
+Vale. Hemos mencionado la forma de los datos y los lotes en los que se dividen los datos. Es importante echar un vistazo a eso, y vamos a profundizar en eso a continuación. Las entradas son tridimensionales. 
+
+
+![img_11.png](ims%2FW3%2Fimg_11.png)
+
+Así que, por ejemplo, si tenemos un tamaño de ventana de 30 marcas de tiempo y las estamos agrupando en tamaños de cuatro, la forma será 4 veces 30 veces 1, y cada marca de tiempo, la entrada de la celda de memoria será una matriz de cuatro por uno, como esta.
+
+
+![img_12.png](ims%2FW3%2Fimg_12.png)
+
+La celda también tomará la entrada de la matriz de estado del paso anterior. Pero, por supuesto, en este caso, en el primer paso, esto será cero. Para los siguientes, será la salida de la celda de memoria. 
+
+![img_13.png](ims%2FW3%2Fimg_13.png)
+
+Pero aparte del vector de estado, la celda, por supuesto, producirá un valor Y, que podemos ver aquí. Si la célula de memoria está compuesta por tres neuronas, entonces la matriz de salida será de cuatro por tres porque el tamaño del lote que llegó fue cuatro y el número de neuronas es tres. Así que la salida completa de la capa es tridimensional, en este caso, 4 por 30 por 3.
+
+Con cuatro siendo el tamaño del lote, tres siendo el número de unidades, y 30 siendo el número total de pasos. En un RNN simple, la salida de estado H es solo una copia de la matriz de salida Y. Así que, por ejemplo, H_0 es una copia de Y_0, H_1 es una copia de Y_1, y así sucesivamente. 
+
+![img_14.png](ims%2FW3%2Fimg_14.png)
+
+Así que en cada marca de tiempo, la celda de memoria obtiene tanto la entrada actual como la salida anterior. Ahora, en algunos casos, es posible que desee ingresar una secuencia, pero no desea generar y solo desea obtener un único vector para cada instancia en el lote. Esto se suele llamar una secuencia al vector RNN. 
+
+Pero en realidad, todo lo que haces es ignorar todas las salidas, excepto la última. Al usar Keras en TensorFlow, este es el comportamiento predeterminado. Así que si desea que la capa recurrente genere una secuencia, debe especificar secuencias de retorno igual a true al crear la capa. Tendrá que hacer esto cuando apile una capa RNN encima de otra.
 
 ## Outputting a Sequence
 [<- Return to INDEX 3](#index-3)
 
+![img_15.png](ims%2FW3%2Fimg_15.png)
+
+Así que considere este RNN, estas tienen dos capas recuperadas, y la primera tiene return_sequences=true set up. Se producirá una secuencia que se alimenta a la siguiente capa. La siguiente capa no tiene return_sequence que se establece en True, por lo que solo dará salida al paso final. Pero observe la input_shape, está establecida en Ninguno y 1. 
+
+
+ensorFlow asume que la primera dimensión es el tamaño del lote, y que puede tener cualquier tamaño en absoluto, por lo que no es necesario definirla. Entonces la siguiente dimensión es el número de marcas de tiempo, que podemos establecer en none, lo que significa que el RNN puede manejar secuencias de cualquier longitud. La última dimensión es sólo una porque estamos utilizando una unidad varía de series de tiempo. 
+
+![img_16.png](ims%2FW3%2Fimg_16.png)
+
+
+Si establecemos return_sequence en true y todas las capas recurrentes, entonces todas las secuencias de salida y la capa densa obtendrá una secuencia como sus entradas. Keras maneja esto usando la misma capa densa de forma independiente en cada sello de tiempo.
+
+Puede parecer varios aquí, pero es el mismo que se está reutilizando en cada paso de tiempo. Esto nos da lo que se llama una secuencia para secuencia RNN. Se alimenta un lote de secuencias y devuelve un lote de secuencias de la misma longitud. La dimensionalidad puede no coincidir siempre. Depende del número de unidades en la venta de memoria. 
+
+
+![img_15.png](ims%2FW3%2Fimg_15.png)
+
+Así que volvamos ahora a un RNN de dos capas que tiene el segundo no secuencias de retorno. Esto nos dará una salida a un solo denso.
+
 ## Lambda Layers
 [<- Return to INDEX 3](#index-3)
+
+![img_17.png](ims%2FW3%2Fimg_17.png)
+
+Pero me gustaría agregar un par de capas nuevas a esto, capas que usan el tipo Lambda. Este tipo de capa es una que nos permite realizar operaciones arbitrarias para efectivamente ampliar la funcionalidad de los kares de TensorFlow, y podemos hacerlo dentro de la propia definición del modelo. 
+
+
+![img_18.png](ims%2FW3%2Fimg_18.png)
+
+Así que la primera capa de Lambda será usada para ayudarnos con nuestra dimensionalidad. Si recuerda cuando escribimos la función auxiliar del dataset de ventana, devolvió lotes bidimensionales de Windows en los datos, con la primera siendo el tamaño del lote y la segunda el número de marcas de tiempo. Pero un RNN espera tres dimensiones; tamaño del lote, el número de marcas de tiempo, y la dimensionalidad de la serie. 
+
+Con la capa Lambda, podemos solucionar esto sin reescribir nuestra función auxiliar de dataset de ventana. Usando el Lambda, simplemente expandemos la matriz por una dimensión. Al establecer la forma de entrada en none, estamos diciendo que el modelo puede tomar secuencias de cualquier longitud. 
+
+
+![img_19.png](ims%2FW3%2Fimg_19.png)
+
+ Del mismo modo, si ampliamos las salidas en 100, podemos ayudar a entrenar. La función de activación predeterminada en las capas RNN es tan H que es la activación tangente hiperbólica. Esto genera valores entre uno negativo y uno. Dado que los valores de las series de tiempo están en ese orden generalmente en los 10s como los 40s, 50s, 60s y 70s, entonces escalando las salidas al mismo estadio pueden ayudarnos con el aprendizaje.
+
+Podemos hacer eso en una capa de Lambda también, simplemente lo multiplicamos por 100. Así que ahora echemos un vistazo a lo que se necesita para construir el RNN completo para que podamos empezar a hacer algunas predicciones con él. Lo verás en el siguiente video.
 
 ## Adjusting the Learning Rate Dynamically
 [<- Return to INDEX 3](#index-3)
 
+![img_25.png](ims%2FW3%2Fimg_25.png)
+
+En el video anterior, usted consiguió un vistazo a RNN y cómo pueden ser utilizados para secuencia a vector a secuencia a secuencia predicción. Echemos un vistazo a codificándolos para el problema que nos ocupa y veamos si podemos obtener buenas predicciones en nuestras series de tiempo utilizándolas. 
+
+Una cosa que verás en el resto de las lecciones en adelante es que me gustaría escribir un poco de código para optimizar la red neuronal para la tasa de aprendizaje del optimizador. Puede ser bastante rápido para entrenar y podemos desde allí ahorrar mucho tiempo en nuestro ajuste de hiperparámetros.
+
+![img_26.png](ims%2FW3%2Fimg_26.png)
+
+Así que aquí está el código para entrenar el RNN con dos capas cada una con 40 celdas. Para ajustar la tasa de aprendizaje, vamos a configurar una devolución de llamada, que se puede ver aquí. Cada época esto sólo cambia la tasa de aprendizaje un poco para que los pasos todo el camino de 1 veces 10 a el menos 8 a 1 veces 10 a menos 6. 
+
+![img_27.png](ims%2FW3%2Fimg_27.png)
+
+Puedes ver esa configuración aquí mientras entrena. También he introducido una nueva función de pérdida al uso llamado Huber que se puede ver aquí. La función Huber es una función de pérdida que es menos sensible a los valores atípicos y como estos datos pueden ser un poco ruidosos, vale la pena darle una oportunidad.
+
+![img_28.png](ims%2FW3%2Fimg_28.png)
+
+Si ejecuto esto por 100 épocas y mide la pérdida en cada época, Veré que mi tasa óptima de aprendizaje para gradiente estocástico desciende entre aproximadamente 10 a menos 5 y 10 a menos 6. 
+
+![img_29.png](ims%2FW3%2Fimg_29.png)
+
+Así que voy a establecer que es 5 veces 10 al menos 5. Así que ahora, voy a establecer mis modelos compilados con esa tasa de aprendizaje y el optimizador de descenso de gradiente estocástico.
+
+![img_30.png](ims%2FW3%2Fimg_30.png)
+
+Después de entrenar para 500 épocas, obtendré este gráfico, con un MAE en el conjunto de validación de aproximadamente 6.35. No está mal, pero me pregunto si podemos hacerlo mejor.
+
+![img_31.png](ims%2FW3%2Fimg_31.png)
+
+Así que aquí está la pérdida y el MAE durante el entrenamiento con el gráfico a la derecha es zoom en las últimas épocas. Como pueden ver, la tendencia fue genuinamente hacia abajo hasta un poco después de 400 épocas, cuando comenzó a ponerse inestable. 
+
+![img_32.png](ims%2FW3%2Fimg_32.png)
+
+Teniendo en cuenta esto, probablemente valga la pena solo entrenamiento para alrededor de 400 épocas. Cuando hago eso, obtengo estos resultados. Eso es más o menos lo mismo con el MAE sólo un poco más alto, pero hemos ahorrado 100 épocas que valen de entrenamiento para conseguirlo. Así que vale la pena. 
+
+![img_33.png](ims%2FW3%2Fimg_33.png)
+
+Un vistazo rápido a la formación MAE y la pérdida nos da estos resultados. Así que lo hemos hecho bastante bien, y eso solo estaba usando un simple RNN. Veamos cómo podemos mejorar esto con LSTM y lo verás en el siguiente video.
+
 ## More Info on Huber Loss
 [<- Return to INDEX 3](#index-3)
+
+Encontrará la página de Wikipedia 
+[aquí](https://en.wikipedia.org/wiki/Huber_loss)
+.
+
+> Huber loss es una función de pérdida utilizada comúnmente en problemas de regresión en el aprendizaje automático y la estadística. Es una alternativa robusta a la pérdida cuadrática (también conocida como pérdida de error cuadrático medio o MSE) que puede ser sensible a valores atípicos en los datos.
+> 
+
+La función de pérdida de Huber está diseñada para ser menos sensible a los valores atípicos que la pérdida cuadrática. En lugar de penalizar los errores al cuadrado, el Huber loss penaliza los errores lineales para valores pequeños y errores cuadráticos para valores grandes. Esto lo hace adecuado para problemas en los que los datos pueden contener valores atípicos que afectan significativamente el rendimiento del modelo.
+
+
 
 ## LSTM
 [<- Return to INDEX 3](#index-3)
 
+![img_20.png](ims%2FW3%2Fimg_20.png)
+
+En los vídeos anteriores, experimentaste con usando RNN para predecir valores en tu secuencia. Los resultados fueron buenos, pero necesitaron un poco de mejora ya que estabas golpeando extrañas mesetas en tus predicciones. Experimentaste con el uso de diferentes hiperparámetros y viste alguna mejora, pero tal vez un mejor enfoque sería usar LSTM en lugar de RNN para ver el impacto. 
+
+![img_21.png](ims%2FW3%2Fimg_21.png)
+
+Exploraremos eso en este video. Si recuerdas cuando mirabas RNN, se veían un poco así. Tenían celdas que tomaban parches como entradas o X, y calculaban una salida Y , así como el vector de estado, que alimentaba a la celda junto con la siguiente X que luego resultó en la Y, y el vector de estado y así sucesivamente. 
+
+
+
+![img_22.png](ims%2FW3%2Fimg_22.png)
+
+El impacto de esto es que mientras que el estado es un factor en los cálculos posteriores, sus impactos pueden disminuir considerablemente con las marcas de tiempo. LSTM son el estado celular a esto que mantiene un estado a lo largo la vida del entrenamiento para que el estado se pasa de celda a celda, marca de tiempo a marca de tiempo, y se puede mantener mejor.
+
+![img_23.png](ims%2FW3%2Fimg_23.png)
+
+Esto significa que los datos de anteriores en la ventana pueden tener un mayor impacto en la proyección general que en el caso de RNN. El estado también puede ser bidireccional para que el estado se mueva hacia adelante y hacia atrás. En el caso de los textos, esto fue realmente poderoso. 
+
+![img_24.png](ims%2FW3%2Fimg_24.png)
+
+Dentro de la predicción de secuencias numéricas, puede o no ser, y será ser interesante experimentar con. No voy a entrar en muchos detalles aquí, pero cientos de videos alrededor de LSTM son geniales. A partir de ahí, realmente se puede entender cómo funcionan bajo el capó.
+
 ## Link to the LSTM Lesson
 [<- Return to INDEX 3](#index-3)
+
+[Aquí](https://www.coursera.org/lecture/nlp-sequence-models/long-short-term-memory-lstm-KXoay)
+ encontrará el enlace a la lección LSTM
 
 ## LSTM Notebook (Lab 2)
 [<- Return to INDEX 3](#index-3)
 
+Puede utilizar el cuaderno 
+aquí [C4_W3_Lab_2_LSTM.ipynb](notebooks%2FW3%2FC4_W3_Lab_2_LSTM.ipynb)
+ para seguir la demostración de codificación LSTM en el siguiente vídeo.
+
 ## Coding LSTMs
 [<- Return to INDEX 3](#index-3)
+
+![img_34.png](ims%2FW3%2Fimg_34.png)
+
+Así que ahora echemos un vistazo a algún código para LSTM y cómo pueden funcionar con los datos con los que hemos estado jugando toda la semana. Así que aquí está la actualización de nuestro código para usar LSTM. Desempacemos y echemos un vistazo a las partes interesantes.
+
+![img_36.png](ims%2FW3%2Fimg_36.png)
+
+En primer lugar es tf.keras.backend.clear_session, y esto borra cualquier variable interna. Eso hace que sea fácil para nosotros experimentar sin modelos que impacten versiones posteriores de sí mismos.
+
+![img_37.png](ims%2FW3%2Fimg_37.png)
+
+Después de la capa Lambda que expande las dimensiones para nosotros he agregado una sola capa LSTM con 32 celdas. También he hecho un bidireccional para ver el impacto de eso en una predicción. La neurona de salida nos dará nuestro valor de predicción.
+
+![img_38.png](ims%2FW3%2Fimg_38.png)
+
+También estoy usando una tasa de aprendizaje de una vez 10 _ menos seis y eso podría valer la pena experimentar también. 
+
+![img_39.png](ims%2FW3%2Fimg_39.png)
+
+Así que aquí están los resultados de ejecutar este LSTM en los datos sintéticos que hemos estado usando durante todo el curso. La meseta bajo el gran pico es todavía allí y son MAE está en los bajos seises. No está mal, no es genial, pero no está mal.
+
+![img_40.png](ims%2FW3%2Fimg_40.png)
+
+Las predicciones parecen que podría haber un poco en el lado bajo también. Así que vamos a editar nuestro código para agregar otro LSTM para ver el impacto. Ahora puedes ver la segunda capa y tener en cuenta que tuvimos que establecer secuencias de retorno iguales a true en la primera para que esto funcione. Entrenamos en esto y ahora veremos los siguientes resultados. 
+
+![img_41.png](ims%2FW3%2Fimg_41.png)
+
+Aquí está el gráfico. Ahora está rastreando mucho mejor y más cerca de los datos originales. Tal vez no mantenerse al día con el fuerte aumento, pero al menos está rastreando cerca. También nos da un error promedio promedio que es mucho mejor y está mostrando que estamos yendo en la dirección correcta. 
+
+![img_42.png](ims%2FW3%2Fimg_42.png)
+
+Si editamos nuestra fuente para agregar una tercera capa LSTM como esta, agregando la capa y teniendo las secuencias de retorno de la segunda capa es true podemos luego entrenarla y ejecutarla, y obtendremos la siguiente salida. 
+
+![img_43.png](ims%2FW3%2Fimg_43.png)
+
+Realmente no hay mucho de una diferencia y son MAE realmente ha caído. Así que eso es todo para mirar LSTM y predecir nuestras secuencias. En el siguiente video echarás un vistazo a usando convoluciones para ver qué tendrá el impacto en usar para predecir contenido de series de tiempo.
+
 
 ## Week 3 Quiz
 [<- Return to INDEX 3](#index-3)
 
+1. **Question 1**
+If X is the standard notation for the input to an RNN, what are the standard notations for the outputs?
+
+   - [ ] Y
+   - [ ] H
+   - [x] Y(hat) and H
+   - [ ] H(hat) and Y
+
+   > **Correct!** In the context of RNNs, Y(hat) and H denote the standard notations for the outputs, representing the predicted value and hidden state, respectively.
+
+2. **Question 2**
+What is a sequence to vector if an RNN has 30 cells numbered 0 to 29?
+
+   - [ ] The total Y(hat) for all cells
+   - [x] The Y(hat) for the last cell
+   - [ ] The Y(hat) for the second cell
+   - [ ] The average Y(hat) for all 30 cells
+
+   > **Correct!** A sequence to vector operation in an RNN refers to using the Y(hat) output from the last cell as the representative output for the entire sequence.
+
+3. **Question 3**
+What does a Lambda layer in a neural network do?
+
+   - [ ] There are no Lambda layers in a neural network
+   - [x] Allows you to execute arbitrary code while training
+   - [ ] Changes the shape of the input or output data
+   - [ ] Pauses training without a callback
+
+   > **Correct!** A Lambda layer in a neural network allows for the execution of arbitrary, user-defined code, enabling custom operations that are not covered by standard layers.
+
+4. **Question 4**
+What does the axis parameter of tf.expand_dims do?
+
+   - [x] Defines the dimension index at which you will expand the shape of the tensor 
+   - [ ] Defines the axis around which to expand the dimensions
+   - [ ] Defines the dimension index to remove when you expand the tensor
+   - [ ] Defines if the tensor is X or Y
+
+   > **Correct!** The axis parameter of tf.expand_dims specifies the index at which a new dimension will be added to the tensor, thereby expanding its shape.
+
+5. **Question 5**
+A new loss function was introduced in this module, named after a famous statistician. What is it called?
+
+   - [x] Huber loss
+   - [ ] Hawking loss
+   - [ ] Hyatt loss
+   - [ ] Hubble loss
+
+   > **Correct!** The Huber loss, named after the statistician Peter J. Huber, is utilized for robust regression and combines the best properties of L1 and L2 loss functions.
+
+6. **Question 6**
+What’s the primary difference between a simple RNN and an LSTM?
+
+   - [x] In addition to the H output, LSTMs have a cell state that runs across all cells 
+   - [ ] LSTMs have multiple outputs, RNNs have a single one
+   - [ ] In addition to the H output, RNNs have a cell state that runs across all cells 
+   - [ ] LSTMs have a single output, RNNs have multiple
+
+   > **Correct!** The key distinction between a simple RNN and an LSTM is that the latter includes both the H output and a cell state, enhancing memory and addressing vanishing gradient issues.
+
+7. **Question 7**
+If you want to clear out all temporary variables that TensorFlow might have from previous sessions, what code do you run?
+
+   - [ ] tf.keras.clear_session
+   - [ ] tf.cache.backend.clear_session()
+   - [x] tf.keras.backend.clear_session()  
+   - [ ] tf.cache.clear_session()
+
+   > **Correct!** To reset the state of TensorFlow and clear out temporary variables from prior sessions, the `tf.keras.backend.clear_session()` function is used.
+
+8. **Question 8**
+What happens if you define a neural network with these two layers?
+    ```python
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
+    
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
+    
+    tf.keras.layers.Dense(1),
+    ```
+
+
+   - [ ] Your model will fail because you need return_sequences=True after each LSTM layer
+   - [ ] Your model will fail because you have the same number of cells in each LSTM
+   - [x] Your model will fail because you need return_sequences=True after the first LSTM layer
+   - [ ] Your model will compile and run correctly
+
+   > **Correct!** When stacking LSTM layers in a sequence, it’s crucial to set `return_sequences=True` for all but the last LSTM layer to ensure the subsequent layer receives input sequences of the correct shape.
+
+
 ## Week 3 Wrap Up
 [<- Return to INDEX 3](#index-3)
 
+Ahora que ha desarrollado sus DNN con RNN y LSTM, es hora de ponerlo todo junto utilizando CNN y algunos datos del mundo real.
+
+La semana que viene lo hará, ¡explorando la predicción de datos de manchas solares a partir de un par de cientos de años de mediciones!
+
 ## Lecture Notes Week 3
 [<- Return to INDEX 3](#index-3)
+
+Los apuntes de las conferencias están disponibles en nuestra plataforma comunitaria. Si ya es miembro, inicie sesión en su cuenta y acceda a los apuntes de las conferencias 
+aquí [C4_W3.pdf](notes%2FC4_W3.pdf)
+.
 
 # Weekly Assignment Using Layers for Sequence Processing
 [<- Return to INDEX 0](#index-0)
 
 ## Forecast Using RNNs or LSTMs
 [<- Return to INDEX 3](#index-3)
+
+En clase ha aprendido sobre las RNN y las LSTM para la predicción, así como una metodología sencilla para elegir una tasa de aprendizaje decente para el optimizador de descenso de gradiente estocástico. 
+
+En este ejercicio tomará un conjunto de datos sintéticos y escribirá el código para calcular predicciones utilizando capas como las RNNs o las LSTMs.
+
+Esta tarea se calificará en función del MSE de sus previsiones. Al final de la tarea habrá entregado su modelo entrenado, que se utilizará para calcular la previsión. El pronóstico debe tener un MSE de 30 o menos para aprobar esta tarea.
+
+> Respuesta: [C4W3_Assignment.ipynb](notebooks%2FW3%2Fassigment%203%2FC4W3_Assignment.ipynb)
+> 
+
+![img.png](notebooks%2FW3%2Fassigment%203%2Fimg.png)
+
 
 # Real-world Time Series Data
 [<- Return to INDEX 0](#index-0)
@@ -1584,6 +1926,7 @@ La tercera semana está dedicada a las Redes Neuronales Recurrentes (RNN), con u
 - [Convolutional Neural Network Course](#convolutional-neural-network-course)
 - [Bi-directional LSTMs](#bi-directional-lstms)
 - [More on Batch Sizing](#more-on-batch-sizing)
+- [Convolutions with LSTM (Lab 1)](#convolutions-with-lstm-lab-1)
 - [Convolutions with LSTM](#convolutions-with-lstm)
 - [Real Data - Sunspots](#real-data---sunspots)
 - [Train and Tune the Model](#train-and-tune-the-model)
@@ -1607,68 +1950,713 @@ En la última semana, nos sumergiremos en la potente combinación de Convolucion
 ## A Conversation with Andrew Ng W4
 [<- Return to INDEX 4](#index-4)
 
+![img.png](ims%2FW4%2Fimg.png)
+
+La última semana de un curso de especialización se presenta como emocionante, con la oportunidad de aplicar un convnet 1D a datos reales de manchas solares. La especialización, llamada Flujo de Tensor en la práctica, busca integrar todo el aprendizaje en la práctica. Se está pasando de datos sintéticos a datos reales de manchas solares, lo que permitirá utilizar diversas técnicas como redes neuronales convolucionales, cámaras 1D, LSTM y redes neuronales profundas para predecir la actividad de las manchas solares. 
+
+![img_1.png](ims%2FW4%2Fimg_1.png)
+
+Al final de la semana, se espera que los estudiantes hayan construido un modelo sofisticado de red neuronal que integre estas técnicas. Además, se anima a los estudiantes a explorar cómo pueden aplicar lo aprendido en Tensor Flow para construir otras redes neuronales.
+
 ## Convolutions
 [<- Return to INDEX 4](#index-4)
+
+![img_2.png](ims%2FW4%2Fimg_2.png)
+
+La semana pasada, revisamos las redes neuronales recurrentes incluyendo un simple RNN y un LSTM.
+Usted vio cómo podrían ser útiles en el aprendizaje de una secuencia como la que hemos estado viendo. Y cómo los LSTM eliminaron algunos de los problemas que tuvimos con un RNN.
+
+Esta semana, irás un paso más allá, combinando convoluciones con LSTM para obtener un modelo muy apropiado. Luego aplicaremos eso a los datos del mundo real en lugar de este conjunto de datos sintéticos en el que hemos estado trabajando desde el comienzo de este curso.
+
+
+![img_3.png](ims%2FW4%2Fimg_3.png)
+
+Aquí está el LSTM que miró la semana pasada, excepto que he agregado algo al comienzo de la pila secuencial.
+
+Es un convo D donde intentaremos aprender 32 filtros. Es una convolución unidimensional. Así que tomaremos una ventana de cinco números y multiplicaremos los valores en esa ventana por los valores de filtro, de la misma manera que se hacen las convoluciones de imagen.
+
+![img_4.png](ims%2FW4%2Fimg_4.png)
+
+
+Vuelva al curso de circunvoluciones para obtener más información sobre eso.
 
 ## Convolutional Neural Network Course
 [<- Return to INDEX 4](#index-4)
 
+Encontrará más información sobre las CNN en el curso de Andrews dentro de la Especialización en Aprendizaje Profundo.  
+
+Si siente curiosidad por el contenido y desea obtener más información, aquí tiene el 
+[enlace](https://www.coursera.org/learn/convolutional-neural-networks/home/welcome)
+ al curso.
+
 ## Bi-directional LSTMs
 [<- Return to INDEX 4](#index-4)
+
+![img_5.png](ims%2FW4%2Fimg_5.png)
+
+Una nota importante es que mientras nos deshacemos de la capa Lambda que reformó la entrada para que trabajemos con los LSTM. Así que en realidad estamos especificando una forma de entrada en la curva 1D aquí.
+
+![img_6.png](ims%2FW4%2Fimg_6.png)
+
+Esto requiere que actualicemos la función helper windowed_datasetet con la que hemos estado trabajando todo el tiempo. Simplemente usaremos tf.expand_ dims en la función auxiliar para expandir las dimensiones de la serie antes de procesarla. 
+
+![img_7.png](ims%2FW4%2Fimg_7.png)
+
+También similar a la semana pasada, el código intentará muchos diferentes tasas de aprendizaje cambiándolas época por época y trazando los resultados. Con estos datos y la red convolucional y basada en LAST, obtendremos una trama como esta. 
+
+![img_8.png](ims%2FW4%2Fimg_8.png)
+
+Claramente los fondos están alrededor de 10 al menos cinco después de lo cual parece un poco inestable, así que tomaremos eso como nuestras tasas de aprendizaje deseadas. Así, cuando definamos el optimizador establecerá la tasa de aprendizaje para ser 1e-5 como se muestra aquí. 
+
+![img_9.png](ims%2FW4%2Fimg_9.png)
+
+Cuando entrenemos para 500 épocas obtendremos esta curva. Es una gran mejora con respecto a anteriores. El pico ha perdido su meseta pero todavía no es del todo correcto, no está llegando lo suficientemente alto en relación con los datos. Ahora, por supuesto, el ruido es un factor y podemos ver locos fluctuaciones en el pico causado por el ruido, pero creo que nuestro modelo podría posiblemente hacer un poco mejor que esto.
+
+
+![img_10.png](ims%2FW4%2Fimg_10.png)
+
+Nuestro MAE está por debajo de cinco, pero apuesto a que fuera de ese primer pico es probablemente mucho más bajo que eso. Una solución podría ser entrenar un poco más. A pesar de que nuestras curvas de pérdida de MAE se ven planas en 500 épocas, podemos ver cuando hacemos zoom en que están disminuyendo lentamente. La red sigue aprendiendo aunque lentamente.
+
+![img_11.png](ims%2FW4%2Fimg_11.png)
+
+Ahora un método sería hacer tus LastMS bidireccional como este. Al entrenar, esto se ve muy bien dando muy baja pérdida en los valores de MAE a veces incluso menos de uno. 
+
+![img_12.png](ims%2FW4%2Fimg_12.png)
+
+Pero desafortunadamente es demasiado adecuado cuando trazamos las predicciones contra el conjunto de validación, no vemos mucha mejora y de hecho nuestro MAE ha caído. Así que sigue siendo un paso en la dirección correcta y considere una arquitectura como esta a medida que avanza, pero tal vez necesite modificar algunos de los parámetros para evitar el overfittingng.
+
+![img_13.png](ims%2FW4%2Fimg_13.png)
+
+Algunos de los problemas son claramente visualizar cuando trazamos la pérdida contra el MAE, hay mucho ruido e inestabilidad allí. Una causa común para picos pequeños como ese es , un tamaño de lote pequeño que introduce más ruido aleatorio. 
+
+
+![img_14.png](ims%2FW4%2Fimg_14.png)
+
+No voy a entrar en los detalles aquí, pero si echa un vistazo a los videos de Andrew y su curso de optimización para el descenso de gradiente, hay algunas cosas realmente geniales allí. 
+
+![img_15.png](ims%2FW4%2Fimg_15.png)
+
+Una sugerencia era explorar el tamaño del lote y asegurarse de que sea apropiado para mis datos. Así que en este caso vale la pena experimentar con diferentes tamaños de lote. Así que, por ejemplo, experimentó con diferentes tamaños de lote tanto más grande y más pequeño que el original 32, y cuando probé 16 se puede ver el impacto aquí en el conjunto de validación, y aquí en la pérdida de entrenamiento y datos MAE.
+
+![img_16.png](ims%2FW4%2Fimg_16.png)
+
+Así que combinando CNN y LSTM hemos sido capaces de construir nuestro mejor modelo hasta ahora, a pesar de algunos bordes rugosos que podrían ser refinados.
+
+![img_17.png](ims%2FW4%2Fimg_17.png)
+
+En el siguiente video, pasaremos a través de un cuaderno que entrena con este modelo para que puedas verlo por ti mismo, y también quizás aprenderemos a hacer algunas afinación para mejorar aún más el modelo. Después de eso, tomaremos la arquitectura del modelo y la aplicaremos a algunos datos del mundo real en lugar de los sintéticos que has estado usando todo el tiempo.
 
 ## More on Batch Sizing
 [<- Return to INDEX 4](#index-4)
 
+[Aquí](https://www.youtube.com/watch?v=4qJaSmvhxi8)
+ encontrará más información
+
+## Convolutions with LSTM (Lab 1)
+[<- Return to INDEX 4](#index-4)
+
+El siguiente vídeo es un screencast que demuestra cómo utilizar las capas de convolución con la red LSTM que construyó la semana pasada. Puede encontrar el enlace al cuaderno 
+aquí [C4_W4_Lab_1_LSTM.ipynb](notebooks%2FW4%2FC4_W4_Lab_1_LSTM.ipynb)
+.
+
 ## Convolutions with LSTM
 [<- Return to INDEX 4](#index-4)
+
+![img_18.png](ims%2FW4%2Fimg_18.png)
+
+En el video anterior, viste cómo puedes apilar una capa convolucional con LSTM y LSTM bidireccionales para hacer predicción de secuencias. En este video, vamos a revisar un libro de trabajo para esto, que luego puedes probar por ti mismo más tarde. Como siempre, vamos a comprobar si tenemos tensorflow instalado. Si no es así, instale la última versión cada noche o la última versión de tensorflow.org.
+
+![img_19.png](ims%2FW4%2Fimg_19.png)
+
+Una vez que sepas que tienes la versión dos, entonces este código generará la serie de tiempo sintética para ti, y este código convertirá la matriz de datos en un conjunto de datos para entrenamiento. Tenga en cuenta que hemos ampliado las dimensiones en la primera línea. Esta función auxiliar puede realizar la previsión para nosotros después del entrenamiento.
+
+Vamos a entrenar para 500 Épocas ahora y mantener un ojo en nuestra pérdida y nuestra mae. Cuando esté hecho, ejecutaremos nuestro pronóstico y trazaremos los resultados. Ya la curva se ve mucho mejor y la meseta que habíamos visto en entrenamiento previo ha desaparecido, y nuestra mae es baja, es justo por encima de cinco en el conjunto de validación. 
+
+![img_20.png](ims%2FW4%2Fimg_20.png)
+
+Finalmente, si trazamos nuestra pérdida de entrenamiento y mae, también vemos una curva saludable hacia abajo.
 
 ## Real Data - Sunspots
 [<- Return to INDEX 4](#index-4)
 
+![img_21.png](ims%2FW4%2Fimg_21.png)
+
+En las últimas semanas, miró los datos de series temporales y examinó algunas técnicas para pronosticar esos datos incluyendo análisis estadístico, regresión lineal y aprendizaje automático con tanto redes de aprendizaje profundo como redes neuronales recurrentes.
+
+Pero ahora vamos a ir más allá de los datos sintéticos a algunos datos del mundo real y aplicar lo que hemos aprendido a crear pronósticos para ello. 
+
+![img_22.png](ims%2FW4%2Fimg_22.png)
+
+Comencemos con este conjunto de datos de Kaggle, que rastrea las manchas solares mensualmente desde 1749 hasta 2018. Las manchas solares tienen ciclos estacionales aproximadamente cada 11 años. Así que probemos esto para ver si podemos predecir a partir de él. 
+
+![img_23.png](ims%2FW4%2Fimg_23.png)
+
+Es un conjunto de datos CSV con la primera columna siendo un índice, la segunda es una fecha en formato año, mes, día, y la tercera es la fecha de ese mes en que se tomó la medición. Es una cantidad mensual promedio que debería ser al final de ese mes. 
+
+![img_24.png](ims%2FW4%2Fimg_24.png)
+
+Puedes descargarlo desde Kaggle o si estás usando el cuaderno en esta lección, Lo he alojado convenientemente para tu en mi Cloud Storage. Es un conjunto de datos bastante simple, pero nos ayuda a entender un poco más sobre cómo optimizar nuestro código para predecir el conjunto de datos basado en la naturaleza de sus datos subyacentes. 
+
+Por supuesto, un tamaño no se ajusta a todos , especialmente cuando se trata de datos que tienen estacionalidad. Así que echemos un vistazo al código. De acuerdo, antes que nada, si estás usando un codelab, entonces necesitarás obtener los datos en tu instancia de codelab. 
+
+![img_25.png](ims%2FW4%2Fimg_25.png)
+
+Este código descargará el archivo que he almacenado para usted. Realmente deberías obtenerlo de Kaggle y almacenarlo en tu propio servidor o incluso subirlo manualmente a codelab, pero para mayor comodidad, lo he almacenado aquí.
+
+![img_26.png](ims%2FW4%2Fimg_26.png)
+
+Aquí está el código para leer el archivo CSV y obtener sus datos en una lista de manchas solares y marcas de tiempo. Comenzaremos importando la biblioteca CSV. Entonces abriremos el archivo. Si está utilizando codelab y W obtiene el código que vio anteriormente, descarga el CSV y lo coloca en la temperatura de barra. Así que este código simplemente lo lee de ahí. 
+
+Esta línea, siguiente lector, se llama Antes de recorrer las filas y el lector, y simplemente lee la primera línea y terminamos tirándola. Esto se debe a que los títulos de columna están en la primera línea del archivo como se puede ver aquí. Luego, veremos a través de el lector leyendo el archivo línea por línea. Nuestras manchas solares están en realidad en la columna 2 y queremos que se conviertan en un float. 
+
+A medida que se lee el archivo, cada elemento se leerá como una cadena, así que también podemos convertirlos ahora en lugar de iterar a través de la lista más adelante y luego convertir todos los tipos de datos. Del mismo modo, leeremos los pasos de tiempo como enteros. 
+
+![img_27.png](ims%2FW4%2Fimg_27.png)
+
+Como gran parte del código que vamos a utilizar para procesar estos acuerdos con matrices NumPy, también podemos ahora convertir una lista a matrices NumPy. Es más eficiente hacerlo de esta manera, acumule sus datos en una lista desechable y luego convertirlo a NumPy de lo que habría sido para comenzar con matrices NumPy, porque cada vez que agrega un elemento a un NumPy, hay una gran cantidad de administración de memoria pasando a clonar la lista, tal vez una gran cantidad de datos que pueden ser lentos. 
+
+![img_28.png](ims%2FW4%2Fimg_28.png)
+
+Si trazamos nuestros datos se ve así. Tenga en cuenta que tenemos estacionalidad, pero no es muy regular con algunos picos y mucho más altos que otros. También tenemos un poco de ruido, pero no hay tendencia general. 
+
+![img_29.png](ims%2FW4%2Fimg_29.png)
+
+Como antes, dividamos nuestra serie en un conjunto de datos de capacitación y validación. Nos dividiremos a la hora 1.000.
+
+![img_30.png](ims%2FW4%2Fimg_30.png)
+
+Tendremos un tamaño de ventana de 20, un tamaño de lote de 32 y un búfer barajado de 1.000. Usaremos el mismo código de conjunto de datos de ventana que hemos estado usando toda la semana para convertir una serie en un conjunto de datos en el que podemos entrenar.
+
 ## Train and Tune the Model
 [<- Return to INDEX 4](#index-4)
+
+![img_31.png](ims%2FW4%2Fimg_31.png)
+
+Volveremos a la simple DNN que vimos en la segunda semana para el entrenamiento y veremos qué pasa. 
+
+![img_32.png](ims%2FW4%2Fimg_32.png)
+
+Obtenemos un gráfico como este, que al menos para el globo ocular se ve muy bien, pero tiene un MAE muy grande así que algo debe estar mal. 
+
+![img_33.png](ims%2FW4%2Fimg_33.png)
+
+De hecho, si nos acercamos a los resultados podemos ver con un poco más de detalle acerca de cómo se comporta el pronóstico en los datos originales. Nuestra pista del problema podría ser nuestro tamaño de ventana.
+
+![img_34.png](ims%2FW4%2Fimg_34.png)
+
+Recuerde que antes dijimos que es un 20, así que nuestros tamaños de ventana de entrenamiento son 20 rebanadas de tiempo de datos. Y dado que cada rebanada de tiempo es un mes en tiempo real nuestra ventana es un poco menos de dos años.
+
+![img_35.png](ims%2FW4%2Fimg_35.png)
+
+Pero si recuerdan este gráfico, podemos ver que la estacionalidad de las manchas solares es mucho mayor que dos años. Está más cerca de 11 años. Y en realidad alguna ciencia nos dice que incluso podrían ser 22 años con diferentes ciclos interligados entre sí. 
+
+![img_36.png](ims%2FW4%2Fimg_36.png)
+
+Entonces, ¿qué pasaría si nos reentrenamos con un tamaño de ventana de 132, que es 11 años de datos como nuestro tamaño de ventana?
+
+![img_37.png](ims%2FW4%2Fimg_37.png)
+
+Ahora bien, aunque este gráfico tiene un aspecto similar, podemos ver en el MAE que en realidad empeoró , por lo que aumentar el tamaño de la ventana no funcionó. ¿Por qué crees que sería?
+
+![img_38.png](ims%2FW4%2Fimg_38.png)
+
+Bueno, mirando hacia atrás a los datos, podemos darnos cuenta de que es estacional a alrededor de 11 años, pero no necesitamos una temporada completa en nuestra ventana. Acercando los datos de nuevo, veremos algo como esto donde es solo la serie temporal típica.
+
+Los valores más adelante están algo relacionados con los anteriores, pero eso es mucho ruido. Así que tal vez no necesitamos una gran ventana de tiempo para entrenar. Tal vez deberíamos ir con algo un poco más como nuestro inicial 20, vamos a probar 30.
+
+Así que si miramos hacia atrás en este código, podemos cambiar nuestro tamaño de ventana a 30. Pero luego mira el tiempo dividido, el conjunto de datos tiene alrededor de 3.500 elementos de datos, pero lo estamos dividiendo en capacitación y validación. Ahora 1.000, lo que significa sólo 1.000 para la capacitación y 2.500 para la validación. 
+
+![img_39.png](ims%2FW4%2Fimg_39.png)
+
+Esa es una división muy mala. No hay suficientes datos de entrenamiento. Así que hagámoslo 3.500 en su lugar. Y luego cuando nos entrenemos, obtendremos esto. 
+
+![img_40.png](ims%2FW4%2Fimg_40.png)
+
+Nuestro MAE ha mejorado a 15 pero ¿podemos hacerlo aún mejor? Bueno, una cosa que podemos intentar es editar el diseño de la red neuronal y altura de parámetros. 
+
+![img_41.png](ims%2FW4%2Fimg_41.png)
+
+Si recuerdas, teníamos tres capas de 10, 10 y 1 neuronas. Nuestra forma de entrada es ahora más grande a los 30. 
+
+![img_42.png](ims%2FW4%2Fimg_42.png)
+
+Así que tal vez intente diferentes valores aquí, como 30, 15 y 1, y vuelva a entrenar.
+
+![img_43.png](ims%2FW4%2Fimg_43.png)
+Sorprendentemente, esto fue un pequeño paso hacia atrás, con nuestro MAE aumentando.
+
+![img_45.png](ims%2FW4%2Fimg_45.png)
+
+Tampoco valía la pena el tiempo de cálculo adicional para las capas de neuronas adicionales. Así que volvamos a 10, 10, 1 y en su lugar veamos la tasa de aprendizaje.
+
+Vamos a ajustarlo un poco.
+
+![img_44.png](ims%2FW4%2Fimg_44.png)
+
+Ahora después del reentrenamiento, puedo ver que mi MAE ha disminuido un poco, lo cual es bueno.
 
 ## Prediction
 [<- Return to INDEX 4](#index-4)
 
+![img_46.png](ims%2FW4%2Fimg_46.png)
+
+Por interés, hagamos una predicción. El tamaño de la ventana que estoy usando es de 30 pasos, y el conjunto de datos tiene 3.235 pasos de largo. Entonces, si quiero predecir el siguiente valor después del final de mi conjunto de datos, usaría este código.
+
+![img_48.png](ims%2FW4%2Fimg_48.png)
+
+. Y obtendría el resultado 7.0773993.
+
+![img_49.png](ims%2FW4%2Fimg_49.png)
+
+El conjunto de datos va hasta julio de 2018, así que estoy prediciendo 7.077 manchas solares para agosto de 2018. Y si miro este gráfico de observaciones, que tiene algunos datos ligeramente diferentes de mi conjunto de datos, puedo ver que el número real registrado de manchas solares en agosto de 2018 fue de 8.7. Así que la predicción no es tan mala, pero veamos si podemos mejorarla.
+
+![img_47.png](ims%2FW4%2Fimg_47.png)
+
+Con estas configuraciones, bajé el MAE a 13.75, y la predicción fue 8.13, que está mucho más cerca de la lectura real real real de 8.7. Sin embargo, hay elementos aleatorios en la creación de modelos, por lo que sus resultados pueden variar. Hacer precisión basada en una sola predicción como esta también es una receta para decepción, y estás mucho mejor evaluando la precisión media sobre una serie de lecturas.
+
+![img_50.png](ims%2FW4%2Fimg_50.png)
+
+Así que aquí, analizamos el uso de un DNN para predecir los valores de las manchas solares. Con un poco de afinación, hemos reducido un poco nuestro MAE. Y cuando intentamos predecir el valor del próximo mes usando este modelo, nos acercamos bastante al valor real. En el siguiente vídeo, recorrerás este libro de trabajo para verlo en acción. Y entonces deberías probarlo por ti mismo, para ver si puedes mejorar en lo que tengo. Después de eso, mirarás en los RNN otra vez y verás si puedes obtener mejores predicciones usando esos.
+
 ## Sunspots Notebooks (Lab 2 and Lab 3)
 [<- Return to INDEX 4](#index-4)
+
+Los próximos screencasts mostrarán cómo puede utilizar diferentes arquitecturas de red para predecir datos del mundo real.
+
+Aquí [C4_W4_Lab_2_Sunspots_DNN.ipynb](notebooks%2FW4%2FC4_W4_Lab_2_Sunspots_DNN.ipynb)
+ está el cuaderno sólo para DNN.
+
+Aquí [C4_W4_Lab_3_Sunspots_CNN_RNN_DNN.ipynb](notebooks%2FW4%2FC4_W4_Lab_3_Sunspots_CNN_RNN_DNN.ipynb)
+ está la versión con las capas combinadas.
 
 ## Sunspots
 [<- Return to INDEX 4](#index-4)
 
+![img_51.png](ims%2FW4%2Fimg_51.png)
+
+En la lección anterior, observaste el uso de un conjunto de datos del mundo real, uno con lecturas de la actividad de las manchas solares durante un par de cientos de años. Y viste cómo construir un DNN simple para predecir la actividad usando ese conjunto de datos. Ahora echemos un vistazo al cuaderno y lo veremos en acción por nosotros mismos.
+
+![img_52.png](ims%2FW4%2Fimg_52.png)
+
+Como siempre, vamos a comprobar si tenemos instalado TensorFlow 2.
+Y lo hacemos solo podemos progresar. Este código solo importa numpy y pyplot y crea una función auxiliar para gráficos
+
+![img_53.png](ims%2FW4%2Fimg_53.png)
+
+Este código descarga el conjunto de datos y lo coloca en el directorio temporal. Es un conjunto de datos muy pequeño, por lo que debería ejecutarse muy rápidamente.
+
+![img_54.png](ims%2FW4%2Fimg_54.png)
+
+Ahora importaremos los datos del CSV y crearemos matrices numpy desde él. Podemos trazar los datos para verlo estacionalidad y su ruido, pero no hay tendencia notable.
+
+![img_55.png](ims%2FW4%2Fimg_55.png)
+
+Ahora dividiremos los datos y configuraremos nuestras constantes. Lo más notable es el tamaño de la ventana que he establecido en 60. 
+
+
+![img_56.png](ims%2FW4%2Fimg_56.png)
+
+Este código es una función auxiliar para convertir los datos en un conjunto de datos de ventana.
+
+
+![img_57.png](ims%2FW4%2Fimg_57.png)
+
+Y ahora vamos a entrenar con un DNN de tres capas que tiene 2010, y una neuronas.
+
+![img_58.png](ims%2FW4%2Fimg_58.png)
+
+Utilizaremos el descenso de gradiente estocástico como nuestro optimizador con una tasa de aprendizaje de 1e-7. Una vez finalizado el entrenamiento, podemos obtener pronósticos en todo el conjunto de validación. Y nuestra trama se ve bastante bien.
+
+
+Si mencionamos MAE, estamos a unos 15.
+
+![img_59.png](ims%2FW4%2Fimg_59.png)
+
+
+Debe obtener valores ligeramente diferentes debido a la aleatoriedad de la inicialización del modelo y el descenso del gradiente estocástico. Así que no te preocupes si está un poco apagado. Si está muy apagado, vuelva y revise su código o reinicie el tiempo de ejecución e inténtelo de nuevo.
+
 ## Combining our Tools for Analysis
 [<- Return to INDEX 4](#index-4)
+
+![img_65.png](ims%2FW4%2Fimg_65.png)
+
+Así que hemos mirado los datos de manchas solares usando un DNN estándar como al principio de este curso. También hemos estado trabajando mucho con RNN y un poco con redes neuronales convolucionales. Entonces, ¿qué pasaría si los juntamos a todos para ver si podemos predecir la actividad de la mancha solar?
+
+
+Este es un conjunto de datos difícil porque como ya hemos visto, aunque es estacional el período es realmente largo, alrededor de 11 años, y no es perfectamente sazonable durante ese período. Así que echemos un vistazo al uso de todas las herramientas que tenemos para ver si podemos construir una predicción decente usando el aprendizaje automático. 
+
+![img_66.png](ims%2FW4%2Fimg_66.png)
+
+Así que aquí está la primera pieza de código que podemos probar. Me he vuelto un poco loco aquí, así que vamos a descomponerlo pieza por pieza. En primer lugar, estoy configurando el tamaño del lote en 64 y el tamaño de la ventana en 60. 
+
+Entonces comenzaremos con una convolución 1D que aprenderemos 32 filtros. Esto dará salida a un par de LSTM con 32 células cada una antes de alimentar a un DNN similar a lo que vimos anteriormente, 30 neuronas, luego 10, y una. 
+
+Finalmente, como nuestros números están en el rango 1-400, hay una capa Lambda que multiplica nuestra X por 400. 
+
+![img_67.png](ims%2FW4%2Fimg_67.png)
+
+
+Con la primera prueba para establecer el mejor aprendizaje, la tasa obtenemos este gráfico. Esto sugiere que la mejor tasa de aprendizaje para esta red será de alrededor de 10 a menos 5. 
+
+![img_68.png](ims%2FW4%2Fimg_68.png)
+
+ Así que cuando entrené para 500 épocas con esta configuración, aquí están mis resultados. 
+
+![img_69.png](ims%2FW4%2Fimg_69.png)
+
+Es bastante bueno con un buen MAE bajo.
+
+![img_70.png](ims%2FW4%2Fimg_70.png)
+
+Pero cuando miro mi función de pérdida durante el entrenamiento, puedo ver que hay mucho ruido que me dice que sin duda puedo optimizarlo un poco, y como vimos en videos anteriores, una de las mejores cosas a mirar en estas circunstancias es el tamaño del lote.
+
+![img_71.png](ims%2FW4%2Fimg_71.png)
+
+Así que lo aumentaré a 256 y volver a entrenar. 
+
+![img_72.png](ims%2FW4%2Fimg_72.png)
+
+Después de 500 épocas, mis predicciones han mejorado un poco lo cual es un paso en la dirección correcta. 
+
+![img_73.png](ims%2FW4%2Fimg_73.png)
+
+Pero mira mi ruido de entrenamiento. Particularmente hacia el final de la formación es realmente ruidoso, pero es una onda de aspecto muy regular. Esto sugiere que mi tamaño de lote más grande era bueno, pero tal vez un poco apagado. 
+
+![img_74.png](ims%2FW4%2Fimg_74.png)
+
+¿Qué pasaría si cambiara mis parámetros para que se adaptara, y no solo la ventana y el tamaño del lote, qué tal si cambiara los filtros también? Entonces, ¿qué pasa si configuro eso en 60, y los LSTM en 60 en lugar de 32 o 64? Mi DNN ya se ve bien, así que no los cambiaré.
+
+![img_75.png](ims%2FW4%2Fimg_75.png)
+
+Experimentar con hiperparámetros como este es una gran manera de aprender los ins y outs del aprendizaje automático, no solo con secuencias sino con cualquier cosa. Recomiendo a fondo pasar tiempo en y ver si puedes mejorar en este modelo. 
+
+Además, usted debe acompañar que trabajan con profundizar en cómo todas estas cosas en el aprendizaje automático trabajan y cursos de Andrews son geniales para eso. Les recomiendo encarecidamente si aún no los has hecho.
 
 ## Week 4 Quiz
 [<- Return to INDEX 4](#index-4)
 
+1. **Question 1**  
+How do you add a 1 dimensional convolution to your model for predicting time series data?
+
+   - [ ] Use a 1DConvolution layer type
+   - [x] Use a Conv1D layer type
+   - [ ] Use a 1DConv layer type
+   - [ ] Use a ConvolutionD1 layer type
+
+   > **Correct!** The correct syntax for adding a one-dimensional convolution layer in many deep learning frameworks is `Conv1D`.
+
+2. **Question 2**  
+What’s the input shape for a univariate time series to a Conv1D?
+
+   - [ ] [1]
+   - [ ] []
+   - [x] [None, 1]
+   - [ ] [1, None]
+
+   > **Correct!** The standard input shape for a univariate time series in `Conv1D` is `[None, 1]`, allowing any length of sequence with one feature.
+
+3. **Question 3**  
+You used a sunspots dataset that was stored in CSV. What’s the name of the Python library used to read CSVs?
+
+   - [ ] PyFiles
+   - [ ] PyCSV
+   - [ ] CommaSeparatedValues
+   - [x] CSV
+
+   > **Correct!** Python's CSV library is commonly used for reading and writing CSV files. It provides functionality for handling CSV formatted data.
+
+4. **Question 4**  
+If your CSV file has a header that you don’t want to read into your dataset, what do you execute before iterating through the file using a ‘reader’ object?
+
+   - [ ] reader.next
+   - [x] next(reader)
+   - [ ] reader.read(next)
+   - [ ] reader.ignore_header()
+
+   > **Correct!** The function `next(reader)` skips the current line where the reader is positioned, commonly used to skip headers in CSV files.
+
+5. **Question 5**  
+When you read a row from a reader and want to cast column 2 to another data type, for example, a float, what’s the correct syntax?
+
+   - [ ] You can’t. It needs to be read into a buffer and a new float instantiated from the buffer
+   - [ ] Convert.toFloat(row[2])
+   - [x] float(row[2])
+   - [ ] float f = row[2].read()
+
+   > **Correct!** To cast a value to a float in Python, you straightforwardly use `float(row[2])`.
+
+6. **Question 6**  
+What was the sunspot seasonality?
+
+   - [ ] 4 times a year
+   - [x] 11 or 22 years depending on who you ask
+   - [ ] 11 years
+   - [ ] 22 years
+
+   > **Correct!** Sunspot activity varies, and the seasonality can be described as occurring approximately every 11 or 22 years depending on different studies.
+
+7. **Question 7**  
+After studying this course, what neural network type do you think is best for predicting time series like our sunspots dataset?
+
+   - [x] A combination of all other answers
+   - [ ] Convolutions
+   - [ ] RNN / LSTM
+   - [ ] DNN
+
+   > **Correct!** Often, a combination of several neural network types can yield the best results for complex time series predictions like those involving sunspots.
+
+8. **Question 8**  
+Why is MAE a good analytic for measuring accuracy of predictions for time series?
+
+   - [ ] It punishes larger errors
+   - [ ] It biases towards small errors
+   - [x] It doesn’t heavily punish larger errors like square errors do
+   - [ ] It only counts positive errors
+
+   > **Correct!** Mean Absolute Error (MAE) is beneficial because it gives a straightforward average of absolute errors and does not overly penalize larger errors compared to metrics like the Mean Squared Error.
+
 ## Lecture Notes Week 4
 [<- Return to INDEX 4](#index-4)
+
+Los apuntes de las conferencias están disponibles en nuestra plataforma comunitaria. Si ya es miembro, inicie sesión en su cuenta y acceda a los apuntes de las conferencias 
+aquí [C4_W4.pdf](notes%2FC4_W4.pdf)
+.
 
 ## Reminder About the End of Access to Lab Notebooks
 [<- Return to INDEX 4](#index-4)
 
+¡Hola alumno! 
+
+El(los) siguiente(s) tema(s) es(son) el(los) último(s) tema(s) calificado(s) de este curso. Si lo/los aprueba y también ha aprobado todos los ítems calificados anteriores, podrá obtener el certificado del curso. ¡Enhorabuena!
+
+Tenga en cuenta que, de acuerdo con 
+[la Política de Pagos y Reembolsos de Coursera](https://www.coursera.org/about/terms#payments-and-refund-policy)
+, su acceso a los ítems calificados (así como a los Laboratorios No Calificados alojados en Coursera) finalizará una vez que expire su suscripción. Si desea conservar sus cuadernos de laboratorio como referencia, le recomendamos encarecidamente que 
+[los descargue](https://community.deeplearning.ai/t/downloading-your-notebook-downloading-your-workspace-and-refreshing-your-workspace/475495)
+ antes de finalizar el curso o la Specializations.
+
+Puede dirigirse al 
+[Centro de Ayuda al Aprendiz de Coursera](https://www.coursera.support/s/article/360036160591-How-to-contact-Coursera?language=en_US)
+ si tiene preguntas sobre esta política, o si se queda bloqueado mientras tiene una suscripción activa. 
+
+Gracias y ¡siga aprendiendo!
+Equipo de control de calidad de DeepLearning.AI
+
 ## Wrap Up
 [<- Return to INDEX 4](#index-4)
+
+¡Enhorabuena por haber llegado hasta aquí! En este curso, ¡se ha sumergido en el agua de la comprensión de las secuencias y de algunas de las herramientas para predecirlas! Esperamos que haya sido un viaje divertido y ¡estamos deseando ver lo que construye a continuación! :)  
 
 ## Congratulations
 [<- Return to INDEX 4](#index-4)
 
+Así que eso te lleva al final de este curso sobre secuencias y predicción. Espero que hayas disfrutado viendo la miríada de diferentes maneras en que puedes usar la máquina aprendiendo para hacer predicciones basadas en datos secuenciales y de series temporales. Dicho esto, realmente sólo has arañado la superficie de lo que es posible, y sólo has dado los primeros pasos en tu viaje. 
+
+![img_60.png](ims%2FW4%2Fimg_60.png)
+
+Hay mucho más que aprender, pero con lo que has logrado en las últimas semanas, estás bien equipado para profundizar y mirar escenarios más complejos, incluyendo cosas como datos multivariados de series temporales. Realmente esperamos que hayas disfrutado de este curso, y como siempre nos encantaría escuchar tus comentarios a medida que creamos más. - Gracias. - Gracias.
+
 ## References
 [<- Return to INDEX 4](#index-4)
+
+Se trata de una recopilación de los recursos que aparecen en los vídeos de las clases, los laboratorios no calificados y las tareas.
+
+**Semana 1:**
+
+- [Ley
+ de Moore ](https://en.wikipedia.org/wiki/Moore%27s_law)(Wikipedia)
+
+- [Correlaciones espurias: Arcadas vs Doctorados](https://tylervigen.com/view_correlation?id=97)
+ (Tyler Vigen)
+
+- [Tasa de natalidad y mortalidad en Japón](https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Bdrates_of_Japan_since_1950.svg/450px-Bdrates_of_Japan_since_1950.svg.png)
+ (Wikipedia)
+
+- [Temperatura global y dióxido de carbono](https://www.globalchange.gov/browse/multimedia/global-temperature-and-carbon-dioxide)
+ (GlobalChange.gov)
+
+- [Forma pendiente-intercepto](https://en.wikipedia.org/wiki/Linear_equation#Slope%E2%80%93intercept_form_or_Gradient-intercept_form)
+ (Wikipedia)
+
+- [API de Tensorflow](https://www.tensorflow.org/api_docs/python/tf)
+ (Documentación de TF)
+
+- [Numpy](https://matplotlib.org/3.5.1/api/_as_gen/matplotlib.pyplot.html)
+ (Sitio Web oficial)
+
+- [Pyplot](https://matplotlib.org/3.5.1/api/_as_gen/matplotlib.pyplot.html)
+ (Sitio Web oficial)
+
+- [Métricas Keras](https://www.tensorflow.org/api_docs/python/tf/keras/metrics/)
+ (Sitio Web oficial)
+
+**Semana 2:**
+
+- [aPI
+tf
+.data ](https://www.tensorflow.org/guide/data)(Documentación TF)
+
+- [tf.data
+.Dataset](https://www.tensorflow.org/api_docs/python/tf/data/Dataset)
+ (Documentación TF)
+
+- [Aplanar un conjunto de datos de ventanas](https://www.tensorflow.org/api_docs/python/tf/data/Dataset#flatten_a_dataset_of_windows_2)
+ (Documentación TF)
+
+- [LearningRateScheduler](https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/LearningRateScheduler)
+ (Documentación TF)
+
+**Semana 3:**
+
+- [Pérdida de Huber](https://en.wikipedia.org/wiki/Huber_loss)
+ (Wikipedia)
+
+- [SimpleRNN](https://www.tensorflow.org/api_docs/python/tf/keras/layers/SimpleRNN)
+ (Documentación TF)
+
+- [Capa lambda](https://www.tensorflow.org/api_docs/python/tf/keras/layers/Lambda)
+ (Documentación TF)
+
+- [Funciones de activación](https://en.wikipedia.org/wiki/Activation_function#Table_of_activation_functions)
+ (Wikipedia)
+
+- [LSTM](https://www.coursera.org/lecture/nlp-sequence-models/long-short-term-memory-lstm-KXoay)
+ (DeepLearning.AI)
+
+- [Capa
+LSTM](https://www.tensorflow.org/api_docs/python/tf/keras/layers/LSTM)
+ (Documentación TF)
+
+**Semana 4:**
+
+- [Redes neuronales convolucionales](https://www.coursera.org/learn/convolutional-neural-networks/home/welcome)
+ (DeepLearning.AI)
+
+- [Mini-lote de descenso gradiente](https://www.youtube.com/watch?v=4qJaSmvhxi8&ab_channel=DeepLearningAI)
+ (DeepLearning.AI)
+
+- [Conjunto de datos de manchas solares](https://www.kaggle.com/datasets/robervalt/sunspots)
+ (Robert Valt)
+
+- [Condiciones solares](https://sws.bom.gov.au/Solar/1/6)
+ (Oficina de Meteorología de Australia)
+
+- [Temperaturas mínimas diarias en Melbourne](https://github.com/jbrownlee/Datasets/blob/master/daily-min-temperatures.csv)
+ (presentado por Jason Brownlee, fuente: Oficina Australiana de Meteorología)
 
 ## Acknowledgments
 [<- Return to INDEX 4](#index-4)
 
+Además de los desarrolladores originales del plan de estudios, las siguientes personas hicieron contribuciones 
+significativas a la actualización del Curso 4:
+
+**Revisiones de los cuestionarios**
+
+- Diego Peluffo
+
+**Apoyo de ingeniería**
+
+- Andrés Zarta
+
+**Pruebas alfa y tutoría**
+
+- Giovanni Lignarolo
+
+- Deepthi Locanindi
+
+- Chris Favila
+
+**Probadores alfa**
+
+- Nilosree Sengupta
+
+- Paul Wilson Kolluri
+
+- Moustafa Shomer
+
+- Daewook Kim
+
+**Marketing**
+
+- Ishita Chaudary
+
+**Producción de vídeo**
+
+- Diego Peluffo
+
+**Apoyo administrativo y de contenidos adicional**
+
+- Ryan Keenan
+
+- Lara Pheatt-Pitzer
+
+- Inhae Koo
+
+- Muhammad Mubashar
+
+- Christopher Moroney
+
+- Dani Zysman
+
+- Emma Afflerbach
+
+
+Por último, ¡nuestro más sincero agradecimiento a USTED, por inscribirse en esta Specializations y formar parte de nuestra comunidad global de estudiantes!
+
+
 ## Specialization wrap up A conversation with Andrew Ng
 [<- Return to INDEX 4](#index-4)
+
+![img_61.png](ims%2FW4%2Fimg_61.png)
+
+Felicitaciones por llegar al final de este TensorFlow y la práctica de especialización. En los cuatro cursos, aprendes cómo construir una red neuronal profunda, cómo construir una red comf, cómo construir modelos de secuencia para PNL y finalmente, cómo construir modelos de series temporales. Has construido y has aprendido mucho de cosas en la especialización, y espero que te des una palmadita en la espalda para llegar al final. 
+
+ealmente hemos recorrido un largo camino, si recuerdas nuestra primera lección es que hicimos dos conjuntos de números donde la relación era y es igual a 2x menos 1. Tuvimos un poco de DNN que la gente usa entonces para aprender eso y para hacer ese patrón de coincidencia de la x contra y, pero desde entonces, hemos ido a la visión por ordenador, procesamiento de lenguaje natural, modelado de secuencia de tiempo, manchas solares, todo eso. 
+
+![img_62.png](ims%2FW4%2Fimg_62.png)
+
+Así que realmente creo que realmente has sólo dado el primer paso, aunque en un viaje mucho más grande, hay muchas más cosas que aprender. Una de las piezas de retroalimentación que recibimos de estudiantes es que realmente les encanta esto, pero quieren aprender más. 
+
+Yo siempre recomiendo que las otras especializaciones que Andrew ha hecho de las que he personalmente aprendí también. Así que si realmente quieres entrar en más profundidad en, por ejemplo, cómo funciona un LSTM o cómo funciona un RNN, o cómo incluso funciona una convolución, hay un gran material por ahí, y hemos diseñado estos materiales para malla entre sí. 
+
+![img_63.png](ims%2FW4%2Fimg_63.png)
+
+Así que si realmente quieres aprender en profundidad, Andrew es el maestro, y si quieres aprender a aplicar eso al código y cómo tomar eso, y ponerlo en práctica, entonces este curso y futuros cursos en los que estamos trabajando serán realmente alrededor de eso. 
+
+Así que esperamos verte allí. Como dijo Lawrence, espero que esto sea solo una parte de su viaje para llegar a ser grande en el aprendizaje profundo. La especialización de aprendizaje profundo complementa esta, y así que si quieres profundizar en mayor profundidad, puedes comprobarlo también. Todavía hay más por aprender. Así que Lawrence y todavía voy a seguir a construir especializaciones adicionales para ayudar a aprender aún más sobre TensorFlow. 
+
+![img_64.png](ims%2FW4%2Fimg_64.png)
+
+Mirando hacia adelante. Trabajar con Lawrence ha sido el punto culminante de estos últimos meses y espero adelante construir más cursos juntos. A todos ustedes que se quedaron con nosotros a lo largo de todo este período, gracias por todo el trabajo duro que han puesto en aprender estas cosas y seguir viendo el espacio, vamos a tener más cosas para ustedes en el futuro. Gracias.
 
 ## What next?
 [<- Return to INDEX 4](#index-4)
 
+¿Listo para desplegar sus modelos por el mundo? Aprenda a poner en marcha sus modelos con la 
+[TensorFlow: Especialización en datos y despliegue](https://bit.ly/3ojuT1o)
+.
+
+¿Busca personalizar y construir potentes modelos del mundo real para escenarios complejos? Eche un vistazo a la 
+[TensorFlow: Especialización en Técnicas Avanzadas](https://bit.ly/39iAsZQ)
+. 
+
 ## Opportunity to Mentor Other Learners
 [<- Return to INDEX 4](#index-4)
+
+¡Nuestro más sincero agradecimiento por inscribirse en esta especialización y formar parte de nuestra comunidad global de estudiantes!
+
+
+Si le apasiona ser voluntario y devolver algo a la comunidad guiando a otros alumnos para que completen esta especialización y/o prueben otras especializaciones publicadas por 
+[Deeplearning](https://forms.gle/YHBfNquA8W4NA6TU8)
+.IA en Coursera, inscríbase 
+[en el Programa de la Comunidad DeepLearning.I
+A.](https://forms.gle/YHBfNquA8W4NA6TU8)
+
+
+Alguien del personal de DeepLearning.IA se pondrá en contacto con usted cuando haya puestos disponibles adecuados a su perfil.
+
+
+Nota: No es obligatorio inscribirse. Se trata de un servicio puramente opcional y voluntario.
 
 # Weekly Assignment Adding Convolutions
 [<- Return to INDEX 0](#index-0)
